@@ -1,11 +1,11 @@
 import "./globals.css"
 
 import type { Metadata } from "next"
-import { Geist } from "next/font/google"
+import { Geist, Inter } from "next/font/google"
 import { cn } from "@/lib/utils"
 import { TooltipProvider } from "@/components/ui/tooltip"
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-sans" })
+const inter = Inter({subsets:['latin'],variable:'--font-sans'})
 
 export const metadata: Metadata = {
 	title: "Auth Model Front",
@@ -18,7 +18,7 @@ export default function RootLayout({
 	children: React.ReactNode
 }) {
 	return (
-		<html lang="pt-BR" className={cn("font-sans", geist.variable)}>
+		<html lang="pt-BR" className={cn("font-sans", inter.variable)}>
 			<TooltipProvider>
 				<body className="bg-gray-50 text-gray-900 antialiased">{children}</body>
 			</TooltipProvider>
