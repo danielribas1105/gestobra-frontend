@@ -1,15 +1,16 @@
 import "./globals.css"
 
 import type { Metadata } from "next"
-import { Geist, Inter } from "next/font/google"
-import { cn } from "@/lib/utils"
-import { TooltipProvider } from "@/components/ui/tooltip"
+import { Inter } from "next/font/google"
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'})
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { cn } from "@/lib/utils"
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
 export const metadata: Metadata = {
-	title: "Auth Model Front",
-	description: "Authentication model — Next.js + FastAPI",
+	title: "GestObra",
+	description: "Web Application",
 }
 
 export default function RootLayout({
@@ -19,9 +20,9 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="pt-BR" className={cn("font-sans", inter.variable)}>
-			<TooltipProvider>
-				<body className="bg-gray-50 text-gray-900 antialiased">{children}</body>
-			</TooltipProvider>
+			<body className="bg-gray-50 text-gray-900 antialiased">
+				<TooltipProvider>{children}</TooltipProvider>
+			</body>
 		</html>
 	)
 }
