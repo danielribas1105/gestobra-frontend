@@ -1,5 +1,6 @@
+import z from "zod"
+
 import validateCPF from "@/utils/validate-cpf"
-import { z } from "zod"
 
 export const UserSchema = z.object({
 	id: z.uuid(),

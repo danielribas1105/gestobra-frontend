@@ -1,3 +1,8 @@
+"use client"
+import Image from "next/image"
+import Link from "next/link"
+
+import logo from "@/../public/logo/logo-gestobra-512x512.png"
 import {
 	Sidebar,
 	SidebarContent,
@@ -10,11 +15,9 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import Footer from "./footer"
 import { itemsMenu } from "@/constants/ItensMenu"
-import Link from "next/link"
-import Image from "next/image"
-import logo from "@/../public/logo/logo-gestobra-512x512.png"
+
+import Footer from "./footer"
 
 export function AppSidebar() {
 	return (

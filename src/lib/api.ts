@@ -25,6 +25,7 @@ export interface UserResponse {
 	email: string
 	emailVerified: boolean
 	active: boolean
+	profile: string
 	image: string | null
 	createdAt: string
 }

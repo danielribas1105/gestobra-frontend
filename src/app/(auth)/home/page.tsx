@@ -59,6 +59,7 @@ export default async function HomePage() {
 						<InfoRow label="E-mail" value={user.email} />
 						<InfoRow label="Nome" value={user.name ?? "—"} />
 						<InfoRow label="Conta ativa" value={user.active ? "Sim" : "Não"} />
+						<InfoRow label="Perfil" value={user.profile} />
 						<InfoRow
 							label="Verificado"
 							value={user.emailVerified ? "Sim" : "Não"}
