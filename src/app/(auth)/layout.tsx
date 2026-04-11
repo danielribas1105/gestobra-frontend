@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/ui/app-sidebar"
+import PageLayout from "@/components/ui/page-layout"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 
 export default function RootLayout({
@@ -10,7 +11,7 @@ export default function RootLayout({
 		<SidebarProvider>
 			<AppSidebar />
 			<SidebarTrigger />
-			{children}
+			<PageLayout>{children}</PageLayout>
 		</SidebarProvider>
 	)
 }
