@@ -1,28 +1,26 @@
-"use client"
-import { useQuery } from "@tanstack/react-query"
+import { cookies } from "next/headers"
 
 import { Work } from "@/schemas/work"
 
 import WorkCard from "./work-card"
 
 async function fetchWorks(): Promise<Work[]> {
-	const res = await fetch("http://localhost:8000/api/v1/works") // ajuste a URL do seu FastAPI
+	const token = (await cookies()).get("auth_token")?.value
+
+	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/works`, {
+		headers: { Authorization: `Bearer ${token}` },
+	})
+
 	if (!res.ok) throw new Error("Erro ao buscar obras")
 	return res.json()
 }
 
-export default function ListWorks() {
-	const {
-		data: works,
-		isLoading,
-		error,
-	} = useQuery({
-		queryKey: ["works"],
-		queryFn: fetchWorks,
-	})
+export default async function ListWorks() {
+	const works = await fetchWorks()
 
-	if (isLoading) return <p>Carregando obras...</p>
-	if (error) return <p>Erro ao carregar obras</p>
+	if (works.length === 0) {
+		return <div>Nenhuma obra encontrada!</div>
+	}
 
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">

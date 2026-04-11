@@ -9,7 +9,6 @@ import {
 	SidebarFooter,
 	SidebarGroup,
 	SidebarGroupContent,
-	SidebarGroupLabel,
 	SidebarHeader,
 	SidebarMenu,
 	SidebarMenuButton,
@@ -24,7 +23,14 @@ export function AppSidebar() {
 		<Sidebar>
 			<SidebarHeader>
 				<div className="flex flex-col items-center">
-					<Image src={logo} alt={"Logo GestObra"} width={150} height={150} />
+					<Image
+						src={logo}
+						alt={"Logo GestObra"}
+						width={150}
+						height={150}
+						loading="eager"
+						priority
+					/>
 					<h3 className="font-logo font-bold text-3xl text-logo-blue-dark">
 						GestObra
 					</h3>

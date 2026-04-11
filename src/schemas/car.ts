@@ -15,7 +15,7 @@ export const CarSchema = z.object({
 	capacity: z.string(),
 	versatility: z.string(),
 	active: z.boolean(),
-	image_url: z.string(),
+	image: z.string(),
 	/* imagemURL: z.url().optional(), */
 })
 

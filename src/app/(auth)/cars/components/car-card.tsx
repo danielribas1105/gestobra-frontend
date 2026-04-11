@@ -14,9 +14,10 @@ export default function CarCard({ car }: CarCardProps) {
 			<article className="w-56 h-64 border-2 rounded-lg p-2 flex flex-col gap-2">
 				<div className="relative w-full h-36 flex justify-center overflow-hidden">
 					<Image
-						src={car.image_url}
+						src={car.image}
 						alt="Foto da veiculo"
 						fill
+						sizes="(max-width: 768px) 100vw, 224px"
 						className="object-cover rounded-lg"
 					/>
 				</div>

@@ -18,6 +18,10 @@ async function fetchCars(): Promise<Car[]> {
 export default async function ListCars() {
 	const cars = await fetchCars()
 
+	if (cars.length === 0) {
+		return <div>Nenhum veículo encontrado!</div>
+	}
+
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
 			{cars && cars.map((car: Car) => <CarCard key={car.id} car={car} />)}

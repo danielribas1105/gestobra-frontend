@@ -1,21 +1,24 @@
+"use client"
+import { UUID } from "crypto"
+import { Save, X } from "lucide-react"
+import Image from "next/image"
+import { useEffect } from "react"
+
 import { Button } from "@/components/ui/button"
 import InputForm from "@/components/ui/input-form"
 import PageLayout from "@/components/ui/page-layout"
 import TitlePage from "@/components/ui/title-page"
-import { IconCancel, IconDeviceFloppy } from "@tabler/icons-react"
-import { UUID } from "crypto"
-import Image from "next/image"
-import { useEffect } from "react"
 
 export default function EditCar({ params }: { params: { id: string | UUID } }) {
-
 	useEffect(() => {
 		async function fetchEditCar() {
 			try {
-				const res = await fetch(`http://127.0.0.1:8000/car/${params.id}`)
+				const res = await fetch(
+					`http://127.0.0.1:8000/api/v1/cars/${params.id}`,
+				)
 				if (!res.ok) throw new Error("Erro ao buscar veículo")
 				const car = await res.json()
-				console.log("car",car)
+				console.log("car", car)
 			} catch (error) {
 				console.error(`Edit car: ${error}`)
 				return null
@@ -23,7 +26,6 @@ export default function EditCar({ params }: { params: { id: string | UUID } }) {
 		}
 
 		fetchEditCar()
-	
 	}, [params.id])
 
 	return (
@@ -57,11 +59,11 @@ export default function EditCar({ params }: { params: { id: string | UUID } }) {
 						<InputForm label="Observação" widthLabel />
 						<div className="flex gap-4 justify-end mt-2">
 							<Button variant="default">
-								<IconDeviceFloppy />
+								<Save />
 								Salvar
 							</Button>
 							<Button variant="destructive">
-								<IconCancel />
+								<X />
 								Cancelar
 							</Button>
 						</div>
