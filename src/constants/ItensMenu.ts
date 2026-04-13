@@ -1,4 +1,5 @@
 import {
+	ArrowLeftRight,
 	Construction,
 	FileText,
 	Home,
@@ -14,6 +15,11 @@ export const itemsMenu = [
 		title: "Home",
 		url: "/home",
 		icon: Home,
+	},
+	{
+		title: "Transportes",
+		url: "/jobs",
+		icon: ArrowLeftRight,
 	},
 	{
 		title: "Obras",
