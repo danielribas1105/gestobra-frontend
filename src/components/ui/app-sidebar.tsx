@@ -1,6 +1,7 @@
 "use client"
 import Image from "next/image"
 import Link from "next/link"
+import { User } from "lucide-react"
 
 import logo from "@/../public/logo/logo-gestobra-512x512.png"
 import {
@@ -41,7 +42,6 @@ export function AppSidebar() {
 			</SidebarHeader>
 			<SidebarContent>
 				<SidebarGroup>
-					{/* <SidebarGroupLabel></SidebarGroupLabel> */}
 					<SidebarGroupContent>
 						<SidebarMenu>
 							{itemsMenu.map((item) => (
@@ -59,7 +59,16 @@ export function AppSidebar() {
 				</SidebarGroup>
 			</SidebarContent>
 			<SidebarFooter>
-				<h3>User</h3>
+				<SidebarMenu>
+					<SidebarMenuItem>
+						<SidebarMenuButton asChild>
+							<Link href="/profile">
+								<User color="#51a41e" />
+								<span>Meu Perfil</span>
+							</Link>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+				</SidebarMenu>
 				<Footer />
 			</SidebarFooter>
 		</Sidebar>
