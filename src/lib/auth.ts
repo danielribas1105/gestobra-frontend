@@ -5,7 +5,9 @@ import { redirect } from "next/navigation"
 
 import { authApi } from "./api"
 
-const COOKIE_NAME = "auth_token"
+const ACCESS_COOKIE = "access_token"
+const REFRESH_COOKIE = "refresh_token"
+//const COOKIE_NAME = "auth_token"
 
 export async function login(
 	_prevState: { error?: string } | undefined,
@@ -17,30 +19,56 @@ export async function login(
 	try {
 		const tokens = await authApi.login({ email, password })
 		const cookieStore = await cookies()
-		cookieStore.set(COOKIE_NAME, tokens.access_token, {
+
+		cookieStore.set(ACCESS_COOKIE, tokens.access_token, {
 			httpOnly: true,
-			secure: process.env.NODE_ENV === "production",
-			sameSite: "lax",
 			path: "/",
-			maxAge: tokens.expire_at - Math.floor(Date.now() / 1000), // dinâmico
+		})
+
+		cookieStore.set(REFRESH_COOKIE, tokens.refresh_token, {
+			httpOnly: true,
+			path: "/",
 		})
 	} catch (err: unknown) {
-		const message = err instanceof Error ? err.message : "Login failed"
+		const message = err instanceof Error ? err.message : "Credenciais inválidas"
 		return { error: message }
 	}
 
 	redirect("/home")
 }
 
+export async function refreshAccessToken() {
+	const cookieStore = await cookies()
+	const refresh_token = cookieStore.get(REFRESH_COOKIE)?.value
+
+	if (!refresh_token) return undefined
+
+	try {
+		const tokens = await authApi.refresh({
+			refresh_token, // ✅ TS já entende como string aqui
+		})
+
+		cookieStore.set(ACCESS_COOKIE, tokens.access_token, {
+			httpOnly: true,
+			path: "/",
+		})
+
+		return tokens.access_token
+	} catch {
+		return undefined
+	}
+}
+
 export async function logout() {
 	const cookieStore = await cookies()
-	cookieStore.delete(COOKIE_NAME)
+	cookieStore.delete(ACCESS_COOKIE)
+	cookieStore.delete(REFRESH_COOKIE)
 	redirect("/login")
 }
 
 export async function getSession() {
 	const cookieStore = await cookies()
-	const token = cookieStore.get(COOKIE_NAME)?.value
+	const token = cookieStore.get(ACCESS_COOKIE)?.value
 	if (!token) return null
 
 	try {
