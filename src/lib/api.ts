@@ -12,6 +12,10 @@ export interface RegisterPayload {
 	full_name?: string
 }
 
+export interface RefreshPayload {
+	refresh_token: string
+}
+
 export interface TokenResponse {
 	access_token: string
 	refresh_token: string
@@ -63,5 +67,10 @@ export const authApi = {
 	me: (token: string) =>
 		apiFetch<UserResponse>("/users/me", {
 			headers: { Authorization: `Bearer ${token}` },
+		}),
+	refresh: (payload: RefreshPayload) =>
+		apiFetch<TokenResponse>("/auth/refresh", {
+			method: "POST",
+			body: JSON.stringify(payload),
 		}),
 }
