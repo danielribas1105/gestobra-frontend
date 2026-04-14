@@ -1,12 +1,20 @@
-import { redirect } from "next/navigation"
+"use client"
+import { useRouter } from "next/navigation"
 
-import { getSession } from "@/lib/auth"
+import { useSession } from "@/hooks/auth/use-session"
+import { useEffect } from "react"
 
-export default async function HomePage() {
-	const session = await getSession()
-	if (!session) redirect("/login")
+export default function HomePage() {
+	const { user, loading } = useSession()
+	const router = useRouter()
 
-	const { user } = session
+	useEffect(() => {
+		if (!loading && !user) {
+			router.push("/login")
+		}
+	}, [loading, user])
+
+	if (loading) return <p>Carregando...</p>
 
 	return (
 		<div className="min-h-screen bg-gray-50">
@@ -16,7 +24,7 @@ export default async function HomePage() {
 				</div>
 			</header>
 			<main className="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-6">
-				Main Home
+				Main Home (Autenticado)
 			</main>
 		</div>
 	)
