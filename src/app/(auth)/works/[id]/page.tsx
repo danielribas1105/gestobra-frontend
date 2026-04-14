@@ -3,7 +3,7 @@ import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
 import InputForm from "@/components/ui/input-form"
-import PageLayout from "@/components/ui/page-layout"
+import PageLayout from "@/components/layout/page-layout"
 import TitlePage from "@/components/ui/title-page"
 
 export default function EditWork({ params }: { params: { id: number } }) {

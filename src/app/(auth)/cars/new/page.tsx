@@ -7,7 +7,7 @@ import { useRef, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import InputForm from "@/components/ui/input-form"
-import PageLayout from "@/components/ui/page-layout"
+import PageLayout from "@/components/layout/page-layout"
 import TitlePage from "@/components/ui/title-page"
 import { createCar } from "../actions"
 

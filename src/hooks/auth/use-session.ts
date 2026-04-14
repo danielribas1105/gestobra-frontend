@@ -36,6 +36,7 @@ export function useSession() {
 		fetchSession()
 	}, [])
 
+	console.log("Session:", { user, loading })
 	return {
 		user,
 		isAuthenticated: !!user,

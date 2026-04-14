@@ -1,10 +1,9 @@
 "use client"
 import { Plus } from "lucide-react"
-import { useRouter } from "next/navigation"
-
-import { Button } from "./button"
-import Search from "./search"
-import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip"
+import { usePermissions } from "@/hooks/auth/use-permissions"
+import { Button } from "../ui/button"
+import Search from "../ui/search"
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
 
 interface TitlePageProps {
 	title: string
@@ -12,7 +11,7 @@ interface TitlePageProps {
 	placeholder?: string
 	textButton?: string
 	textTooltip?: string
-	href?: string
+	onAdd?: () => void
 }
 
 export default function TitlePage({
@@ -21,10 +20,11 @@ export default function TitlePage({
 	placeholder,
 	textButton,
 	textTooltip,
-	href,
+	onAdd,
 }: TitlePageProps) {
-	const router = useRouter()
+	const { isAdmin } = usePermissions()
 
+	console.warn("TitlePage renderizado", { title, isAdmin })
 	return (
 		<div
 			className={`${className ?? ""} flex justify-between items-center gap-3`}
@@ -35,13 +35,11 @@ export default function TitlePage({
 				</h1>
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button
-							variant="default"
-							className="flex gap-2"
-							onClick={() => href && router.push(href)}
-						>
-							<Plus />
-						</Button>
+						{isAdmin && (
+							<Button variant="default" className="flex gap-2" onClick={onAdd}>
+								<Plus />
+							</Button>
+						)}
 					</TooltipTrigger>
 					<TooltipContent>
 						<p>{textTooltip}</p>

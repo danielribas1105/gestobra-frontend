@@ -1,22 +1,15 @@
-import { cookies } from "next/headers"
-
 import { User } from "@/schemas/user"
-
+import { clientApiClient } from "@/lib/api/client"
+import { useQuery } from "@tanstack/react-query"
 import UserCard from "./user-card"
 
-async function fetchUsers(): Promise<User[]> {
-	const token = (await cookies()).get("auth_token")?.value
-
-	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
-		headers: { Authorization: `Bearer ${token}` },
+export default function ListUsers() {
+	const { data: users = [], isLoading } = useQuery({
+		queryKey: ["users"],
+		queryFn: () => clientApiClient("/users"),
 	})
 
-	if (!res.ok) throw new Error("Erro ao buscar usuários")
-	return res.json()
-}
-
-export default async function ListUsers() {
-	const users = await fetchUsers()
+	if (isLoading) return <p>Carregando...</p>
 
 	if (users.length === 0) {
 		return <div>Nenhum usuário cadastrado!</div>
