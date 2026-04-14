@@ -68,13 +68,9 @@ export async function logout() {
 
 export async function getSession() {
 	const cookieStore = await cookies()
-	const token = cookieStore.get(ACCESS_COOKIE)?.value
+	const token = cookieStore.get("access_token")?.value
+
 	if (!token) return null
 
-	try {
-		const user = await authApi.me(token)
-		return { user, token }
-	} catch {
-		return null
-	}
+	return { token }
 }
