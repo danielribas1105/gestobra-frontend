@@ -8,7 +8,8 @@ export default function CarsPage() {
 			<TitlePage
 				title="Veículos"
 				placeholder="Procure pela placa - Ex: oxk8978"
-				textButton="Adicionar Veículo"
+				textTooltip="Adicionar veículo"
+				href="/cars/new"
 			/>
 			<div className="flex justify-center">
 				<ListCars />
