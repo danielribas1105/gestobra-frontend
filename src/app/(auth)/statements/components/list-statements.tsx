@@ -1,22 +1,11 @@
-import { cookies } from "next/headers"
-
 import { Statement } from "@/schemas/statements"
-
+import { useStatements } from "@/hooks/statements/use-statements"
 import StatementCard from "./statement-card"
 
-async function fetchStatements(): Promise<Statement[]> {
-	const token = (await cookies()).get("auth_token")?.value
+export default function ListStatements() {
+	const { data: statements = [], isLoading } = useStatements()
 
-	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/statements`, {
-		headers: { Authorization: `Bearer ${token}` },
-	})
-
-	if (!res.ok) throw new Error("Erro ao buscar manifestos")
-	return res.json()
-}
-
-export default async function ListStatements() {
-	const statements = await fetchStatements()
+	if (isLoading) return <p>Carregando...</p>
 
 	if (statements.length === 0) {
 		return <div>Nenhum manifesto encontrado!</div>

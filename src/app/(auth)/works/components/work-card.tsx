@@ -1,6 +1,5 @@
 import { Info } from "lucide-react"
 import Image from "next/image"
-
 import { Work } from "@/schemas/work"
 import { useState } from "react"
 import WorkModal from "./work-modal"
