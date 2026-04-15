@@ -1,25 +1,14 @@
-import { cookies } from "next/headers"
-
+import { useCars } from "@/hooks/cars/use-cars"
 import { Car } from "@/schemas/car"
-
 import CarCard from "./car-card"
 
-async function fetchCars(): Promise<Car[]> {
-	const token = (await cookies()).get("auth_token")?.value
+export default function ListCars() {
+	const { data: cars = [], isLoading } = useCars()
 
-	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cars`, {
-		headers: { Authorization: `Bearer ${token}` },
-	})
-
-	if (!res.ok) throw new Error("Erro ao buscar veículos")
-	return res.json()
-}
-
-export default async function ListCars() {
-	const cars = await fetchCars()
+	if (isLoading) return <p>Carregando...</p>
 
 	if (cars.length === 0) {
-		return <div>Nenhum veículo encontrado!</div>
+		return <div>Nenhum veículo cadastrado!</div>
 	}
 
 	return (

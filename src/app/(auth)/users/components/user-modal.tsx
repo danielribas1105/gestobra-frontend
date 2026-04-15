@@ -1,13 +1,6 @@
 "use client"
 
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog"
-
+import ModalWrapper from "@/components/layout/modal-wrapper"
 import { User } from "@/schemas/user"
 import UserForm from "./user-form"
 
@@ -23,20 +16,17 @@ export default function UserModal({
 	user,
 }: UserModalProps) {
 	return (
-		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent>
-				<DialogHeader>
-					<DialogTitle>
-						{user ? "Editar usuário" : "Adicionar usuário"}
-					</DialogTitle>
-					<DialogDescription>
-						{user
-							? "Edite as informações do usuário e clique em salvar"
-							: "Preencha as informações do novo usuário e clique em salvar"}
-					</DialogDescription>
-				</DialogHeader>
-				<UserForm user={user} onSuccess={() => onOpenChange(false)} />
-			</DialogContent>
-		</Dialog>
+		<ModalWrapper
+			open={open}
+			onOpenChange={onOpenChange}
+			title={user ? "Editar usuário" : "Adicionar usuário"}
+			description={
+				user
+					? "Edite as informações do usuário e clique em salvar"
+					: "Preencha as informações do novo usuário e clique em salvar"
+			}
+		>
+			<UserForm user={user} onSuccess={() => onOpenChange(false)} />
+		</ModalWrapper>
 	)
 }

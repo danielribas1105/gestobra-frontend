@@ -16,8 +16,7 @@ import {
 	SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { itemsMenu } from "@/constants/ItensMenu"
-
-import Footer from "./footer"
+import Footer from "../layout/footer"
 
 export function AppSidebar() {
 	return (

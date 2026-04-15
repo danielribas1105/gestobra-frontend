@@ -8,6 +8,6 @@ import { User } from "@/schemas/user"
 export function useUsers() {
 	return useQuery<User[]>({
 		queryKey: ["users"],
-		queryFn: () => clientApi(routes.user.list),
+		queryFn: () => clientApi(routes.users.list),
 	})
 }

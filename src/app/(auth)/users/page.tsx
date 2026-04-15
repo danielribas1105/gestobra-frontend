@@ -13,7 +13,6 @@ export default function UsersPage() {
 			<TitlePage
 				title="Usuários"
 				placeholder="Procure pelo nome"
-				textButton="Adicionar usuário"
 				textTooltip="Adicionar usuário"
 				onAdd={() => setOpen(true)}
 			/>

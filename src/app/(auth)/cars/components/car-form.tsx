@@ -1,10 +1,5 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { useUserMutations } from "@/hooks/users/use-user-mutations"
-import { User } from "@/schemas/user"
-import { useState } from "react"
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -16,34 +11,41 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { useCarMutations } from "@/hooks/cars/use-car-mutations"
 
-interface UserFormProps {
-	user?: User
+import { Car } from "@/schemas/car"
+import { useState } from "react"
+
+interface CarFormProps {
+	car?: Car
 	onSuccess?: () => void
 }
 
-export default function UserForm({ user, onSuccess }: UserFormProps) {
-	const isEdit = !!user
+export default function CarForm({ car, onSuccess }: CarFormProps) {
+	const isEdit = !!car
 
-	const { createUser, updateUser, deleteUser } = useUserMutations()
+	const { createCar, updateCar, deleteCar } = useCarMutations()
+	const [openAlert, setOpenAlert] = useState(false)
 
 	const [form, setForm] = useState({
-		name: user?.name || "",
-		email: user?.email || "",
+		model: car?.model || "",
+		licence: car?.license || "",
 	})
 
 	// ✏️ CREATE / UPDATE
-	async function handleSubmit(e: React.FormEvent) {
+	async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
 		e.preventDefault()
 
 		try {
 			if (isEdit) {
-				await updateUser.mutateAsync({
-					id: user!.id,
+				await updateCar.mutateAsync({
+					id: car!.id,
 					data: form,
 				})
 			} else {
-				await createUser.mutateAsync(form)
+				await createCar.mutateAsync(form)
 			}
 
 			onSuccess?.()
@@ -52,31 +54,32 @@ export default function UserForm({ user, onSuccess }: UserFormProps) {
 
 	// 🗑️ DELETE
 	async function handleDelete() {
-		if (!user) return
+		if (!car) return
 
 		try {
-			await deleteUser.mutateAsync(user.id)
+			await deleteCar.mutateAsync(car.id)
+			setOpenAlert(false)
 			onSuccess?.()
 		} catch {}
 	}
 
 	const loading =
-		createUser.isPending || updateUser.isPending || deleteUser.isPending
+		createCar.isPending || updateCar.isPending || deleteCar.isPending
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-5">
 			{/* Inputs */}
 			<Input
-				placeholder="Nome"
-				value={form.name}
-				onChange={(e) => setForm({ ...form, name: e.target.value })}
+				placeholder="Modelo"
+				value={form.model}
+				onChange={(e) => setForm({ ...form, model: e.target.value })}
 				disabled={loading}
 			/>
 
 			<Input
-				placeholder="Email"
-				value={form.email}
-				onChange={(e) => setForm({ ...form, email: e.target.value })}
+				placeholder="Placa"
+				value={form.licence}
+				onChange={(e) => setForm({ ...form, licence: e.target.value })}
 				disabled={loading}
 			/>
 
@@ -84,10 +87,10 @@ export default function UserForm({ user, onSuccess }: UserFormProps) {
 			<div className="flex justify-between items-center">
 				{/* 🔥 DELETE COM MODAL */}
 				{isEdit && (
-					<AlertDialog>
+					<AlertDialog open={openAlert} onOpenChange={setOpenAlert}>
 						<AlertDialogTrigger asChild>
 							<Button type="button" variant="destructive" disabled={loading}>
-								{deleteUser.isPending ? "Excluindo..." : "Excluir"}
+								{deleteCar.isPending ? "Excluindo..." : "Excluir"}
 							</Button>
 						</AlertDialogTrigger>
 
@@ -96,7 +99,7 @@ export default function UserForm({ user, onSuccess }: UserFormProps) {
 								<AlertDialogTitle>Tem certeza?</AlertDialogTitle>
 								<AlertDialogDescription>
 									Essa ação não pode ser desfeita. Isso irá excluir
-									permanentemente o usuário <strong>{user?.name}</strong>.
+									permanentemente o veículo <strong>{car?.model}</strong>.
 								</AlertDialogDescription>
 							</AlertDialogHeader>
 
@@ -108,7 +111,7 @@ export default function UserForm({ user, onSuccess }: UserFormProps) {
 									className="bg-red-600 hover:bg-red-700"
 								>
 									Sim, excluir
-									{/* {deleteUser.isPending ? "Excluindo..." : "Sim, excluir"} */}
+									{/* {deleteCar.isPending ? "Excluindo..." : "Sim, excluir"} */}
 								</AlertDialogAction>
 							</AlertDialogFooter>
 						</AlertDialogContent>
@@ -118,7 +121,7 @@ export default function UserForm({ user, onSuccess }: UserFormProps) {
 				{/* SUBMIT */}
 				<div className="ml-auto">
 					<Button type="submit" disabled={loading}>
-						{createUser.isPending || updateUser.isPending
+						{createCar.isPending || updateCar.isPending
 							? "Salvando..."
 							: isEdit
 								? "Atualizar"

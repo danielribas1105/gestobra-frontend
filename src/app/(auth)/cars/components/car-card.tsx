@@ -1,17 +1,24 @@
 import { Circle } from "lucide-react"
 import Image from "next/image"
-import Link from "next/link"
 
 import { Car } from "@/schemas/car"
+import { useState } from "react"
+import ModalWrapper from "@/components/layout/modal-wrapper"
+import CarModal from "./car-modal"
 
 export interface CarCardProps {
 	car: Car
 }
 
 export default function CarCard({ car }: CarCardProps) {
+	const [open, setOpen] = useState(false)
+
 	return (
-		<Link href={`/cars/${car.id}`}>
-			<article className="w-56 h-64 border-2 rounded-lg p-2 flex flex-col gap-2 hover:shadow-md transition-shadow">
+		<>
+			<article
+				className="w-56 h-64 border-2 rounded-lg p-2 flex flex-col gap-2 hover:shadow-md transition-shadow"
+				onClick={() => setOpen(true)}
+			>
 				<div className="relative w-full h-36 flex justify-center overflow-hidden">
 					{car.image ? (
 						<Image
@@ -44,6 +51,7 @@ export default function CarCard({ car }: CarCardProps) {
 					</footer>
 				</div>
 			</article>
-		</Link>
+			<CarModal open={open} onOpenChange={setOpen} car={car} />
+		</>
 	)
 }

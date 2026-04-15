@@ -12,6 +12,11 @@ export async function clientApi(path: string, options: RequestInit = {}) {
 		credentials: "include", // 🔥 ENVIA COOKIES
 	})
 
+	// 🔥 NÃO tentar parsear 204
+	if (res.status === 204) {
+		return null
+	}
+
 	if (!res.ok) {
 		const data = await res.json().catch(() => null)
 

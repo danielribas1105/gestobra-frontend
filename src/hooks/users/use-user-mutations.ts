@@ -12,7 +12,7 @@ export function useUserMutations() {
 	// CREATE
 	const createUser = useMutation({
 		mutationFn: (data: Partial<User>) =>
-			clientApi(routes.user.create, {
+			clientApi(routes.users.create, {
 				method: "POST",
 				body: JSON.stringify(data),
 			}),
@@ -35,7 +35,7 @@ export function useUserMutations() {
 	// UPDATE
 	const updateUser = useMutation({
 		mutationFn: ({ id, data }: { id: string; data: Partial<User> }) =>
-			clientApi(routes.user.update(id), {
+			clientApi(routes.users.update(id), {
 				method: "PUT",
 				body: JSON.stringify(data),
 			}),
@@ -58,7 +58,7 @@ export function useUserMutations() {
 	// DELETE
 	const deleteUser = useMutation({
 		mutationFn: (id: string) =>
-			clientApi(routes.user.delete(id), {
+			clientApi(routes.users.delete(id), {
 				method: "DELETE",
 			}),
 
