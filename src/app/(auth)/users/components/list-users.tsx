@@ -1,13 +1,9 @@
+import { useUsers } from "@/hooks/users/use-users"
 import { User } from "@/schemas/user"
-import { clientApiClient } from "@/lib/api/client"
-import { useQuery } from "@tanstack/react-query"
 import UserCard from "./user-card"
 
 export default function ListUsers() {
-	const { data: users = [], isLoading } = useQuery({
-		queryKey: ["users"],
-		queryFn: () => clientApiClient("/users"),
-	})
+	const { data: users = [], isLoading } = useUsers()
 
 	if (isLoading) return <p>Carregando...</p>
 

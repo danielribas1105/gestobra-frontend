@@ -1,6 +1,8 @@
+import { ApiError } from "./api-error"
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export async function clientApiClient(path: string, options: RequestInit = {}) {
+export async function clientApi(path: string, options: RequestInit = {}) {
 	const res = await fetch(`${API_URL}${path}`, {
 		...options,
 		headers: {
@@ -11,7 +13,9 @@ export async function clientApiClient(path: string, options: RequestInit = {}) {
 	})
 
 	if (!res.ok) {
-		throw new Error("Erro na API")
+		const data = await res.json().catch(() => null)
+
+		throw new ApiError(data?.detail || "Erro na API", res.status, data)
 	}
 
 	return res.json()
