@@ -13,23 +13,23 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useWorkMutations } from "@/hooks/works/use-work-mutations"
-import { Work } from "@/schemas/work"
+import { useJobMutations } from "@/hooks/jobs/use-job-mutations"
+import { Job } from "@/schemas/job"
 import { useState } from "react"
 
-interface WorkFormProps {
-	work?: Work
+interface JobFormProps {
+	job?: Job
 	onSuccess?: () => void
 }
 
-export default function WorkForm({ work, onSuccess }: WorkFormProps) {
-	const isEdit = !!work
+export default function JobForm({ job, onSuccess }: JobFormProps) {
+	const isEdit = !!job
 
-	const { createWork, updateWork, deleteWork } = useWorkMutations()
+	const { createJob, updateJob, deleteJob } = useJobMutations()
 
 	const [form, setForm] = useState({
-		name: work?.name || "",
-		description: work?.description || "",
+		statement_id: job?.statement_id || "",
+		destiny_id: job?.destiny_id || "",
 	})
 
 	// ✏️ CREATE / UPDATE
@@ -38,12 +38,12 @@ export default function WorkForm({ work, onSuccess }: WorkFormProps) {
 
 		try {
 			if (isEdit) {
-				await updateWork.mutateAsync({
-					id: work!.id,
+				await updateJob.mutateAsync({
+					id: job!.id,
 					data: form,
 				})
 			} else {
-				await createWork.mutateAsync(form)
+				await createJob.mutateAsync(form)
 			}
 
 			onSuccess?.()
@@ -52,31 +52,31 @@ export default function WorkForm({ work, onSuccess }: WorkFormProps) {
 
 	// 🗑️ DELETE
 	async function handleDelete() {
-		if (!work) return
+		if (!job) return
 
 		try {
-			await deleteWork.mutateAsync(work.id)
+			await deleteJob.mutateAsync(job.id)
 			onSuccess?.()
 		} catch {}
 	}
 
 	const loading =
-		createWork.isPending || updateWork.isPending || deleteWork.isPending
+		createJob.isPending || updateJob.isPending || deleteJob.isPending
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-5">
 			{/* Inputs */}
 			<Input
 				placeholder="Nome"
-				value={form.name}
-				onChange={(e) => setForm({ ...form, name: e.target.value })}
+				value={form.statement_id}
+				onChange={(e) => setForm({ ...form, statement_id: e.target.value })}
 				disabled={loading}
 			/>
 
 			<Input
 				placeholder="Descrição"
-				value={form.description}
-				onChange={(e) => setForm({ ...form, description: e.target.value })}
+				value={form.destiny_id}
+				onChange={(e) => setForm({ ...form, destiny_id: e.target.value })}
 				disabled={loading}
 			/>
 
@@ -87,7 +87,7 @@ export default function WorkForm({ work, onSuccess }: WorkFormProps) {
 					<AlertDialog>
 						<AlertDialogTrigger asChild>
 							<Button type="button" variant="destructive" disabled={loading}>
-								{deleteWork.isPending ? "Excluindo..." : "Excluir"}
+								{deleteJob.isPending ? "Excluindo..." : "Excluir"}
 							</Button>
 						</AlertDialogTrigger>
 
@@ -98,7 +98,7 @@ export default function WorkForm({ work, onSuccess }: WorkFormProps) {
 								</AlertDialogTitle>
 								<AlertDialogDescription>
 									Essa ação não pode ser desfeita. Isso irá excluir
-									permanentemente a obra <strong>{work?.name}</strong>.
+									permanentemente o trabalho <strong>{job?.origin_id}</strong>.
 								</AlertDialogDescription>
 							</AlertDialogHeader>
 
@@ -119,7 +119,7 @@ export default function WorkForm({ work, onSuccess }: WorkFormProps) {
 				{/* SUBMIT */}
 				<div className="ml-auto">
 					<Button type="submit" disabled={loading}>
-						{createWork.isPending || updateWork.isPending
+						{createJob.isPending || updateJob.isPending
 							? "Salvando..."
 							: isEdit
 								? "Atualizar"

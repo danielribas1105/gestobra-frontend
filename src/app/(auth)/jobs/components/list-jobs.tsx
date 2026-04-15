@@ -1,21 +1,11 @@
-import { cookies } from "next/headers"
-
+import { useJobs } from "@/hooks/jobs/use-jobs"
 import { Job } from "@/schemas/job"
 import JobCard from "./job-card"
 
-async function fetchJobs(): Promise<Job[]> {
-	const token = (await cookies()).get("auth_token")?.value
+export default function ListJobs() {
+	const { data: jobs = [], isLoading } = useJobs()
 
-	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/jobs`, {
-		headers: { Authorization: `Bearer ${token}` },
-	})
-
-	if (!res.ok) throw new Error("Erro ao buscar transportes")
-	return res.json()
-}
-
-export default async function ListJobs() {
-	const jobs = await fetchJobs()
+	if (isLoading) return <p>Carregando...</p>
 
 	if (jobs.length === 0) {
 		return <div>Nenhum transporte encontrado!</div>
