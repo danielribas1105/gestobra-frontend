@@ -1,4 +1,4 @@
-import { Circle } from "lucide-react"
+import { Info } from "lucide-react"
 import Image from "next/image"
 
 import avatar from "@/../public/img-user.png"
@@ -16,22 +16,37 @@ export default function UserCard({ user }: UserCardProps) {
 	return (
 		<>
 			<article
-				className="w-56 h-64 border-2 rounded-lg p-2 flex flex-col gap-2"
+				className="w-56 h-64 border-2 rounded-lg p-2 flex flex-col gap-2 cursor-pointer"
 				onClick={() => setOpen(true)}
+				onKeyDown={(e) => e.key === "Enter" && setOpen(true)}
+				role="button"
+				tabIndex={0}
+				aria-label={`Ver detalhes do usuário ${user.name}`}
 			>
 				<div className="relative w-full h-36 flex justify-center overflow-hidden">
 					<Image
 						src={user.image_url ?? avatar}
-						alt="Avatar usuário"
+						alt={`Foto do usuário ${user.name}`}
 						fill
 						className="object-cover rounded-lg"
 					/>
 				</div>
-				<header>{user.name}</header>
-				<section>Código: {user.id}</section>
+				<header>
+					<h2>{user.name}</h2>
+				</header>
+				<dl>
+					<dt className="sr-only">Código</dt>
+					<dd>Código: {user.id}</dd>
+				</dl>
 				<footer className="flex items-center gap-1">
-					<Circle size={16} color={user.active ? "#00FF00" : "#FF0000"} />
-					<span className="text-sm uppercase">{user.active}</span>
+					<Info
+						size={16}
+						color={user.active ? "#00FF00" : "#FF0000"}
+						aria-hidden="true"
+					/>
+					<span className="text-sm uppercase">
+						{user.active ? "Ativo" : "Inativo"}
+					</span>
 				</footer>
 			</article>
 			<UserModal open={open} onOpenChange={setOpen} user={user} />

@@ -1,9 +1,8 @@
-import { Circle } from "lucide-react"
+import { Info } from "lucide-react"
 import Image from "next/image"
 
 import { Car } from "@/schemas/car"
 import { useState } from "react"
-import ModalWrapper from "@/components/layout/modal-wrapper"
 import CarModal from "./car-modal"
 
 export interface CarCardProps {
@@ -16,40 +15,38 @@ export default function CarCard({ car }: CarCardProps) {
 	return (
 		<>
 			<article
-				className="w-56 h-64 border-2 rounded-lg p-2 flex flex-col gap-2 hover:shadow-md transition-shadow"
+				className="w-56 h-64 border-2 rounded-lg p-2 flex flex-col gap-2 cursor-pointer"
 				onClick={() => setOpen(true)}
+				onKeyDown={(e) => e.key === "Enter" && setOpen(true)}
+				role="button"
+				tabIndex={0}
+				aria-label={`Ver detalhes do veículo ${car.model}`}
 			>
 				<div className="relative w-full h-36 flex justify-center overflow-hidden">
-					{car.image ? (
-						<Image
-							src={car.image}
-							alt="Foto do veículo"
-							fill
-							sizes="(max-width: 768px) 100vw, 224px"
-							className="object-cover rounded-lg"
-						/>
-					) : (
-						<div className="w-full h-full bg-muted rounded-lg flex items-center justify-center text-muted-foreground text-sm">
-							Sem foto
-						</div>
-					)}
+					<Image
+						src={car.image}
+						alt={`Foto do veículo ${car.model}`}
+						fill
+						className="object-cover rounded-lg"
+					/>
 				</div>
-				<div className="flex flex-col gap-1">
-					<header className="font-medium truncate">{car.model}</header>
-					<section className="text-sm text-muted-foreground">
-						Placa: {car.license}
-					</section>
-					<footer className="flex items-center gap-1">
-						<Circle
-							size={16}
-							fill={car.active ? "#00FF00" : "#FF0000"}
-							color={car.active ? "#00FF00" : "#FF0000"}
-						/>
-						<span className="text-sm uppercase">
-							{car.active ? "Ativo" : "Inativo"}
-						</span>
-					</footer>
-				</div>
+				<header>
+					<h2>{car.model}</h2>
+				</header>
+				<dl>
+					<dt className="sr-only">Código</dt>
+					<dd>Código: {car.id}</dd>
+				</dl>
+				<footer className="flex items-center gap-1">
+					<Info
+						size={16}
+						color={car.active ? "#00FF00" : "#FF0000"}
+						aria-hidden="true"
+					/>
+					<span className="text-sm uppercase">
+						{car.active ? "Ativo" : "Inativo"}
+					</span>
+				</footer>
 			</article>
 			<CarModal open={open} onOpenChange={setOpen} car={car} />
 		</>
