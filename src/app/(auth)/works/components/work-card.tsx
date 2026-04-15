@@ -1,17 +1,23 @@
 import { Info } from "lucide-react"
 import Image from "next/image"
-import Link from "next/link"
 
 import { Work } from "@/schemas/work"
+import { useState } from "react"
+import WorkModal from "./work-modal"
 
 export interface WorkCardProps {
 	work: Work
 }
 
 export default function WorkCard({ work }: WorkCardProps) {
+	const [open, setOpen] = useState(false)
+
 	return (
-		<Link href={`/obras/${work.id}`}>
-			<article className="w-56 h-64 border-2 rounded-lg p-2 flex flex-col gap-2">
+		<>
+			<article
+				className="w-56 h-64 border-2 rounded-lg p-2 flex flex-col gap-2"
+				onClick={() => setOpen(true)}
+			>
 				<div className="relative w-full h-36 flex justify-center overflow-hidden">
 					<Image
 						src={work.image_url}
@@ -27,6 +33,7 @@ export default function WorkCard({ work }: WorkCardProps) {
 					<span className="text-sm uppercase">{work.active}</span>
 				</footer>
 			</article>
-		</Link>
+			<WorkModal open={open} onOpenChange={setOpen} work={work} />
+		</>
 	)
 }

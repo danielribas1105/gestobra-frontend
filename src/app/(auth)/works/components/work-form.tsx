@@ -1,10 +1,5 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { useUserMutations } from "@/hooks/users/use-user-mutations"
-import { User } from "@/schemas/user"
-import { useState } from "react"
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -16,20 +11,25 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { useWorkMutations } from "@/hooks/works/use-work-mutations"
+import { Work } from "@/schemas/work"
+import { useState } from "react"
 
-interface UserFormProps {
-	user?: User
+interface WorkFormProps {
+	work?: Work
 	onSuccess?: () => void
 }
 
-export default function UserForm({ user, onSuccess }: UserFormProps) {
-	const isEdit = !!user
+export default function WorkForm({ work, onSuccess }: WorkFormProps) {
+	const isEdit = !!work
 
-	const { createUser, updateUser, deleteUser } = useUserMutations()
+	const { createWork, updateWork, deleteWork } = useWorkMutations()
 
 	const [form, setForm] = useState({
-		name: user?.name || "",
-		email: user?.email || "",
+		name: work?.name || "",
+		description: work?.description || "",
 	})
 
 	// ✏️ CREATE / UPDATE
@@ -38,12 +38,12 @@ export default function UserForm({ user, onSuccess }: UserFormProps) {
 
 		try {
 			if (isEdit) {
-				await updateUser.mutateAsync({
-					id: user!.id,
+				await updateWork.mutateAsync({
+					id: work!.id,
 					data: form,
 				})
 			} else {
-				await createUser.mutateAsync(form)
+				await createWork.mutateAsync(form)
 			}
 
 			onSuccess?.()
@@ -52,16 +52,16 @@ export default function UserForm({ user, onSuccess }: UserFormProps) {
 
 	// 🗑️ DELETE
 	async function handleDelete() {
-		if (!user) return
+		if (!work) return
 
 		try {
-			await deleteUser.mutateAsync(user.id)
+			await deleteWork.mutateAsync(work.id)
 			onSuccess?.()
 		} catch {}
 	}
 
 	const loading =
-		createUser.isPending || updateUser.isPending || deleteUser.isPending
+		createWork.isPending || updateWork.isPending || deleteWork.isPending
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-5">
@@ -74,9 +74,9 @@ export default function UserForm({ user, onSuccess }: UserFormProps) {
 			/>
 
 			<Input
-				placeholder="Email"
-				value={form.email}
-				onChange={(e) => setForm({ ...form, email: e.target.value })}
+				placeholder="Descrição"
+				value={form.description}
+				onChange={(e) => setForm({ ...form, description: e.target.value })}
 				disabled={loading}
 			/>
 
@@ -87,7 +87,7 @@ export default function UserForm({ user, onSuccess }: UserFormProps) {
 					<AlertDialog>
 						<AlertDialogTrigger asChild>
 							<Button type="button" variant="destructive" disabled={loading}>
-								{deleteUser.isPending ? "Excluindo..." : "Excluir"}
+								{deleteWork.isPending ? "Excluindo..." : "Excluir"}
 							</Button>
 						</AlertDialogTrigger>
 
@@ -96,7 +96,7 @@ export default function UserForm({ user, onSuccess }: UserFormProps) {
 								<AlertDialogTitle>Tem certeza?</AlertDialogTitle>
 								<AlertDialogDescription>
 									Essa ação não pode ser desfeita. Isso irá excluir
-									permanentemente o usuário <strong>{user?.name}</strong>.
+									permanentemente a obra <strong>{work?.name}</strong>.
 								</AlertDialogDescription>
 							</AlertDialogHeader>
 
@@ -108,7 +108,6 @@ export default function UserForm({ user, onSuccess }: UserFormProps) {
 									className="bg-red-600 hover:bg-red-700"
 								>
 									Sim, excluir
-									{/* {deleteUser.isPending ? "Excluindo..." : "Sim, excluir"} */}
 								</AlertDialogAction>
 							</AlertDialogFooter>
 						</AlertDialogContent>
@@ -118,7 +117,7 @@ export default function UserForm({ user, onSuccess }: UserFormProps) {
 				{/* SUBMIT */}
 				<div className="ml-auto">
 					<Button type="submit" disabled={loading}>
-						{createUser.isPending || updateUser.isPending
+						{createWork.isPending || updateWork.isPending
 							? "Salvando..."
 							: isEdit
 								? "Atualizar"

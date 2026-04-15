@@ -1,22 +1,11 @@
-import { cookies } from "next/headers"
-
+import { useWorks } from "@/hooks/works/use-works"
 import { Work } from "@/schemas/work"
-
 import WorkCard from "./work-card"
 
-async function fetchWorks(): Promise<Work[]> {
-	const token = (await cookies()).get("auth_token")?.value
+export default function ListWorks() {
+	const { data: works = [], isLoading } = useWorks()
 
-	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/works`, {
-		headers: { Authorization: `Bearer ${token}` },
-	})
-
-	if (!res.ok) throw new Error("Erro ao buscar obras")
-	return res.json()
-}
-
-export default async function ListWorks() {
-	const works = await fetchWorks()
+	if (isLoading) return <p>Carregando...</p>
 
 	if (works.length === 0) {
 		return <div>Nenhuma obra encontrada!</div>
