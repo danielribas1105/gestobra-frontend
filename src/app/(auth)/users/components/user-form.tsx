@@ -2,8 +2,16 @@
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select"
 import { useUserMutations } from "@/hooks/users/use-user-mutations"
 import { User } from "@/schemas/user"
+import { Camera } from "lucide-react"
 import { useState } from "react"
 import {
 	AlertDialog,
@@ -28,24 +36,41 @@ export default function UserForm({ user, onSuccess }: UserFormProps) {
 	const { createUser, updateUser, deleteUser } = useUserMutations()
 
 	const [form, setForm] = useState({
-		name: user?.name || "",
-		email: user?.email || "",
+		name: user?.name ?? "",
+		email: user?.email ?? "",
+		cpf: user?.cpf ?? "",
+		phone: user?.phone ?? "",
+		profile: user?.profile ?? "operator",
+		password: "",
+		confirm_password: "",
 	})
 
+	const [passwordError, setPasswordError] = useState("")
+
+	function handleChange(field: keyof typeof form, value: string) {
+		setForm((f) => ({ ...f, [field]: value }))
+		if (field === "confirm_password" || field === "password") {
+			setPasswordError("")
+		}
+	}
+
 	// ✏️ CREATE / UPDATE
-	async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+	async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
 		e.preventDefault()
+
+		if (form.password !== form.confirm_password) {
+			setPasswordError("As senhas não coincidem")
+			return
+		}
+
+		const { confirm_password, ...payload } = form
 
 		try {
 			if (isEdit) {
-				await updateUser.mutateAsync({
-					id: user!.id,
-					data: form,
-				})
+				await updateUser.mutateAsync({ id: user!.id, data: payload })
 			} else {
-				await createUser.mutateAsync(form)
+				await createUser.mutateAsync(payload)
 			}
-
 			onSuccess?.()
 		} catch {}
 	}
@@ -65,20 +90,91 @@ export default function UserForm({ user, onSuccess }: UserFormProps) {
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-5">
-			{/* Inputs */}
-			<Input
-				placeholder="Nome"
-				value={form.name}
-				onChange={(e) => setForm({ ...form, name: e.target.value })}
-				disabled={loading}
-			/>
+			{/* Avatar placeholder — upload desabilitado */}
+			<div className="flex items-center gap-4">
+				<div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full border-2 border-dashed border-muted-foreground/30 bg-muted text-muted-foreground">
+					<Camera className="h-6 w-6" />
+				</div>
+				<div className="flex flex-col gap-1">
+					<Button type="button" variant="outline" size="sm" disabled>
+						Enviar foto
+					</Button>
+					<p className="text-xs text-muted-foreground">
+						Upload de imagem em breve.
+					</p>
+				</div>
+			</div>
 
-			<Input
-				placeholder="Email"
-				value={form.email}
-				onChange={(e) => setForm({ ...form, email: e.target.value })}
+			{/* Campos principais */}
+			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+				<Input
+					placeholder="Nome completo"
+					value={form.name}
+					onChange={(e) => handleChange("name", e.target.value)}
+					disabled={loading}
+					required
+				/>
+				<Input
+					type="email"
+					placeholder="E-mail"
+					value={form.email}
+					onChange={(e) => handleChange("email", e.target.value)}
+					disabled={loading}
+					required
+				/>
+				<Input
+					placeholder="CPF (XXX.XXX.XXX-XX)"
+					value={form.cpf}
+					onChange={(e) => handleChange("cpf", e.target.value)}
+					disabled={loading}
+				/>
+				<Input
+					placeholder="Telefone ((XX) XXXXX-XXXX)"
+					value={form.phone}
+					onChange={(e) => handleChange("phone", e.target.value)}
+					disabled={loading}
+				/>
+			</div>
+
+			<Select
+				value={form.profile}
+				onValueChange={(v) => handleChange("profile", v)}
 				disabled={loading}
-			/>
+			>
+				<SelectTrigger>
+					<SelectValue placeholder="Perfil" />
+				</SelectTrigger>
+				<SelectContent>
+					<SelectItem value="operator">Operador</SelectItem>
+					<SelectItem value="admin">Administrador</SelectItem>
+					<SelectItem value="driver">Motorista</SelectItem>
+				</SelectContent>
+			</Select>
+
+			{/* Senha */}
+			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+				<Input
+					type="password"
+					placeholder={isEdit ? "Nova senha (opcional)" : "Senha"}
+					value={form.password}
+					onChange={(e) => handleChange("password", e.target.value)}
+					disabled={loading}
+					required={!isEdit}
+				/>
+				<div className="flex flex-col gap-1">
+					<Input
+						type="password"
+						placeholder="Confirmar senha"
+						value={form.confirm_password}
+						onChange={(e) => handleChange("confirm_password", e.target.value)}
+						disabled={loading}
+						required={!isEdit}
+					/>
+					{passwordError && (
+						<p className="text-xs text-destructive">{passwordError}</p>
+					)}
+				</div>
+			</div>
 
 			{/* Actions */}
 			<div className="flex justify-between items-center">
@@ -108,7 +204,6 @@ export default function UserForm({ user, onSuccess }: UserFormProps) {
 									className="bg-red-600 hover:bg-red-700"
 								>
 									Sim, excluir
-									{/* {deleteUser.isPending ? "Excluindo..." : "Sim, excluir"} */}
 								</AlertDialogAction>
 							</AlertDialogFooter>
 						</AlertDialogContent>
@@ -122,7 +217,7 @@ export default function UserForm({ user, onSuccess }: UserFormProps) {
 							? "Salvando..."
 							: isEdit
 								? "Atualizar"
-								: "Criar"}
+								: "Criar usuário"}
 					</Button>
 				</div>
 			</div>

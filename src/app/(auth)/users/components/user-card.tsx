@@ -13,6 +13,7 @@ export interface UserCardProps {
 export default function UserCard({ user }: UserCardProps) {
 	const [open, setOpen] = useState(false)
 
+	console.warn("UserCard", user) // Para verificar re-renderizações
 	return (
 		<>
 			<article
@@ -25,7 +26,7 @@ export default function UserCard({ user }: UserCardProps) {
 			>
 				<div className="relative w-full h-36 flex justify-center overflow-hidden">
 					<Image
-						src={user.image_url ?? avatar}
+						src={user.image ?? avatar}
 						alt={`Foto do usuário ${user.name}`}
 						fill
 						className="object-cover rounded-lg"
