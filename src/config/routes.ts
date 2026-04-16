@@ -33,4 +33,10 @@ export const routes = {
 		update: (id: string) => `/statements/${id}`,
 		delete: (id: string) => `/statements/${id}`,
 	},
+	materials: {
+		list: "/materials",
+		create: "/materials",
+		update: (id: string) => `/materials/${id}`,
+		delete: (id: string) => `/materials/${id}`,
+	},
 }
