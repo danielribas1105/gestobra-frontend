@@ -20,8 +20,8 @@ import Footer from "../layout/footer"
 
 export function AppSidebar() {
 	return (
-		<Sidebar>
-			<SidebarHeader>
+		<Sidebar collapsible="icon">
+			<SidebarHeader className="group-data-[collapsible=icon]:hidden">
 				<div className="flex flex-col items-center">
 					<Image
 						src={logo}
@@ -68,7 +68,9 @@ export function AppSidebar() {
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 				</SidebarMenu>
-				<Footer />
+				<div className="group-data-[collapsible=icon]:hidden">
+					<Footer />
+				</div>
 			</SidebarFooter>
 		</Sidebar>
 	)
