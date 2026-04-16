@@ -1,5 +1,7 @@
 import {
 	ArrowLeftRight,
+	CircleDollarSign,
+	CirclePile,
 	Construction,
 	FileText,
 	Home,
@@ -17,7 +19,12 @@ export const itemsMenu = [
 		icon: Home,
 	},
 	{
-		title: "Transportes",
+		title: "Manifestos",
+		url: "/statements",
+		icon: ListCheck,
+	},
+	{
+		title: "Movimentações",
 		url: "/jobs",
 		icon: ArrowLeftRight,
 	},
@@ -27,19 +34,24 @@ export const itemsMenu = [
 		icon: Construction,
 	},
 	{
+		title: "Materiais",
+		url: "/materials",
+		icon: CirclePile,
+	},
+	{
 		title: "Veículos",
 		url: "/cars",
 		icon: Truck,
 	},
 	{
-		title: "Manifestos",
-		url: "/statements",
-		icon: ListCheck,
-	},
-	{
 		title: "Usuários",
 		url: "/users",
 		icon: UserCircle2,
+	},
+	{
+		title: "Pagamentos",
+		url: "/payments",
+		icon: CircleDollarSign,
 	},
 	{
 		title: "Relatórios",
