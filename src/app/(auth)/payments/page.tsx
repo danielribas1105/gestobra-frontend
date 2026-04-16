@@ -2,6 +2,8 @@
 
 import TitlePage from "@/components/layout/title-page"
 import { useState } from "react"
+import ListPayments from "./components/list-payments"
+import PaymentModal from "./components/payment-modal"
 
 export default function PaymentsPage() {
 	const [open, setOpen] = useState(false)
@@ -14,8 +16,10 @@ export default function PaymentsPage() {
 				textTooltip="Adicionar pagamento"
 				onAdd={() => setOpen(true)}
 			/>
-			<div className="flex justify-center">{/*< ListCars /> */}</div>
-			{/* <CarModal open={open} onOpenChange={setOpen} /> */}
+			<div className="flex justify-center">
+				<ListPayments />
+			</div>
+			<PaymentModal open={open} onOpenChange={setOpen} />
 		</section>
 	)
 }

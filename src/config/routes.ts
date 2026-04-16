@@ -39,4 +39,10 @@ export const routes = {
 		update: (id: string) => `/materials/${id}`,
 		delete: (id: string) => `/materials/${id}`,
 	},
+	payments: {
+		list: "/payments",
+		create: "/payments",
+		update: (id: string) => `/payments/${id}`,
+		delete: (id: string) => `/payments/${id}`,
+	},
 }
