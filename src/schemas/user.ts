@@ -2,6 +2,8 @@ import z from "zod"
 
 import validateCPF from "@/utils/validate-cpf"
 
+export const UserProfileEnum = z.enum(["admin", "operator", "driver"])
+
 export const UserSchema = z.object({
 	id: z.uuid(),
 	name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
@@ -24,10 +26,10 @@ export const UserSchema = z.object({
 		.nullable()
 		.optional(),
 	email_verified: z.boolean(),
-	profile: z.string(),
-	active: z.boolean(),
-	created_at: z.coerce.date().nullable(),
-	updated_at: z.coerce.date().nullable(),
+	profile: UserProfileEnum,
+	active: z.boolean().optional(),
+	created_at: z.coerce.date().nullable().optional(),
+	updated_at: z.coerce.date().nullable().optional(),
 	image: z.string().nullable().optional(),
 })
 
