@@ -1,19 +1,31 @@
 "use client"
 
-import { useTransition } from "react"
-
+import { Button } from "@/components/ui/button"
+import { LogOut } from "lucide-react"
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
 import { logout } from "@/lib/auth"
 
 export default function LogoutButton() {
-	const [pending, startTransition] = useTransition()
+	const handleLogout = () => {
+		if (confirm("Deseja realmente sair?")) {
+			logout()
+		}
+	}
 
 	return (
-		<button
-			onClick={() => startTransition(() => logout())}
-			disabled={pending}
-			className="text-sm font-medium text-gray-500 hover:text-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-		>
-			{pending ? "Saindo…" : "Sair"}
-		</button>
+		<Tooltip>
+			<TooltipTrigger asChild>
+				<Button
+					variant="destructive"
+					size="sm"
+					disabled={false}
+					onClick={handleLogout}
+				>
+					<LogOut />
+					Sair
+				</Button>
+			</TooltipTrigger>
+			<TooltipContent>Sair da conta</TooltipContent>
+		</Tooltip>
 	)
 }

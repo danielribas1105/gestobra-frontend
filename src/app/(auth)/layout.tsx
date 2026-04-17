@@ -5,6 +5,8 @@ import {
 	SidebarProvider,
 	SidebarTrigger,
 } from "@/components/ui/sidebar"
+import AddJobButton from "@/components/add-job-btn"
+import LogoutButton from "@/components/logout-button"
 
 export default function RootLayout({
 	children,
@@ -15,10 +17,14 @@ export default function RootLayout({
 		<SidebarProvider>
 			<AppSidebar />
 			<SidebarInset>
-				<header>
-					<SidebarTrigger />
-					<PageLayout>{children}</PageLayout>
+				<header className="flex justify-between items-center py-2 px-4">
+					<SidebarTrigger color="#51a41e" />
+					<div className="flex items-center gap-2">
+						<AddJobButton />
+						<LogoutButton />
+					</div>
 				</header>
+				<PageLayout>{children}</PageLayout>
 			</SidebarInset>
 		</SidebarProvider>
 	)

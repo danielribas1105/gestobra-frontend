@@ -58,11 +58,6 @@ export const itemsMenu = [
 		url: "/reports",
 		icon: FileText,
 	},
-	{
-		title: "Logout",
-		url: "/",
-		icon: LogOut,
-	},
 ]
 
 // Menu landing page

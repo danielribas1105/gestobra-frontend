@@ -6,5 +6,7 @@ interface PageLayoutProps {
 }
 
 export default function PageLayout({ className, children }: PageLayoutProps) {
-	return <main className={`${className ?? ""} w-full pl-6 pr-16 py-4`}>{children}</main>
+	return (
+		<main className={`${className ?? ""} w-full py-2 px-4`}>{children}</main>
+	)
 }
