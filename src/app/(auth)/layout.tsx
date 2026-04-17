@@ -1,6 +1,10 @@
 import { AppSidebar } from "@/components/ui/app-sidebar"
 import PageLayout from "@/components/layout/page-layout"
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import {
+	SidebarInset,
+	SidebarProvider,
+	SidebarTrigger,
+} from "@/components/ui/sidebar"
 
 export default function RootLayout({
 	children,
@@ -10,8 +14,12 @@ export default function RootLayout({
 	return (
 		<SidebarProvider>
 			<AppSidebar />
-			<SidebarTrigger />
-			<PageLayout>{children}</PageLayout>
+			<SidebarInset>
+				<header>
+					<SidebarTrigger />
+					<PageLayout>{children}</PageLayout>
+				</header>
+			</SidebarInset>
 		</SidebarProvider>
 	)
 }
