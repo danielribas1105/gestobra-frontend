@@ -23,7 +23,7 @@ export default function WorkCard({ work }: WorkCardProps) {
 			>
 				<div className="relative w-full h-36 flex justify-center overflow-hidden">
 					<Image
-						src={work.image_url}
+						src={work.image ?? "/no-image.jpg"}
 						alt={`Foto da obra ${work.name}`}
 						fill
 						className="object-cover rounded-lg"

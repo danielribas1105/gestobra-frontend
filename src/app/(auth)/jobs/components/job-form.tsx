@@ -1,5 +1,15 @@
 "use client"
 
+import { useState } from "react"
+
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select"
+
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -11,11 +21,14 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { useJobMutations } from "@/hooks/jobs/use-job-mutations"
+import { useWorks } from "@/hooks/works/use-works"
+import { useCars } from "@/hooks/cars/use-cars"
+import { useUsers } from "@/hooks/users/use-users"
+import { useStatements } from "@/hooks/statements/use-statements"
 import { Job } from "@/schemas/job"
-import { useState } from "react"
 
 interface JobFormProps {
 	job?: Job
@@ -27,13 +40,26 @@ export default function JobForm({ job, onSuccess }: JobFormProps) {
 
 	const { createJob, updateJob, deleteJob } = useJobMutations()
 
+	const { data: works = [] } = useWorks()
+	const { data: cars = [] } = useCars()
+	const { data: users = [] } = useUsers()
+	const { data: statements = [] } = useStatements()
+
+	const drivers = users.filter((u) => u.profile === "driver")
+
 	const [form, setForm] = useState({
 		statement_id: job?.statement_id || "",
-		destiny_id: job?.destiny_id || "",
+		origin: job?.origin || "",
+		destiny: job?.destiny || "",
+		car_id: job?.car_id || "",
+		driver_id: job?.driver_id || "",
 	})
 
+	// 🔥 remove origem da lista de destino
+	const filteredDestinies = works.filter((w) => w.id !== form.origin)
+
 	// ✏️ CREATE / UPDATE
-	async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+	async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
 		e.preventDefault()
 
 		try {
@@ -65,67 +91,126 @@ export default function JobForm({ job, onSuccess }: JobFormProps) {
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-5">
-			{/* Inputs */}
-			<Input
-				placeholder="Nome"
+			{/* STATEMENT */}
+			<Select
 				value={form.statement_id}
-				onChange={(e) => setForm({ ...form, statement_id: e.target.value })}
-				disabled={loading}
-			/>
+				onValueChange={(v) => setForm({ ...form, statement_id: v })}
+			>
+				<SelectTrigger>
+					<SelectValue placeholder="Selecione o statement" />
+				</SelectTrigger>
+				<SelectContent>
+					{statements.map((s) => (
+						<SelectItem key={s.id} value={s.id}>
+							{s.code}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
 
-			<Input
-				placeholder="Descrição"
-				value={form.destiny_id}
-				onChange={(e) => setForm({ ...form, destiny_id: e.target.value })}
-				disabled={loading}
-			/>
+			{/* ORIGIN */}
+			<Select
+				value={form.origin}
+				onValueChange={(v) =>
+					setForm({
+						...form,
+						origin: v,
+						destiny: v === form.destiny ? "" : form.destiny, // 🔥 evita conflito
+					})
+				}
+			>
+				<SelectTrigger>
+					<SelectValue placeholder="Origem" />
+				</SelectTrigger>
+				<SelectContent>
+					{works.map((w) => (
+						<SelectItem key={w.id} value={w.id}>
+							{w.name}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
 
-			{/* Actions */}
+			{/* DESTINY */}
+			<Select
+				value={form.destiny}
+				onValueChange={(v) => setForm({ ...form, destiny: v })}
+			>
+				<SelectTrigger>
+					<SelectValue placeholder="Destino" />
+				</SelectTrigger>
+				<SelectContent>
+					{filteredDestinies.map((w) => (
+						<SelectItem key={w.id} value={w.id}>
+							{w.name}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
+
+			{/* CAR */}
+			<Select
+				value={form.car_id}
+				onValueChange={(v) => setForm({ ...form, car_id: v })}
+			>
+				<SelectTrigger>
+					<SelectValue placeholder="Veículo" />
+				</SelectTrigger>
+				<SelectContent>
+					{cars.map((c) => (
+						<SelectItem key={c.id} value={c.id}>
+							{c.model}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
+
+			{/* DRIVER */}
+			<Select
+				value={form.driver_id}
+				onValueChange={(v) => setForm({ ...form, driver_id: v })}
+			>
+				<SelectTrigger>
+					<SelectValue placeholder="Motorista" />
+				</SelectTrigger>
+				<SelectContent>
+					{drivers.map((d) => (
+						<SelectItem key={d.id} value={d.id}>
+							{d.name}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
+
+			{/* ACTIONS */}
 			<div className="flex justify-between items-center">
-				{/* 🔥 DELETE COM MODAL */}
 				{isEdit && (
 					<AlertDialog>
 						<AlertDialogTrigger asChild>
-							<Button type="button" variant="destructive" disabled={loading}>
-								{deleteJob.isPending ? "Excluindo..." : "Excluir"}
-							</Button>
+							<Button variant="destructive">Excluir</Button>
 						</AlertDialogTrigger>
 
 						<AlertDialogContent>
 							<AlertDialogHeader>
-								<AlertDialogTitle>
-									Você quer realmente excluir?
-								</AlertDialogTitle>
+								<AlertDialogTitle>Excluir job?</AlertDialogTitle>
 								<AlertDialogDescription>
-									Essa ação não pode ser desfeita. Isso irá excluir
-									permanentemente o trabalho <strong>{job?.origin_id}</strong>.
+									Essa ação não pode ser desfeita.
 								</AlertDialogDescription>
 							</AlertDialogHeader>
 
 							<AlertDialogFooter>
 								<AlertDialogCancel>Cancelar</AlertDialogCancel>
-
-								<AlertDialogAction
-									onClick={handleDelete}
-									className="bg-red-600 hover:bg-red-700"
-								>
-									Sim, excluir
+								<AlertDialogAction onClick={handleDelete}>
+									Confirmar
 								</AlertDialogAction>
 							</AlertDialogFooter>
 						</AlertDialogContent>
 					</AlertDialog>
 				)}
 
-				{/* SUBMIT */}
-				<div className="ml-auto">
-					<Button type="submit" disabled={loading}>
-						{createJob.isPending || updateJob.isPending
-							? "Salvando..."
-							: isEdit
-								? "Atualizar"
-								: "Criar"}
-					</Button>
-				</div>
+				<Button type="submit" disabled={loading} className="ml-auto">
+					{loading ? "Salvando..." : isEdit ? "Atualizar" : "Criar"}
+				</Button>
 			</div>
 		</form>
 	)

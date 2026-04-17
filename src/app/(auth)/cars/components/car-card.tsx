@@ -1,6 +1,5 @@
-import { Info } from "lucide-react"
 import Image from "next/image"
-
+import { Badge } from "@/components/ui/badge"
 import { Car } from "@/schemas/car"
 import { useState } from "react"
 import CarModal from "./car-modal"
@@ -24,7 +23,7 @@ export default function CarCard({ car }: CarCardProps) {
 			>
 				<div className="relative w-full h-36 flex justify-center overflow-hidden">
 					<Image
-						src={car.image}
+						src={car.image ?? "/no-image.jpg"}
 						alt={`Foto do veículo ${car.model}`}
 						fill
 						className="object-cover rounded-lg"
@@ -38,14 +37,12 @@ export default function CarCard({ car }: CarCardProps) {
 					<dd>Código: {car.id}</dd>
 				</dl>
 				<footer className="flex items-center gap-1">
-					<Info
-						size={16}
-						color={car.active ? "#00FF00" : "#FF0000"}
-						aria-hidden="true"
-					/>
-					<span className="text-sm uppercase">
+					<Badge
+						variant={car.active ? "default" : "destructive"}
+						className="ml-auto"
+					>
 						{car.active ? "Ativo" : "Inativo"}
-					</span>
+					</Badge>
 				</footer>
 			</article>
 			<CarModal open={open} onOpenChange={setOpen} car={car} />

@@ -10,8 +10,8 @@ export const JobStatusEnum = z.enum([
 export const JobSchema = z.object({
 	id: z.uuid(),
 	statement_id: z.uuid(),
-	origin_id: z.uuid(),
-	destiny_id: z.uuid(),
+	origin: z.uuid(),
+	destiny: z.uuid(),
 	car_id: z.uuid(),
 	driver_id: z.uuid(),
 	created_by: z.uuid(),
