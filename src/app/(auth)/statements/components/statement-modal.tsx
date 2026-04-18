@@ -1,6 +1,6 @@
 "use client"
 import ModalWrapper from "@/components/layout/modal-wrapper"
-import { Statement } from "@/schemas/statements"
+import { Statement } from "@/schemas/statement"
 import StatementForm from "./statement-form"
 
 interface StatementModalProps {

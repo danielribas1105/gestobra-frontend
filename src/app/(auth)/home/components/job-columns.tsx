@@ -7,110 +7,118 @@ export const JobColumns: ColumnDef<Job>[] = [
 		accessorKey: "created_at",
 		header: () => <div className="text-center">Data</div>,
 		cell: ({ row }) => {
-			const date = row.getValue("created_at") as Date
+			const raw = row.getValue("created_at") as string
+			const date = new Date(raw)
 			return (
-				<span className="text-[12px] text-muted-foreground">
+				<div className="text-[12px] text-center text-muted-foreground">
 					{date.toLocaleDateString("pt-BR")}
-				</span>
+				</div>
 			)
 		},
 	},
 	{
-		accessorKey: "statement_id",
+		accessorKey: "statement_code",
 		header: () => <div className="text-center">Manifesto</div>,
 		cell: ({ row }) => {
 			return (
-				<span className="text-[12px] text-muted-foreground">
-					{row.getValue("statement_id")}
-				</span>
+				<div className="text-[12px] text-center text-muted-foreground">
+					{row.getValue("statement_code")}
+				</div>
 			)
 		},
 	},
-	/* {
-		accessorKey: "origin",
+	{
+		accessorKey: "material_name",
+		header: () => <div className="text-center">Material</div>,
+		cell: ({ row }) => {
+			return (
+				<div className="text-[12px] text-center text-muted-foreground">
+					{row.getValue("material_name")}
+				</div>
+			)
+		},
+	},
+	{
+		accessorKey: "m3",
 		header: () => <div className="text-center">M3</div>,
 		cell: ({ row }) => {
 			return (
-				<span className="text-[12px] text-muted-foreground">
-					{row.getValue("origin")}
-				</span>
+				<div className="text-[12px] text-center text-muted-foreground">
+					{row.getValue("m3")}
+				</div>
 			)
 		},
 	},
 	{
-		accessorKey: "origin",
-		header: () => <div className="text-center">Volume</div>,
-		cell: ({ row }) => {
-			return (
-				<span className="text-[12px] text-muted-foreground">
-					{row.getValue("origin")}
-				</span>
-			)
-		},
-	},
-	{
-		accessorKey: "origin",
+		id: "value_m3",
 		header: () => <div className="text-center">À pagar</div>,
 		cell: ({ row }) => {
+			const m3 = row.original.m3 as number
+			const value_m3 = row.original.value_m3 as number
+			const total = m3 * value_m3
+
 			return (
-				<span className="text-[12px] text-muted-foreground">
-					{row.getValue("origin")}
-				</span>
+				<div className="text-[12px] text-center text-muted-foreground">
+					{total.toLocaleString("pt-BR", {
+						style: "currency",
+						currency: "BRL",
+					})}
+				</div>
 			)
 		},
-	}, */
+	},
 	{
-		accessorKey: "origin",
+		accessorKey: "origin_name",
 		header: () => <div className="text-center">Origem</div>,
 		cell: ({ row }) => {
 			return (
-				<span className="text-[12px] text-muted-foreground">
-					{row.getValue("origin")}
-				</span>
+				<div className="text-[12px] text-center text-muted-foreground">
+					{row.getValue("origin_name")}
+				</div>
 			)
 		},
 	},
 	{
-		accessorKey: "destiny",
+		accessorKey: "destiny_name",
 		header: () => <div className="text-center">Destino</div>,
 		cell: ({ row }) => {
 			return (
-				<span className="text-[12px] text-muted-foreground">
-					{row.getValue("destiny")}
-				</span>
+				<div className="text-[12px] text-center text-muted-foreground">
+					{row.getValue("destiny_name")}
+				</div>
 			)
 		},
 	},
 	{
-		accessorKey: "car_id",
+		accessorKey: "car_license",
 		header: () => <div className="text-center">Veículo</div>,
 		cell: ({ row }) => {
 			return (
-				<span className="text-[12px] text-muted-foreground">
-					{row.getValue("car_id")}
-				</span>
+				<div className="text-[12px] text-center text-muted-foreground">
+					{row.getValue("car_license")}
+				</div>
 			)
 		},
 	},
 	{
-		accessorKey: "driver_id",
+		accessorKey: "driver_name",
 		header: () => <div className="text-center">Motorista</div>,
 		cell: ({ row }) => {
 			return (
-				<span className="text-[12px] text-muted-foreground">
-					{row.getValue("driver_id")}
-				</span>
+				<div className="text-[12px] text-center text-muted-foreground">
+					{row.getValue("driver_name")}
+				</div>
 			)
 		},
 	},
 	{
-		accessorKey: "created_by",
+		accessorKey: "creator_name",
 		header: () => <div className="text-center">Criado por</div>,
 		cell: ({ row }) => {
 			return (
-				<span className="text-[12px] text-muted-foreground">
-					{row.getValue("created_by")}
-				</span>
+				<div className="text-[12px] text-center text-muted-foreground">
+					{row.getValue("creator_name")}
+				</div>
 			)
 		},
 	},
@@ -126,11 +134,11 @@ export const JobColumns: ColumnDef<Job>[] = [
 			}
 
 			return (
-				<span className="flex justify-center">
+				<div className="flex justify-center">
 					<span
 						className={`inline-block w-3 h-3 rounded-full ${statusColors[status] || "bg-blue-500"}`}
 					/>
-				</span>
+				</div>
 			)
 		},
 	},

@@ -1,4 +1,4 @@
-import { Statement } from "@/schemas/statements"
+import { Statement } from "@/schemas/statement"
 import { useStatements } from "@/hooks/statements/use-statements"
 import StatementCard from "./statement-card"
 
