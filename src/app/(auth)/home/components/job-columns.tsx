@@ -128,15 +128,15 @@ export const JobColumns: ColumnDef<Job>[] = [
 		cell: ({ row }) => {
 			const status = row.getValue("status") as string
 			const statusColors: Record<string, string> = {
-				pending: "bg-yellow-400",
-				approved: "bg-green-500",
-				rejected: "bg-red-500",
+				in_progress: "bg-blue-500",
+				completed: "bg-green-500",
+				canceled: "bg-red-500",
 			}
 
 			return (
 				<div className="flex justify-center">
 					<span
-						className={`inline-block w-3 h-3 rounded-full ${statusColors[status] || "bg-blue-500"}`}
+						className={`inline-block w-3 h-3 rounded-full ${statusColors[status] || "bg-yellow-400"}`}
 					/>
 				</div>
 			)

@@ -53,6 +53,7 @@ export default function JobForm({ job, onSuccess }: JobFormProps) {
 		destiny: job?.destiny || "",
 		car_id: job?.car_id || "",
 		driver_id: job?.driver_id || "",
+		status: job?.status || "pending",
 	})
 
 	// 🔥 remove origem da lista de destino
@@ -88,6 +89,14 @@ export default function JobForm({ job, onSuccess }: JobFormProps) {
 
 	const loading =
 		createJob.isPending || updateJob.isPending || deleteJob.isPending
+
+	// Define status options as an object
+	const statusOptions = {
+		pending: "Pending",
+		in_progress: "In Progress",
+		completed: "Completed",
+		canceled: "Cancelled",
+	}
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-5">
@@ -177,6 +186,28 @@ export default function JobForm({ job, onSuccess }: JobFormProps) {
 					{drivers.map((d) => (
 						<SelectItem key={d.id} value={d.id}>
 							{d.name}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
+
+			{/* STATUS */}
+			<Select
+				value={form.status}
+				onValueChange={(v) =>
+					setForm({
+						...form,
+						status: v as "pending" | "in_progress" | "completed" | "canceled",
+					})
+				}
+			>
+				<SelectTrigger>
+					<SelectValue placeholder="Status" />
+				</SelectTrigger>
+				<SelectContent>
+					{Object.entries(statusOptions).map(([key, value]) => (
+						<SelectItem key={key} value={key}>
+							{value}
 						</SelectItem>
 					))}
 				</SelectContent>
