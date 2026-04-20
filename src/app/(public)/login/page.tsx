@@ -1,34 +1,24 @@
+import Image from "next/image"
 import LoginForm from "./components/login-form"
+import logo from "@/../public/logo/logo-gestobra-512x512.png"
 
 export default function LoginPage() {
 	return (
-		<main className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-			<div className="w-full max-w-md space-y-8">
+		<main className="min-h-screen flex items-center justify-center bg-muted px-4">
+			<div className="w-full max-w-md space-y-6">
 				{/* Header */}
 				<div className="text-center">
-					<div className="mx-auto w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center mb-4">
-						<svg
-							className="w-7 h-7 text-white"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-							/>
-						</svg>
+					<div className="mx-auto w-52 h-52 bg-transparent rounded-xl flex items-center justify-center mb-1">
+						<Image src={logo} alt="Logo" />
 					</div>
-					<h1 className="text-3xl font-bold text-gray-900">Bem-vindo</h1>
-					<p className="mt-2 text-sm text-gray-500">
+					<h1 className="text-3xl font-bold text-zinc-700">Bem-vindo</h1>
+					<p className="mt-2 text-sm text-zinc-500">
 						Entre com sua conta para continuar
 					</p>
 				</div>
 
 				{/* Form Card */}
-				<div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+				<div className="bg-white rounded-2xl shadow-sm border border-zinc-200 px-8 py-4">
 					<LoginForm />
 				</div>
 			</div>
