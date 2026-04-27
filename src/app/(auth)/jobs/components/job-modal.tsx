@@ -22,7 +22,11 @@ export default function JobModal({ open, onOpenChange, job }: JobModalProps) {
 					: "Preencha as informações do novo transporte e clique em salvar"
 			}
 		>
-			<JobForm job={job} onSuccess={() => onOpenChange(false)} />
+			<JobForm
+				job={job}
+				onSuccess={() => onOpenChange(false)}
+				onCancel={() => onOpenChange(false)}
+			/>
 		</ModalWrapper>
 	)
 }

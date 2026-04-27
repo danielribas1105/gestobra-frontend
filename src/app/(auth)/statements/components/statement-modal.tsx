@@ -28,6 +28,7 @@ export default function StatementModal({
 			<StatementForm
 				statement={statement}
 				onSuccess={() => onOpenChange(false)}
+				onCancel={() => onOpenChange(false)}
 			/>
 		</ModalWrapper>
 	)

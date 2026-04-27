@@ -14,6 +14,7 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	SidebarSeparator,
 } from "@/components/ui/sidebar"
 import { itemsMenu } from "@/constants/ItensMenu"
 import Footer from "../layout/footer"
@@ -56,18 +57,23 @@ export function AppSidebar() {
 						</SidebarMenu>
 					</SidebarGroupContent>
 				</SidebarGroup>
+				<SidebarSeparator />
+				<SidebarGroup>
+					<SidebarGroupContent>
+						<SidebarMenu>
+							<SidebarMenuItem>
+								<SidebarMenuButton asChild>
+									<Link href="/profile">
+										<User color="#51a41e" />
+										<span>Meu Perfil</span>
+									</Link>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+						</SidebarMenu>
+					</SidebarGroupContent>
+				</SidebarGroup>
 			</SidebarContent>
 			<SidebarFooter>
-				<SidebarMenu>
-					<SidebarMenuItem>
-						<SidebarMenuButton asChild>
-							<Link href="/profile">
-								<User color="#51a41e" />
-								<span>Meu Perfil</span>
-							</Link>
-						</SidebarMenuButton>
-					</SidebarMenuItem>
-				</SidebarMenu>
 				<div className="group-data-[collapsible=icon]:hidden">
 					<Footer />
 				</div>

@@ -26,7 +26,11 @@ export default function UserModal({
 					: "Preencha as informações do novo usuário e clique em salvar"
 			}
 		>
-			<UserForm user={user} onSuccess={() => onOpenChange(false)} />
+			<UserForm
+				user={user}
+				onSuccess={() => onOpenChange(false)}
+				onCancel={() => onOpenChange(false)}
+			/>
 		</ModalWrapper>
 	)
 }

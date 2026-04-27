@@ -33,9 +33,10 @@ import { Job } from "@/schemas/job"
 interface JobFormProps {
 	job?: Job
 	onSuccess?: () => void
+	onCancel?: () => void
 }
 
-export default function JobForm({ job, onSuccess }: JobFormProps) {
+export default function JobForm({ job, onSuccess, onCancel }: JobFormProps) {
 	const isEdit = !!job
 
 	const { createJob, updateJob, deleteJob } = useJobMutations()
@@ -239,9 +240,20 @@ export default function JobForm({ job, onSuccess }: JobFormProps) {
 					</AlertDialog>
 				)}
 
-				<Button type="submit" disabled={loading} className="ml-auto">
-					{loading ? "Salvando..." : isEdit ? "Atualizar" : "Criar"}
-				</Button>
+				{/* SUBMIT OR CANCEL */}
+				<div className="flex items-center gap-2 ml-auto">
+					<Button
+						type="button"
+						variant="outline"
+						disabled={loading}
+						onClick={onCancel}
+					>
+						Cancelar
+					</Button>
+					<Button type="submit" disabled={loading} className="ml-auto">
+						{loading ? "Salvando..." : isEdit ? "Atualizar" : "Criar"}
+					</Button>
+				</div>
 			</div>
 		</form>
 	)

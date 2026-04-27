@@ -28,6 +28,7 @@ import { useState } from "react"
 interface StatementFormProps {
 	statement?: Statement
 	onSuccess?: () => void
+	onCancel?: () => void
 }
 
 const STATUS_LABELS: Record<
@@ -44,6 +45,7 @@ const STATUS_LABELS: Record<
 export default function StatementForm({
 	statement,
 	onSuccess,
+	onCancel,
 }: StatementFormProps) {
 	const isEdit = !!statement
 
@@ -196,7 +198,16 @@ export default function StatementForm({
 					</AlertDialog>
 				)}
 
-				<div className="ml-auto">
+				{/* SUBMIT OR CANCEL */}
+				<div className="flex items-center gap-2 ml-auto">
+					<Button
+						type="button"
+						variant="outline"
+						disabled={loading}
+						onClick={onCancel}
+					>
+						Cancelar
+					</Button>
 					<Button type="submit" disabled={loading}>
 						{createStatement.isPending || updateStatement.isPending
 							? "Salvando..."

@@ -26,7 +26,11 @@ export default function WorkModal({
 					: "Preencha as informações da nova obra e clique em salvar"
 			}
 		>
-			<WorkForm work={work} onSuccess={() => onOpenChange(false)} />
+			<WorkForm
+				work={work}
+				onSuccess={() => onOpenChange(false)}
+				onCancel={() => onOpenChange(false)}
+			/>
 		</ModalWrapper>
 	)
 }

@@ -20,9 +20,10 @@ import { useState } from "react"
 interface WorkFormProps {
 	work?: Work
 	onSuccess?: () => void
+	onCancel?: () => void
 }
 
-export default function WorkForm({ work, onSuccess }: WorkFormProps) {
+export default function WorkForm({ work, onSuccess, onCancel }: WorkFormProps) {
 	const isEdit = !!work
 
 	const { createWork, updateWork, deleteWork } = useWorkMutations()
@@ -116,8 +117,16 @@ export default function WorkForm({ work, onSuccess }: WorkFormProps) {
 					</AlertDialog>
 				)}
 
-				{/* SUBMIT */}
-				<div className="ml-auto">
+				{/* SUBMIT OR CANCEL */}
+				<div className="flex items-center gap-2 ml-auto">
+					<Button
+						type="button"
+						variant="outline"
+						disabled={loading}
+						onClick={onCancel}
+					>
+						Cancelar
+					</Button>
 					<Button type="submit" disabled={loading}>
 						{createWork.isPending || updateWork.isPending
 							? "Salvando..."

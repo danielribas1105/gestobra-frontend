@@ -22,7 +22,11 @@ export default function CarModal({ open, onOpenChange, car }: CarModalProps) {
 					: "Preencha as informações do novo veículo e clique em salvar"
 			}
 		>
-			<CarForm car={car} onSuccess={() => onOpenChange(false)} />
+			<CarForm
+				car={car}
+				onSuccess={() => onOpenChange(false)}
+				onCancel={() => onOpenChange(false)}
+			/>
 		</ModalWrapper>
 	)
 }

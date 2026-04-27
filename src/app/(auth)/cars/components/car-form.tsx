@@ -28,9 +28,10 @@ import { useState } from "react"
 interface CarFormProps {
 	car?: Car
 	onSuccess?: () => void
+	onCancel?: () => void
 }
 
-export default function CarForm({ car, onSuccess }: CarFormProps) {
+export default function CarForm({ car, onSuccess, onCancel }: CarFormProps) {
 	const isEdit = !!car
 	const { createCar, updateCar, deleteCar } = useCarMutations()
 	const [openAlert, setOpenAlert] = useState(false)
@@ -40,7 +41,7 @@ export default function CarForm({ car, onSuccess }: CarFormProps) {
 		license: car?.license ?? "",
 		manufacture: car?.manufacture?.toString() ?? "",
 		km: car?.km?.toString() ?? "",
-		fuel: car?.fuel ?? "",
+		fuel: car?.fuel || "diesel",
 		strength: car?.strength ?? "",
 		capacity: car?.capacity ?? "",
 		versatility: car?.versatility ?? "",
@@ -226,7 +227,16 @@ export default function CarForm({ car, onSuccess }: CarFormProps) {
 					</AlertDialog>
 				)}
 
-				<div className="ml-auto">
+				{/* SUBMIT OR CANCEL */}
+				<div className="flex items-center gap-2 ml-auto">
+					<Button
+						type="button"
+						variant="outline"
+						disabled={loading}
+						onClick={onCancel}
+					>
+						Cancelar
+					</Button>
 					<Button type="submit" disabled={loading}>
 						{createCar.isPending || updateCar.isPending
 							? "Salvando..."

@@ -28,9 +28,10 @@ import {
 interface UserFormProps {
 	user?: User
 	onSuccess?: () => void
+	onCancel?: () => void
 }
 
-export default function UserForm({ user, onSuccess }: UserFormProps) {
+export default function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
 	const isEdit = !!user
 
 	const { createUser, updateUser, deleteUser } = useUserMutations()
@@ -210,8 +211,16 @@ export default function UserForm({ user, onSuccess }: UserFormProps) {
 					</AlertDialog>
 				)}
 
-				{/* SUBMIT */}
-				<div className="ml-auto">
+				{/* SUBMIT OR CANCEL */}
+				<div className="flex items-center gap-2 ml-auto">
+					<Button
+						type="button"
+						variant="outline"
+						disabled={loading}
+						onClick={onCancel}
+					>
+						Cancelar
+					</Button>
 					<Button type="submit" disabled={loading}>
 						{createUser.isPending || updateUser.isPending
 							? "Salvando..."

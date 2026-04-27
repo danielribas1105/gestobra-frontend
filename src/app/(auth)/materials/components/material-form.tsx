@@ -132,7 +132,7 @@ export default function MaterialForm({
 					</AlertDialog>
 				)}
 
-				{/* SUBMIT */}
+				{/* SUBMIT OR CANCEL */}
 				<div className="flex items-center gap-2 ml-auto">
 					<Button
 						type="button"

@@ -13,6 +13,13 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select"
 import { usePaymentMutations } from "@/hooks/payments/use-payment-mutations"
 import { Payment } from "@/schemas/payment"
 import { useState } from "react"
@@ -20,9 +27,14 @@ import { useState } from "react"
 interface PaymentFormProps {
 	payment?: Payment
 	onSuccess?: () => void
+	onCancel?: () => void
 }
 
-export default function PaymentForm({ payment, onSuccess }: PaymentFormProps) {
+export default function PaymentForm({
+	payment,
+	onSuccess,
+	onCancel,
+}: PaymentFormProps) {
 	const isEdit = !!payment
 
 	const { createPayment, updatePayment, deletePayment } = usePaymentMutations()
@@ -32,6 +44,10 @@ export default function PaymentForm({ payment, onSuccess }: PaymentFormProps) {
 		job_id: payment?.job_id || "",
 		status: payment?.status || "pending",
 	})
+
+	function handleChange(field: keyof typeof form, value: string) {
+		setForm((f) => ({ ...f, [field]: value }))
+	}
 
 	// ✏️ CREATE / UPDATE
 	async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
@@ -83,12 +99,20 @@ export default function PaymentForm({ payment, onSuccess }: PaymentFormProps) {
 				disabled={loading}
 			/>
 
-			<Input
-				placeholder="Status"
+			<Select
 				value={form.status}
-				onChange={(e) => setForm({ ...form, status: e.target.value })}
+				onValueChange={(v) => handleChange("status", v)}
 				disabled={loading}
-			/>
+			>
+				<SelectTrigger>
+					<SelectValue placeholder="Status" />
+				</SelectTrigger>
+				<SelectContent>
+					<SelectItem value="pending">Pendente</SelectItem>
+					<SelectItem value="paid">Pago</SelectItem>
+					<SelectItem value="canceled">Cancelado</SelectItem>
+				</SelectContent>
+			</Select>
 
 			{/* Actions */}
 			<div className="flex justify-between items-center">
@@ -126,8 +150,16 @@ export default function PaymentForm({ payment, onSuccess }: PaymentFormProps) {
 					</AlertDialog>
 				)}
 
-				{/* SUBMIT */}
-				<div className="ml-auto">
+				{/* SUBMIT OR CANCEL */}
+				<div className="flex items-center gap-2 ml-auto">
+					<Button
+						type="button"
+						variant="outline"
+						disabled={loading}
+						onClick={onCancel}
+					>
+						Cancelar
+					</Button>
 					<Button type="submit" disabled={loading}>
 						{createPayment.isPending || updatePayment.isPending
 							? "Salvando..."

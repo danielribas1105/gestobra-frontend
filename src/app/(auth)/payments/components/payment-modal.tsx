@@ -26,7 +26,11 @@ export default function PaymentModal({
 					: "Preencha as informações do novo pagamento e clique em salvar"
 			}
 		>
-			<PaymentForm payment={payment} onSuccess={() => onOpenChange(false)} />
+			<PaymentForm
+				payment={payment}
+				onSuccess={() => onOpenChange(false)}
+				onCancel={() => onOpenChange(false)}
+			/>
 		</ModalWrapper>
 	)
 }
