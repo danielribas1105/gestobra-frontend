@@ -19,8 +19,6 @@ export default function HomePage() {
 		}
 	}, [loading, user])
 
-	console.log("jobs", jobs)
-
 	if (loading) {
 		return (
 			<section className="flex flex-col gap-1">

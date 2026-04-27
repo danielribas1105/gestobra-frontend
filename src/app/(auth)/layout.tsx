@@ -8,6 +8,7 @@ import {
 import AddJobButton from "@/components/add-job-btn"
 import LogoutButton from "@/components/logout-button"
 import AddStatementButton from "@/components/add-statment-btn"
+import OpenMapsButton from "@/components/maps/btn-open-maps"
 
 export default function RootLayout({
 	children,
@@ -21,6 +22,7 @@ export default function RootLayout({
 				<header className="flex justify-between items-center py-2 px-4">
 					<SidebarTrigger color="#51a41e" />
 					<div className="flex items-center gap-2">
+						<OpenMapsButton />
 						<AddStatementButton />
 						<AddJobButton />
 						<LogoutButton />
