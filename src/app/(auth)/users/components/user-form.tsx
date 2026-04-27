@@ -216,12 +216,13 @@ export default function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
 					<Button
 						type="button"
 						variant="outline"
+						className="cursor-pointer"
 						disabled={loading}
 						onClick={onCancel}
 					>
 						Cancelar
 					</Button>
-					<Button type="submit" disabled={loading}>
+					<Button type="submit" className="cursor-pointer" disabled={loading}>
 						{createUser.isPending || updateUser.isPending
 							? "Salvando..."
 							: isEdit
