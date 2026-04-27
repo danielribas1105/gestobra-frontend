@@ -26,7 +26,11 @@ export default function MaterialModal({
 					: "Preencha as informações do novo material e clique em salvar"
 			}
 		>
-			<MaterialForm material={material} onSuccess={() => onOpenChange(false)} />
+			<MaterialForm
+				material={material}
+				onSuccess={() => onOpenChange(false)}
+				onCancel={() => onOpenChange(false)}
+			/>
 		</ModalWrapper>
 	)
 }

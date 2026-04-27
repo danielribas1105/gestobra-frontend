@@ -14,19 +14,19 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useMaterialMutations } from "@/hooks/materials/use-material-mutations"
-import { useWorkMutations } from "@/hooks/works/use-work-mutations"
 import { Material } from "@/schemas/material"
-import { Work } from "@/schemas/work"
 import { useState } from "react"
 
 interface MaterialFormProps {
 	material?: Material
 	onSuccess?: () => void
+	onCancel?: () => void
 }
 
 export default function MaterialForm({
 	material,
 	onSuccess,
+	onCancel,
 }: MaterialFormProps) {
 	const isEdit = !!material
 
@@ -36,6 +36,7 @@ export default function MaterialForm({
 	const [form, setForm] = useState({
 		name: material?.name || "",
 		description: material?.description || "",
+		value_m3: material?.value_m3 || 0,
 	})
 
 	// ✏️ CREATE / UPDATE
@@ -88,6 +89,13 @@ export default function MaterialForm({
 				disabled={loading}
 			/>
 
+			<Input
+				placeholder="Valor m3"
+				value={form.value_m3}
+				onChange={(e) => setForm({ ...form, value_m3: Number(e.target.value) })}
+				disabled={loading}
+			/>
+
 			{/* Actions */}
 			<div className="flex justify-between items-center">
 				{/* 🔥 DELETE COM MODAL */}
@@ -125,7 +133,15 @@ export default function MaterialForm({
 				)}
 
 				{/* SUBMIT */}
-				<div className="ml-auto">
+				<div className="flex items-center gap-2 ml-auto">
+					<Button
+						type="button"
+						variant="outline"
+						disabled={loading}
+						onClick={onCancel}
+					>
+						Cancelar
+					</Button>
 					<Button type="submit" disabled={loading}>
 						{createMaterial.isPending || updateMaterial.isPending
 							? "Salvando..."
