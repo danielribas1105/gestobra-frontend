@@ -19,17 +19,24 @@ import {
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[]
 	data: TData[]
+	onRowClick?: (row: TData) => void
 }
 
 export function DataTable<TData, TValue>({
 	columns,
 	data,
+	onRowClick,
 }: DataTableProps<TData, TValue>) {
 	const table = useReactTable({
 		data,
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 	})
+
+	function handleRowClick(data: any[]) {
+		//console.log(data)
+		alert(data)
+	}
 
 	return (
 		<div className="overflow-hidden rounded-md border">
@@ -58,6 +65,8 @@ export function DataTable<TData, TValue>({
 							<TableRow
 								key={row.id}
 								data-state={row.getIsSelected() && "selected"}
+								className={onRowClick ? "cursor-pointer" : undefined}
+								onClick={() => onRowClick?.(row.original)}
 							>
 								{row.getVisibleCells().map((cell) => (
 									<TableCell key={cell.id}>

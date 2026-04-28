@@ -2,16 +2,19 @@
 import { useRouter } from "next/navigation"
 import { DataTable } from "@/components/ui/data-table"
 import { useSession } from "@/hooks/auth/use-session"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { JobColumns } from "./components/job-columns"
 import { JobStatusLegend } from "./components/job-status-legend"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useJobs } from "@/hooks/jobs/use-jobs"
+import JobModal from "../jobs/components/job-modal"
+import { Job } from "@/schemas/job"
 
 export default function HomePage() {
 	const { user, loading } = useSession()
 	const router = useRouter()
 	const { data: jobs = [], isLoading } = useJobs()
+	const [selectedJob, setSelectedJob] = useState<Job | undefined>(undefined)
 
 	useEffect(() => {
 		if (!loading && !user) {
@@ -22,6 +25,12 @@ export default function HomePage() {
 	if (loading) {
 		return (
 			<section className="flex flex-col gap-1">
+				<div className="flex gap-2">
+					<Skeleton className="flex-1 h-40 w-full rounded-md" />
+					<Skeleton className="flex-1 h-40 w-full rounded-md" />
+					<Skeleton className="flex-1 h-40 w-full rounded-md" />
+					<Skeleton className="flex-1 h-40 w-full rounded-md" />
+				</div>
 				<div className="flex justify-end">
 					<Skeleton className="h-6 w-32 rounded-md" />
 				</div>
@@ -64,8 +73,19 @@ export default function HomePage() {
 				<div className="flex justify-end">
 					<JobStatusLegend />
 				</div>
-				<DataTable columns={JobColumns} data={jobs} />
+				<DataTable
+					columns={JobColumns}
+					data={jobs}
+					onRowClick={(job) => setSelectedJob(job)}
+				/>
 			</div>
+			<JobModal
+				open={!!selectedJob}
+				onOpenChange={(v) => {
+					if (!v) setSelectedJob(undefined)
+				}}
+				job={selectedJob}
+			/>
 		</section>
 	)
 }
