@@ -19,11 +19,13 @@ export default function WorkModal({
 		<ModalWrapper
 			open={open}
 			onOpenChange={onOpenChange}
+			width="80vw"
+			height="90vh"
 			title={work ? "Excluir/Editar obra" : "Adicionar obra"}
 			description={
 				work
 					? "Exclua ou edite as informações da obra"
-					: "Preencha as informações da nova obra e clique em salvar"
+					: "Preencha as informações da obra e clique em salvar"
 			}
 		>
 			<WorkForm

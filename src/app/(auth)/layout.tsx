@@ -7,8 +7,8 @@ import {
 } from "@/components/ui/sidebar"
 import AddJobButton from "@/components/add-job-btn"
 import LogoutButton from "@/components/logout-button"
-import AddStatementButton from "@/components/add-statment-btn"
 import OpenMapsButton from "@/components/maps/btn-open-maps"
+import AddWorkButton from "@/components/add-work-btn"
 
 export default function RootLayout({
 	children,
@@ -23,7 +23,7 @@ export default function RootLayout({
 					<SidebarTrigger color="#51a41e" />
 					<div className="flex items-center gap-2">
 						<OpenMapsButton />
-						<AddStatementButton />
+						<AddWorkButton />
 						<AddJobButton />
 						<LogoutButton />
 					</div>

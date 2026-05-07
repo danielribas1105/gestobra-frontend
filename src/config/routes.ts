@@ -44,5 +44,6 @@ export const routes = {
 		create: "/payments",
 		update: (id: string) => `/payments/${id}`,
 		delete: (id: string) => `/payments/${id}`,
+		values: "/payments/values",
 	},
 }

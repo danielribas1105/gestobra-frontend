@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
 import { useState } from "react"
-import StatementModal from "@/app/(auth)/statements/components/statement-modal"
+import WorkModal from "@/app/(auth)/works/components/work-modal"
 
-export default function AddStatementButton() {
+export default function AddWorkButton() {
 	const [open, setOpen] = useState(false)
-	const handleAddStatement = () => {}
+	const handleAddWork = () => {}
 
 	return (
 		<>
@@ -21,12 +21,12 @@ export default function AddStatementButton() {
 						onClick={() => setOpen(true)}
 					>
 						<Plus />
-						Manifesto
+						Obra
 					</Button>
 				</TooltipTrigger>
-				<TooltipContent>Adicionar novo manifesto</TooltipContent>
+				<TooltipContent>Adicionar obra</TooltipContent>
 			</Tooltip>
-			<StatementModal open={open} onOpenChange={setOpen} />
+			<WorkModal open={open} onOpenChange={setOpen} />
 		</>
 	)
 }

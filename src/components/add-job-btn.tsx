@@ -23,7 +23,7 @@ export default function AddJobButton() {
 						Movimentação
 					</Button>
 				</TooltipTrigger>
-				<TooltipContent>Adicionar nova movimentação</TooltipContent>
+				<TooltipContent>Adicionar movimentação</TooltipContent>
 			</Tooltip>
 			<JobModal open={open} onOpenChange={setOpen} />
 		</>

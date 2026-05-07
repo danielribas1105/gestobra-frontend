@@ -13,6 +13,8 @@ interface ModalWrapperProps {
 	onOpenChange: (v: boolean) => void
 	title: string
 	description?: string
+	width?: string
+	height?: string
 	children: ReactNode
 }
 
@@ -21,11 +23,13 @@ export default function ModalWrapper({
 	onOpenChange,
 	title,
 	description,
+	width,
+	height,
 	children,
 }: ModalWrapperProps) {
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent>
+			<DialogContent style={{ width, maxWidth: "92vw", height }}>
 				<DialogHeader>
 					<DialogTitle>{title}</DialogTitle>
 					{description && <DialogDescription>{description}</DialogDescription>}

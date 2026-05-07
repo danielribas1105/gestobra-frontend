@@ -21,14 +21,6 @@ export default function WorkCard({ work }: WorkCardProps) {
 				tabIndex={0}
 				aria-label={`Ver detalhes da obra ${work.name}`}
 			>
-				<div className="relative w-full h-36 flex justify-center overflow-hidden">
-					<Image
-						src={work.image ?? "/no-image.jpg"}
-						alt={`Foto da obra ${work.name}`}
-						fill
-						className="object-cover rounded-lg"
-					/>
-				</div>
 				<header>
 					<h2>{work.name}</h2>
 				</header>
@@ -39,12 +31,10 @@ export default function WorkCard({ work }: WorkCardProps) {
 				<footer className="flex items-center gap-1">
 					<Info
 						size={16}
-						color={work.active ? "#00FF00" : "#FF0000"}
+						color={work.status ? "#00FF00" : "#FF0000"}
 						aria-hidden="true"
 					/>
-					<span className="text-sm uppercase">
-						{work.active ? "Ativo" : "Inativo"}
-					</span>
+					<span className="text-sm uppercase">{work.status}</span>
 				</footer>
 			</article>
 			<WorkModal open={open} onOpenChange={setOpen} work={work} />
