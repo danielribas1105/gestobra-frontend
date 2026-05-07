@@ -23,20 +23,39 @@ import {
 } from "@/components/ui/alert-dialog"
 
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { useJobMutations } from "@/hooks/jobs/use-job-mutations"
 import { useWorks } from "@/hooks/works/use-works"
 import { useCars } from "@/hooks/cars/use-cars"
 import { useUsers } from "@/hooks/users/use-users"
 import { useStatements } from "@/hooks/statements/use-statements"
 import { Job } from "@/schemas/job"
+import { Work } from "@/schemas/work"
 
 interface JobFormProps {
 	job?: Job
+	/** Quando fornecido, trava a origem nessa obra e impede alteração */
+	lockedOriginWork?: Work
 	onSuccess?: () => void
 	onCancel?: () => void
+	onJobCreated?: (job: Job) => void
 }
 
-export default function JobForm({ job, onSuccess, onCancel }: JobFormProps) {
+const STATUS_LABELS: Record<string, string> = {
+	pending: "Pendente",
+	in_progress: "Em andamento",
+	completed: "Concluído",
+	canceled: "Cancelado",
+}
+
+export default function JobForm({
+	job,
+	lockedOriginWork,
+	onSuccess,
+	onCancel,
+	onJobCreated,
+}: JobFormProps) {
 	const isEdit = !!job
 
 	const { createJob, updateJob, deleteJob } = useJobMutations()
@@ -49,12 +68,12 @@ export default function JobForm({ job, onSuccess, onCancel }: JobFormProps) {
 	const drivers = users.filter((u) => u.profile === "driver")
 
 	const [form, setForm] = useState({
-		statement_id: job?.statement_id || "",
-		origin: job?.origin || "",
-		destiny: job?.destiny || "",
-		car_id: job?.car_id || "",
-		driver_id: job?.driver_id || "",
-		status: job?.status || "pending",
+		statement_id: job?.statement_id ?? "",
+		origin: job?.origin ?? lockedOriginWork?.id ?? "",
+		destiny: job?.destiny ?? "",
+		car_id: job?.car_id ?? "",
+		driver_id: job?.driver_id ?? "",
+		status: job?.status ?? "pending",
 	})
 
 	// 🔥 remove origem da lista de destino
@@ -66,15 +85,13 @@ export default function JobForm({ job, onSuccess, onCancel }: JobFormProps) {
 
 		try {
 			if (isEdit) {
-				await updateJob.mutateAsync({
-					id: job!.id,
-					data: form,
-				})
+				await updateJob.mutateAsync({ id: job!.id, data: form })
+				onSuccess?.()
 			} else {
-				await createJob.mutateAsync(form)
+				const created = await createJob.mutateAsync(form)
+				onJobCreated?.(created)
+				onSuccess?.()
 			}
-
-			onSuccess?.()
 		} catch {}
 	}
 
@@ -91,145 +108,159 @@ export default function JobForm({ job, onSuccess, onCancel }: JobFormProps) {
 	const loading =
 		createJob.isPending || updateJob.isPending || deleteJob.isPending
 
-	// Define status options as an object
-	const statusOptions = {
-		pending: "Pending",
-		in_progress: "In Progress",
-		completed: "Completed",
-		canceled: "Cancelled",
-	}
-
 	return (
 		<form onSubmit={handleSubmit} className="space-y-5">
 			{/* STATEMENT */}
-			<Select
-				value={form.statement_id}
-				onValueChange={(v) => setForm({ ...form, statement_id: v })}
-			>
-				<SelectTrigger>
-					<SelectValue placeholder="Selecione o statement" />
-				</SelectTrigger>
-				<SelectContent>
-					{statements.map((s) => (
-						<SelectItem key={s.id} value={s.id}>
-							{s.code}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
+			<div className="space-y-1.5">
+				<Label>Romaneio</Label>
+				<Select
+					value={form.statement_id}
+					onValueChange={(v) => setForm({ ...form, statement_id: v })}
+				>
+					<SelectTrigger>
+						<SelectValue placeholder="Selecione o romaneio" />
+					</SelectTrigger>
+					<SelectContent>
+						{statements.map((s) => (
+							<SelectItem key={s.id} value={s.id}>
+								{s.code}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+			</div>
 
-			{/* ORIGIN */}
-			<Select
-				value={form.origin}
-				onValueChange={(v) =>
-					setForm({
-						...form,
-						origin: v,
-						destiny: v === form.destiny ? "" : form.destiny, // 🔥 evita conflito
-					})
-				}
-			>
-				<SelectTrigger>
-					<SelectValue placeholder="Origem" />
-				</SelectTrigger>
-				<SelectContent>
-					{works.map((w) => (
-						<SelectItem key={w.id} value={w.id}>
-							{w.name}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
+			{/* ORIGIN — travado se lockedOriginWork */}
+			<div className="space-y-1.5">
+				<Label>Origem</Label>
+				{lockedOriginWork ? (
+					<Input value={lockedOriginWork.name} disabled />
+				) : (
+					<Select
+						value={form.origin}
+						onValueChange={(v) =>
+							setForm({
+								...form,
+								origin: v,
+								destiny: v === form.destiny ? "" : form.destiny,
+							})
+						}
+					>
+						<SelectTrigger>
+							<SelectValue placeholder="Origem" />
+						</SelectTrigger>
+						<SelectContent>
+							{works.map((w) => (
+								<SelectItem key={w.id} value={w.id}>
+									{w.name}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				)}
+			</div>
 
 			{/* DESTINY */}
-			<Select
-				value={form.destiny}
-				onValueChange={(v) => setForm({ ...form, destiny: v })}
-			>
-				<SelectTrigger>
-					<SelectValue placeholder="Destino" />
-				</SelectTrigger>
-				<SelectContent>
-					{filteredDestinies.map((w) => (
-						<SelectItem key={w.id} value={w.id}>
-							{w.name}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
+			<div className="space-y-1.5">
+				<Label>Destino</Label>
+				<Select
+					value={form.destiny}
+					onValueChange={(v) => setForm({ ...form, destiny: v })}
+				>
+					<SelectTrigger>
+						<SelectValue placeholder="Destino" />
+					</SelectTrigger>
+					<SelectContent>
+						{filteredDestinies.map((w) => (
+							<SelectItem key={w.id} value={w.id}>
+								{w.name}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+			</div>
 
 			{/* CAR */}
-			<Select
-				value={form.car_id}
-				onValueChange={(v) => setForm({ ...form, car_id: v })}
-			>
-				<SelectTrigger>
-					<SelectValue placeholder="Veículo" />
-				</SelectTrigger>
-				<SelectContent>
-					{cars.map((c) => (
-						<SelectItem key={c.id} value={c.id}>
-							{c.model}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
+			<div className="space-y-1.5">
+				<Label>Veículo</Label>
+				<Select
+					value={form.car_id}
+					onValueChange={(v) => setForm({ ...form, car_id: v })}
+				>
+					<SelectTrigger>
+						<SelectValue placeholder="Veículo" />
+					</SelectTrigger>
+					<SelectContent>
+						{cars.map((c) => (
+							<SelectItem key={c.id} value={c.id}>
+								{c.model}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+			</div>
 
 			{/* DRIVER */}
-			<Select
-				value={form.driver_id}
-				onValueChange={(v) => setForm({ ...form, driver_id: v })}
-			>
-				<SelectTrigger>
-					<SelectValue placeholder="Motorista" />
-				</SelectTrigger>
-				<SelectContent>
-					{drivers.map((d) => (
-						<SelectItem key={d.id} value={d.id}>
-							{d.name}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
+			<div className="space-y-1.5">
+				<Label>Motorista</Label>
+				<Select
+					value={form.driver_id}
+					onValueChange={(v) => setForm({ ...form, driver_id: v })}
+				>
+					<SelectTrigger>
+						<SelectValue placeholder="Motorista" />
+					</SelectTrigger>
+					<SelectContent>
+						{drivers.map((d) => (
+							<SelectItem key={d.id} value={d.id}>
+								{d.name}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+			</div>
 
 			{/* STATUS */}
-			<Select
-				value={form.status}
-				onValueChange={(v) =>
-					setForm({
-						...form,
-						status: v as "pending" | "in_progress" | "completed" | "canceled",
-					})
-				}
-			>
-				<SelectTrigger>
-					<SelectValue placeholder="Status" />
-				</SelectTrigger>
-				<SelectContent>
-					{Object.entries(statusOptions).map(([key, value]) => (
-						<SelectItem key={key} value={key}>
-							{value}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
+			<div className="space-y-1.5">
+				<Label>Status</Label>
+				<Select
+					value={form.status}
+					onValueChange={(v) =>
+						setForm({
+							...form,
+							status: v as "pending" | "in_progress" | "completed" | "canceled",
+						})
+					}
+				>
+					<SelectTrigger>
+						<SelectValue placeholder="Status" />
+					</SelectTrigger>
+					<SelectContent>
+						{Object.entries(STATUS_LABELS).map(([key, label]) => (
+							<SelectItem key={key} value={key}>
+								{label}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+			</div>
 
 			{/* ACTIONS */}
 			<div className="flex justify-between items-center">
 				{isEdit && (
 					<AlertDialog>
 						<AlertDialogTrigger asChild>
-							<Button variant="destructive">Excluir</Button>
+							<Button type="button" variant="destructive" disabled={loading}>
+								{deleteJob.isPending ? "Excluindo..." : "Excluir"}
+							</Button>
 						</AlertDialogTrigger>
-
 						<AlertDialogContent>
 							<AlertDialogHeader>
-								<AlertDialogTitle>Excluir job?</AlertDialogTitle>
+								<AlertDialogTitle>Excluir transporte?</AlertDialogTitle>
 								<AlertDialogDescription>
 									Essa ação não pode ser desfeita.
 								</AlertDialogDescription>
 							</AlertDialogHeader>
-
 							<AlertDialogFooter>
 								<AlertDialogCancel>Cancelar</AlertDialogCancel>
 								<AlertDialogAction onClick={handleDelete}>
@@ -240,7 +271,6 @@ export default function JobForm({ job, onSuccess, onCancel }: JobFormProps) {
 					</AlertDialog>
 				)}
 
-				{/* SUBMIT OR CANCEL */}
 				<div className="flex items-center gap-2 ml-auto">
 					<Button
 						type="button"
@@ -250,7 +280,7 @@ export default function JobForm({ job, onSuccess, onCancel }: JobFormProps) {
 					>
 						Cancelar
 					</Button>
-					<Button type="submit" disabled={loading} className="ml-auto">
+					<Button type="submit" disabled={loading}>
 						{loading ? "Salvando..." : isEdit ? "Atualizar" : "Criar"}
 					</Button>
 				</div>

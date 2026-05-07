@@ -12,6 +12,7 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import { DataTable } from "@/components/ui/data-table"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -26,6 +27,9 @@ import { useWorkMutations } from "@/hooks/works/use-work-mutations"
 import { Work, WorkStatus, WorkStatusEnum } from "@/schemas/work"
 import { PlusCircle } from "lucide-react"
 import { useState } from "react"
+import { JobColumns } from "../../home/components/job-columns"
+import { Job } from "@/schemas/job"
+import JobModal from "../../jobs/components/job-modal"
 
 interface WorkFormProps {
 	work?: Work
@@ -86,6 +90,13 @@ export default function WorkForm({
 	const [confirmOpen, setConfirmOpen] = useState(false)
 	// Guarda o payload pendente enquanto o modal está aberto
 	const [pendingSubmit, setPendingSubmit] = useState<WorkFormState | null>(null)
+
+	const [jobModalOpen, setJobModalOpen] = useState(false)
+	const [createdJobs, setCreatedJobs] = useState<Job[]>([])
+
+	function handleJobCreated(job: Job) {
+		setCreatedJobs((prev) => [...prev, job])
+	}
 
 	function handleChange(field: keyof WorkFormState, value: string | boolean) {
 		setForm((prev) => ({ ...prev, [field]: value }))
@@ -308,10 +319,7 @@ export default function WorkForm({
 								<Button type="button" variant="outline" onClick={onSuccess}>
 									Fechar
 								</Button>
-								<Button
-									type="button"
-									onClick={() => onAddStatement?.(savedWorkId!)}
-								>
+								<Button type="button" onClick={() => setJobModalOpen(true)}>
 									<PlusCircle className="size-4 mr-2" />
 									Incluir Movimentação
 								</Button>
@@ -338,6 +346,54 @@ export default function WorkForm({
 					</div>
 				</div>
 			</form>
+
+			{/* Tabela de jobs inseridos */}
+			{createdJobs.length > 0 && (
+				<div className="mt-4 space-y-2">
+					<p className="text-sm font-medium text-muted-foreground">
+						Movimentações adicionadas
+					</p>
+					<div className="rounded-md border overflow-hidden">
+						<table className="w-full text-sm">
+							<thead className="bg-muted text-muted-foreground">
+								<tr>
+									<th className="px-3 py-2 text-left font-medium">Romaneio</th>
+									<th className="px-3 py-2 text-left font-medium">Destino</th>
+									<th className="px-3 py-2 text-left font-medium">Veículo</th>
+									<th className="px-3 py-2 text-left font-medium">Motorista</th>
+									<th className="px-3 py-2 text-left font-medium">Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								{createdJobs.map((j, i) => (
+									<tr
+										key={j.id}
+										className={i % 2 === 0 ? "bg-background" : "bg-muted/40"}
+									>
+										<td className="px-3 py-2">{j.statement_id}</td>
+										<td className="px-3 py-2">{j.destiny}</td>
+										<td className="px-3 py-2">{j.car_id}</td>
+										<td className="px-3 py-2">{j.driver_id}</td>
+										<td className="px-3 py-2 capitalize">{j.status}</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			)}
+
+			{/* Modal de job com origem travada */}
+			<JobModal
+				open={jobModalOpen}
+				onOpenChange={setJobModalOpen}
+				lockedOriginWork={
+					savedWorkId
+						? ({ id: savedWorkId, name: form.name } as Work)
+						: undefined
+				}
+				onJobCreated={handleJobCreated}
+			/>
 
 			{/* Modal: Deseja incluir movimentações? */}
 			<AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
