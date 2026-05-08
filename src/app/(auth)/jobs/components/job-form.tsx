@@ -68,7 +68,7 @@ export default function JobForm({
 	const drivers = users.filter((u) => u.profile === "driver")
 
 	const [form, setForm] = useState({
-		statement_id: job?.statement_id ?? "",
+		statement_id: job?.statement_id ?? null,
 		origin: job?.origin ?? lockedOriginWork?.id ?? "",
 		destiny: job?.destiny ?? "",
 		car_id: job?.car_id ?? "",
@@ -114,8 +114,8 @@ export default function JobForm({
 			<div className="space-y-1.5">
 				<Label>Romaneio</Label>
 				<Select
-					value={form.statement_id}
-					onValueChange={(v) => setForm({ ...form, statement_id: v })}
+					value={form.statement_id ?? ""}
+					onValueChange={(v) => setForm({ ...form, statement_id: v || null })}
 				>
 					<SelectTrigger>
 						<SelectValue placeholder="Selecione o romaneio" />
