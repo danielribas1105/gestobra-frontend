@@ -1,14 +1,11 @@
-import { AppSidebar } from "@/components/ui/app-sidebar"
+import { HeaderBtns } from "@/components/header-btns"
 import PageLayout from "@/components/layout/page-layout"
+import { AppSidebar } from "@/components/ui/app-sidebar"
 import {
 	SidebarInset,
 	SidebarProvider,
 	SidebarTrigger,
 } from "@/components/ui/sidebar"
-import AddJobButton from "@/components/add-job-btn"
-import LogoutButton from "@/components/logout-button"
-import OpenMapsButton from "@/components/maps/btn-open-maps"
-import AddWorkButton from "@/components/add-work-btn"
 
 export default function RootLayout({
 	children,
@@ -21,12 +18,7 @@ export default function RootLayout({
 			<SidebarInset>
 				<header className="flex justify-between items-center py-2 px-4">
 					<SidebarTrigger color="#51a41e" />
-					<div className="flex items-center gap-2">
-						<OpenMapsButton />
-						<AddWorkButton />
-						<AddJobButton />
-						<LogoutButton />
-					</div>
+					<HeaderBtns />
 				</header>
 				<PageLayout>{children}</PageLayout>
 			</SidebarInset>
