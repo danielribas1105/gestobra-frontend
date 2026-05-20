@@ -20,7 +20,7 @@ export default function WorkModal({
 			open={open}
 			onOpenChange={onOpenChange}
 			width="80vw"
-			height="70vh"
+			maxHeight="90vh"
 			title={work ? "Excluir/Editar obra" : "Adicionar obra"}
 			description={
 				work
