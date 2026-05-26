@@ -19,6 +19,8 @@ export default function MaterialModal({
 		<ModalWrapper
 			open={open}
 			onOpenChange={onOpenChange}
+			width="30vw"
+			maxHeight="60vh"
 			title={material ? "Excluir/Editar material" : "Adicionar material"}
 			description={
 				material
