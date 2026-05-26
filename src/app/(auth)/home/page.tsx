@@ -48,23 +48,31 @@ export default function HomePage() {
 		<section className="flex flex-col gap-3">
 			<div className="flex flex-1 gap-2 items-center justify-around">
 				<div className="flex-1 flex-col gap-4 border-2 rounded-lg p-3 h-40">
-					<div className="text-lg font-semibold mb-2">Título</div>
+					<div className="text-secondary-foreground text-lg font-semibold mb-2">
+						Título
+					</div>
 					<div className="text-muted-foreground">Info 1</div>
 					<div className="text-muted-foreground">Info 2</div>
 				</div>
 				<div className="flex-1 flex-col gap-4 border-2 rounded-lg p-3 h-40">
-					<div className="text-lg font-semibold mb-2">Título</div>
+					<div className="text-secondary-foreground text-lg font-semibold mb-2">
+						Título
+					</div>
 					<div className="text-muted-foreground">Info 1</div>
 					<div className="text-muted-foreground">Info 2</div>
 				</div>
 				<div className="flex-1 flex-col gap-4 border-2 rounded-lg p-3 h-40">
-					<div className="text-lg font-semibold mb-2">Total de Viagens</div>
+					<div className="text-secondary-foreground text-lg font-semibold mb-2">
+						Total de Viagens
+					</div>
 					<div className="text-muted-foreground">Realizadas</div>
 					<div className="text-muted-foreground">Pendentes</div>
 					<div className="text-muted-foreground">Canceladas</div>
 				</div>
 				<div className="flex-1 flex-col gap-4 border-2 rounded-lg p-3 h-40">
-					<div className="text-lg font-semibold mb-2">Pagamentos</div>
+					<div className="text-secondary-foreground text-lg font-semibold mb-2">
+						Pagamentos
+					</div>
 					<div className="text-muted-foreground">Pago</div>
 					<div className="text-muted-foreground">Pendente</div>
 				</div>

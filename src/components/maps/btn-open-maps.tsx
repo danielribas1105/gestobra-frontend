@@ -12,7 +12,7 @@ export default function OpenMapsButton() {
 		<>
 			<Tooltip>
 				<TooltipTrigger asChild>
-					<Button variant="secondary" size="sm" onClick={() => setOpen(true)}>
+					<Button variant="secondary" onClick={() => setOpen(true)}>
 						<Map />
 						Mapa
 					</Button>

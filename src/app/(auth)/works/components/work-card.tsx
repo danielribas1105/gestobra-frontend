@@ -22,7 +22,7 @@ export default function WorkCard({ work }: WorkCardProps) {
 				tabIndex={0}
 				aria-label={`Ver detalhes da obra ${work.name}`}
 			>
-				<div className="flex flex-col gap-2">
+				<div className="flex flex-col gap-2 text-secondary-foreground">
 					<header className="flex items-center justify-between">
 						<div className="flex gap-2 items-center">
 							<MapPinHouse className="text-muted-foreground" size={30} />
@@ -53,7 +53,7 @@ export default function WorkCard({ work }: WorkCardProps) {
 						</dl>
 					</div>
 				</div>
-				<footer className="flex items-center gap-1">
+				<footer className="flex items-center gap-1 text-secondary-foreground">
 					<p className="font-semibold text-muted-foreground">Criada em:</p>
 					<p>{formatDate(work.created_at ?? "")}</p>
 				</footer>

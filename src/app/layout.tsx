@@ -14,7 +14,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
 export const metadata: Metadata = {
 	title: "GestObra",
-	description: "Web Application",
+	description: "Gestão de resíduos de obra",
 }
 
 export default function RootLayout({
@@ -25,7 +25,7 @@ export default function RootLayout({
 	return (
 		<html lang="pt-BR" className={cn("font-sans", inter.variable)}>
 			<ThemeScript /> {/* Qual a função?! */}
-			<body className="bg-gray-50 text-gray-900 antialiased">
+			<body className="bg-background text-foreground antialiased">
 				<QueryProvider>
 					<ThemeProvider>
 						<TooltipProvider>{children}</TooltipProvider>

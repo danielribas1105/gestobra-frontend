@@ -4,6 +4,7 @@ import { Car } from "@/schemas/car"
 import { useState } from "react"
 import CarModal from "./car-modal"
 import { formatDate } from "@/utils/format-date"
+import LabelCard from "@/components/ui/label-card"
 
 export interface CarCardProps {
 	car: Car
@@ -32,7 +33,9 @@ export default function CarCard({ car }: CarCardProps) {
 						/>
 					</div>
 					<div className="flex flex-2/3 flex-col">
-						<h2 className="text-xl font-semibold">{car.model}</h2>
+						<h2 className="text-xl text-secondary-foreground font-semibold">
+							{car.model}
+						</h2>
 						<p className="text-lg text-muted-foreground font-semibold">
 							{car.license}
 						</p>
@@ -41,17 +44,19 @@ export default function CarCard({ car }: CarCardProps) {
 						{car.active ? "ATIVO" : "INATIVO"}
 					</Badge>
 				</header>
-				<div className="flex flex-col gap-2">
-					<dl>
-						<dt className="sr-only">Ano de fabricação</dt>
-						<dd>Ano: {car.manufacture}</dd>
-					</dl>
-					<dl>
-						<dt className="sr-only">Tipo de combustível</dt>
-						<dd>Combustível: {car.fuel}</dd>
-					</dl>
+				<div className="flex flex-col gap-2 text-secondary-foreground">
+					<LabelCard
+						description="Ano de fabricação"
+						label="Ano"
+						value={car.manufacture ?? 0}
+					/>
+					<LabelCard
+						description="Tipo de combustível"
+						label="Combustível"
+						value={car.fuel}
+					/>
 				</div>
-				<footer className="flex items-center gap-1">
+				<footer className="flex items-center gap-1 text-secondary-foreground">
 					<p className="font-semibold text-muted-foreground">Desde:</p>
 					<p>{formatDate(car.created_at ?? "")}</p>
 				</footer>

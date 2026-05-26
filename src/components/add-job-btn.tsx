@@ -15,7 +15,6 @@ export default function AddJobButton() {
 				<TooltipTrigger asChild>
 					<Button
 						variant="secondary"
-						size="sm"
 						disabled={false}
 						onClick={() => setOpen(true)}
 					>

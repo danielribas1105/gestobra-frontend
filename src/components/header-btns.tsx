@@ -30,6 +30,7 @@ export function HeaderBtns() {
 				iconClassName={
 					mounted && theme === "dark" ? "!text-yellow-500" : "!text-slate-500"
 				}
+				className="w-8 h-8 rounded-lg"
 			/>
 			<LogoutButton />
 		</div>
