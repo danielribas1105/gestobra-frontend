@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { useMaterialMutations } from "@/hooks/materials/use-material-mutations"
 import { Material } from "@/schemas/material"
 import { useState } from "react"
@@ -36,21 +37,36 @@ export default function MaterialForm({
 	const [form, setForm] = useState({
 		name: material?.name || "",
 		description: material?.description || "",
-		value_m3: material?.value_m3 || 0,
+		value_m3: material?.value_m3
+			? String(material.value_m3).replace(".", ",")
+			: "",
 	})
+
+	function parseValueM3(raw: string): number {
+		// "1.234,56" → 1234.56  |  "10,50" → 10.50  |  "10.50" → 10.50
+		const normalized = raw.trim().replace(/\./g, "").replace(",", ".")
+		const parsed = parseFloat(normalized)
+		return isNaN(parsed) ? 0 : parsed
+	}
 
 	// ✏️ CREATE / UPDATE
 	async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
 		e.preventDefault()
 
+		const payload = {
+			name: form.name,
+			description: form.description,
+			value_m3: parseValueM3(form.value_m3),
+		}
+
 		try {
 			if (isEdit) {
 				await updateMaterial.mutateAsync({
 					id: material!.id,
-					data: form,
+					data: payload,
 				})
 			} else {
-				await createMaterial.mutateAsync(form)
+				await createMaterial.mutateAsync(payload)
 			}
 
 			onSuccess?.()
@@ -75,26 +91,38 @@ export default function MaterialForm({
 	return (
 		<form onSubmit={handleSubmit} className="space-y-5">
 			{/* Inputs */}
-			<Input
-				placeholder="Nome"
-				value={form.name}
-				onChange={(e) => setForm({ ...form, name: e.target.value })}
-				disabled={loading}
-			/>
+			<div className="space-y-1">
+				<Label htmlFor="nome_material">Tipo de material *</Label>
+				<Input
+					id="nome_material"
+					placeholder="Nome"
+					value={form.name}
+					onChange={(e) => setForm({ ...form, name: e.target.value })}
+					disabled={loading}
+				/>
+			</div>
 
-			<Input
-				placeholder="Descrição"
-				value={form.description}
-				onChange={(e) => setForm({ ...form, description: e.target.value })}
-				disabled={loading}
-			/>
+			<div className="space-y-1">
+				<Label htmlFor="descricao_material">Descrição</Label>
+				<Input
+					id="descricao_material"
+					placeholder="Descrição"
+					value={form.description}
+					onChange={(e) => setForm({ ...form, description: e.target.value })}
+					disabled={loading}
+				/>
+			</div>
 
-			<Input
-				placeholder="Valor m3"
-				value={form.value_m3}
-				onChange={(e) => setForm({ ...form, value_m3: Number(e.target.value) })}
-				disabled={loading}
-			/>
+			<div className="space-y-1">
+				<Label htmlFor="valor_material">Valor por m3 *</Label>
+				<Input
+					id="valor_material"
+					placeholder="Valor m3"
+					value={form.value_m3}
+					onChange={(e) => setForm({ ...form, value_m3: e.target.value })}
+					disabled={loading}
+				/>
+			</div>
 
 			{/* Actions */}
 			<div className="flex justify-between items-center">
