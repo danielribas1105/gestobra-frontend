@@ -30,7 +30,7 @@ export default function JobCard({ job }: JobCardProps) {
 						<dt>Destino</dt>
 						<dd>{job.destiny_id}</dd>
 					</dl>
-					<footer className="flex items-center gap-1">
+					<footer className="flex items-center gap-1 text-secondary-foreground">
 						<Circle
 							size={16}
 							color={job.status ? "#00FF00" : "#FF0000"}

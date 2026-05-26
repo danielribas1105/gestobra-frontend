@@ -25,10 +25,7 @@ export default function LoginForm() {
 			)}
 
 			<div>
-				<label
-					htmlFor="email"
-					className="block text-sm font-medium text-zinc-700 mb-1.5"
-				>
+				<label htmlFor="email" className="block text-sm font-medium mb-1.5">
 					E-mail
 				</label>
 				<input
@@ -44,10 +41,7 @@ export default function LoginForm() {
 			</div>
 
 			<div>
-				<label
-					htmlFor="password"
-					className="block text-sm font-medium text-zinc-700 mb-1.5"
-				>
+				<label htmlFor="password" className="block text-sm font-medium mb-1.5">
 					Senha
 				</label>
 				<div className="relative">

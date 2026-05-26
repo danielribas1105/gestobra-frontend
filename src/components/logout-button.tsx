@@ -15,12 +15,7 @@ export default function LogoutButton() {
 	return (
 		<Tooltip>
 			<TooltipTrigger asChild>
-				<Button
-					variant="destructive"
-					size="sm"
-					disabled={false}
-					onClick={handleLogout}
-				>
+				<Button variant="destructive" disabled={false} onClick={handleLogout}>
 					<LogOut />
 					Sair
 				</Button>

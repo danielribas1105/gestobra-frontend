@@ -30,7 +30,7 @@ export default function TitlePage({
 			className={`${className ?? ""} flex justify-between items-center gap-3`}
 		>
 			<div className="flex flex-1/3 gap-3 items-center">
-				<h1 className="text-3xl text-logo-blue-dark font-logo font-bold">
+				<h1 className="text-3xl text-secondary-foreground font-logo font-bold">
 					{title}
 				</h1>
 				<Tooltip>

@@ -16,7 +16,6 @@ export default function AddWorkButton() {
 				<TooltipTrigger asChild>
 					<Button
 						variant="secondary"
-						size="sm"
 						disabled={false}
 						onClick={() => setOpen(true)}
 					>
