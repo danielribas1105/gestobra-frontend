@@ -119,7 +119,7 @@ export default function WorkForm({ work, onSuccess, onCancel }: WorkFormProps) {
 			<form onSubmit={handleSubmit} className="space-y-2">
 				<div className="grid grid-cols-4 gap-2">
 					<div className="space-y-1">
-						<Label htmlFor="code">Código ou Razão Social *</Label>
+						<Label htmlFor="code">Código ou Razão Social</Label>
 						<Input
 							id="code"
 							placeholder="Digite o código da obra no MTR"
