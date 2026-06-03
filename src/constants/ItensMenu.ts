@@ -7,6 +7,7 @@ import {
 	Home,
 	ListCheck,
 	LogOut,
+	Package,
 	Truck,
 	UserCircle2,
 } from "lucide-react"
@@ -42,6 +43,11 @@ export const itemsMenu = [
 		title: "Veículos",
 		url: "/cars",
 		icon: Truck,
+	},
+	{
+		title: "Transportadoras",
+		url: "/carriers",
+		icon: Package,
 	},
 	{
 		title: "Usuários",
