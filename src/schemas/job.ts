@@ -13,6 +13,7 @@ export const JobSchema = z.object({
 	origin: z.uuid(),
 	destiny: z.uuid(),
 	car_id: z.uuid(),
+	carrier_id: z.uuid(),
 	driver_id: z.uuid(),
 	created_by: z.uuid(),
 	status: JobStatusEnum,
