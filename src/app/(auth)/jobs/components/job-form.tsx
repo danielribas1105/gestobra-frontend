@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import {
 	Select,
@@ -32,6 +32,7 @@ import { useUsers } from "@/hooks/users/use-users"
 import { useStatements } from "@/hooks/statements/use-statements"
 import { Job } from "@/schemas/job"
 import { Work } from "@/schemas/work"
+import { useCarriers } from "@/hooks/carriers/use-carriers"
 
 interface JobFormProps {
 	job?: Job
@@ -64,13 +65,21 @@ export default function JobForm({
 	const { data: cars = [] } = useCars()
 	const { data: users = [] } = useUsers()
 	const { data: statements = [] } = useStatements()
+	const { data: carriers = [] } = useCarriers()
 
 	const drivers = users.filter((u) => u.profile === "driver")
+
+	/* useEffect(() => {
+		if (carriers.length > 0 && !form.carrier_id) {
+			setForm((prev) => ({ ...prev, carrier_id: carriers[0].id }))
+		}
+	}, [carriers]) */
 
 	const [form, setForm] = useState({
 		statement_id: job?.statement_id ?? null,
 		origin: job?.origin ?? lockedOriginWork?.id ?? "",
 		destiny: job?.destiny ?? "",
+		carrier_id: job?.carrier_id ?? "",
 		car_id: job?.car_id ?? "",
 		driver_id: job?.driver_id ?? "",
 		status: job?.status ?? "pending",
@@ -83,12 +92,19 @@ export default function JobForm({
 	async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
 		e.preventDefault()
 
+		const payload = {
+			...form,
+			carrier_id: form.carrier_id || carriers[0]?.id,
+		}
+
+		if (!payload.carrier_id) return
+
 		try {
 			if (isEdit) {
-				await updateJob.mutateAsync({ id: job!.id, data: form })
+				await updateJob.mutateAsync({ id: job!.id, data: payload })
 				onSuccess?.()
 			} else {
-				const created = await createJob.mutateAsync(form)
+				const created = await createJob.mutateAsync(payload)
 				onJobCreated?.(created)
 				onSuccess?.()
 			}
@@ -110,139 +126,172 @@ export default function JobForm({
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-5">
-			{/* STATEMENT */}
-			<div className="space-y-1.5">
-				<Label>Romaneio</Label>
-				<Select
-					value={form.statement_id ?? ""}
-					onValueChange={(v) => setForm({ ...form, statement_id: v || null })}
-				>
-					<SelectTrigger>
-						<SelectValue placeholder="Selecione o romaneio" />
-					</SelectTrigger>
-					<SelectContent>
-						{statements.map((s) => (
-							<SelectItem key={s.id} value={s.id}>
-								{s.code}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			</div>
-
-			{/* ORIGIN — travado se lockedOriginWork */}
-			<div className="space-y-1.5">
-				<Label>Origem</Label>
-				{lockedOriginWork ? (
-					<Input value={lockedOriginWork.name} disabled />
-				) : (
+			<div className="grid grid-cols-5 gap-2">
+				{/* STATEMENT */}
+				<div className="space-y-1">
+					<Label>MTR</Label>
 					<Select
-						value={form.origin}
-						onValueChange={(v) =>
-							setForm({
-								...form,
-								origin: v,
-								destiny: v === form.destiny ? "" : form.destiny,
-							})
-						}
+						value={form.statement_id ?? ""}
+						onValueChange={(v) => setForm({ ...form, statement_id: v || null })}
 					>
-						<SelectTrigger>
-							<SelectValue placeholder="Origem" />
+						<SelectTrigger className="w-full">
+							<SelectValue placeholder="Código MTR" />
 						</SelectTrigger>
 						<SelectContent>
-							{works.map((w) => (
+							{statements.map((s) => (
+								<SelectItem key={s.id} value={s.id}>
+									{s.code}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</div>
+
+				{/* ORIGIN — travado se lockedOriginWork */}
+				<div className="col-span-2 space-y-1">
+					<Label>Origem</Label>
+					{lockedOriginWork ? (
+						<Input value={lockedOriginWork.name} disabled />
+					) : (
+						<Select
+							value={form.origin}
+							onValueChange={(v) =>
+								setForm({
+									...form,
+									origin: v,
+									destiny: v === form.destiny ? "" : form.destiny,
+								})
+							}
+						>
+							<SelectTrigger className="w-full">
+								<SelectValue placeholder="Origem" />
+							</SelectTrigger>
+							<SelectContent>
+								{works.map((w) => (
+									<SelectItem key={w.id} value={w.id}>
+										{w.name}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					)}
+				</div>
+
+				{/* DESTINY */}
+				<div className="col-span-2 space-y-1">
+					<Label>Destino</Label>
+					<Select
+						value={form.destiny}
+						onValueChange={(v) => setForm({ ...form, destiny: v })}
+					>
+						<SelectTrigger className="w-full">
+							<SelectValue placeholder="Destino" />
+						</SelectTrigger>
+						<SelectContent>
+							{filteredDestinies.map((w) => (
 								<SelectItem key={w.id} value={w.id}>
 									{w.name}
 								</SelectItem>
 							))}
 						</SelectContent>
 					</Select>
-				)}
+				</div>
 			</div>
 
-			{/* DESTINY */}
-			<div className="space-y-1.5">
-				<Label>Destino</Label>
-				<Select
-					value={form.destiny}
-					onValueChange={(v) => setForm({ ...form, destiny: v })}
-				>
-					<SelectTrigger>
-						<SelectValue placeholder="Destino" />
-					</SelectTrigger>
-					<SelectContent>
-						{filteredDestinies.map((w) => (
-							<SelectItem key={w.id} value={w.id}>
-								{w.name}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			</div>
+			<div className="grid grid-cols-5 gap-2">
+				{/* CARRIER */}
+				<div className="col-span-2 space-y-1">
+					<Label htmlFor="carrier">Transportadora</Label>
+					<Input
+						id="carrier"
+						placeholder="Transportadora"
+						value={carriers[0]?.name ?? ""}
+						disabled={true}
+					/>
+					{/* <Select
+						value={form.carrier_id}
+						onValueChange={(v) => setForm({ ...form, carrier_id: v })}
+					>
+						<SelectTrigger className="w-full">
+							<SelectValue placeholder="Transportadora" />
+						</SelectTrigger>
+						<SelectContent>
+							{carriers.map((c) => (
+								<SelectItem key={c.id} value={c.id}>
+									{c.name}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select> */}
+				</div>
+				{/* CAR */}
+				<div className="space-y-1">
+					<Label>Veículo</Label>
+					<Select
+						value={form.car_id}
+						onValueChange={(v) => setForm({ ...form, car_id: v })}
+					>
+						<SelectTrigger className="w-full">
+							<SelectValue placeholder="Veículo" />
+						</SelectTrigger>
+						<SelectContent>
+							{cars.map((c) => (
+								<SelectItem key={c.id} value={c.id}>
+									{c.model}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</div>
 
-			{/* CAR */}
-			<div className="space-y-1.5">
-				<Label>Veículo</Label>
-				<Select
-					value={form.car_id}
-					onValueChange={(v) => setForm({ ...form, car_id: v })}
-				>
-					<SelectTrigger>
-						<SelectValue placeholder="Veículo" />
-					</SelectTrigger>
-					<SelectContent>
-						{cars.map((c) => (
-							<SelectItem key={c.id} value={c.id}>
-								{c.model}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			</div>
+				{/* DRIVER */}
+				<div className="space-y-1">
+					<Label>Motorista</Label>
+					<Select
+						value={form.driver_id}
+						onValueChange={(v) => setForm({ ...form, driver_id: v })}
+					>
+						<SelectTrigger className="w-full">
+							<SelectValue placeholder="Motorista" />
+						</SelectTrigger>
+						<SelectContent>
+							{drivers.map((d) => (
+								<SelectItem key={d.id} value={d.id}>
+									{d.name}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</div>
 
-			{/* DRIVER */}
-			<div className="space-y-1.5">
-				<Label>Motorista</Label>
-				<Select
-					value={form.driver_id}
-					onValueChange={(v) => setForm({ ...form, driver_id: v })}
-				>
-					<SelectTrigger>
-						<SelectValue placeholder="Motorista" />
-					</SelectTrigger>
-					<SelectContent>
-						{drivers.map((d) => (
-							<SelectItem key={d.id} value={d.id}>
-								{d.name}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			</div>
-
-			{/* STATUS */}
-			<div className="space-y-1.5">
-				<Label>Status</Label>
-				<Select
-					value={form.status}
-					onValueChange={(v) =>
-						setForm({
-							...form,
-							status: v as "pending" | "in_progress" | "completed" | "canceled",
-						})
-					}
-				>
-					<SelectTrigger>
-						<SelectValue placeholder="Status" />
-					</SelectTrigger>
-					<SelectContent>
-						{Object.entries(STATUS_LABELS).map(([key, label]) => (
-							<SelectItem key={key} value={key}>
-								{label}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
+				{/* STATUS */}
+				<div className="space-y-1.5">
+					<Label>Status</Label>
+					<Select
+						value={form.status}
+						onValueChange={(v) =>
+							setForm({
+								...form,
+								status: v as
+									| "pending"
+									| "in_progress"
+									| "completed"
+									| "canceled",
+							})
+						}
+					>
+						<SelectTrigger className="w-full">
+							<SelectValue placeholder="Status" />
+						</SelectTrigger>
+						<SelectContent>
+							{Object.entries(STATUS_LABELS).map(([key, label]) => (
+								<SelectItem key={key} value={key}>
+									{label}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</div>
 			</div>
 
 			{/* ACTIONS */}

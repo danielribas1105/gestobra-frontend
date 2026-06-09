@@ -24,6 +24,8 @@ export default function JobModal({
 		<ModalWrapper
 			open={open}
 			onOpenChange={onOpenChange}
+			width="70vw"
+			maxHeight="90vh"
 			title={job ? "Excluir/Editar transporte" : "Adicionar transporte"}
 			description={
 				job
