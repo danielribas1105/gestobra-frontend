@@ -26,13 +26,19 @@ import { useWorkMutations } from "@/hooks/works/use-work-mutations"
 import { Work, WorkStatus, WorkStatusEnum } from "@/schemas/work"
 import { Job } from "@/schemas/job"
 import { PlusCircle } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import JobModal from "../../jobs/components/job-modal"
+import { useCars } from "@/hooks/cars/use-cars"
+import { useUsers } from "@/hooks/users/use-users"
+import { useStatements } from "@/hooks/statements/use-statements"
+import { useWorks } from "@/hooks/works/use-works"
+import { useJobsByOriginWork } from "@/hooks/jobs/use-jobs-by-work"
 
 interface WorkFormProps {
 	work?: Work
 	onSuccess?: () => void
 	onCancel?: () => void
+	onWorkCreated?: (work: Work) => void
 }
 
 const STATUS_LABELS: Record<WorkStatus, string> = {
@@ -55,9 +61,19 @@ type WorkFormState = {
 	status: WorkStatus
 }
 
-export default function WorkForm({ work, onSuccess, onCancel }: WorkFormProps) {
+export default function WorkForm({
+	work,
+	onSuccess,
+	onCancel,
+	onWorkCreated,
+}: WorkFormProps) {
 	const isEdit = !!work
 	const { createWork, updateWork, deleteWork } = useWorkMutations()
+	const { data: works = [] } = useWorks()
+	const { data: cars = [] } = useCars()
+	const { data: users = [] } = useUsers()
+	const { data: statements = [] } = useStatements()
+	const { data: jobsByWork = [] } = useJobsByOriginWork(work?.id)
 
 	const [form, setForm] = useState<WorkFormState>({
 		code: work?.code ?? "",
@@ -90,6 +106,8 @@ export default function WorkForm({ work, onSuccess, onCancel }: WorkFormProps) {
 
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault()
+		e.stopPropagation()
+
 		try {
 			if (isEdit) {
 				await updateWork.mutateAsync({ id: work!.id, data: form })
@@ -97,6 +115,7 @@ export default function WorkForm({ work, onSuccess, onCancel }: WorkFormProps) {
 			} else {
 				const created = await createWork.mutateAsync(form)
 				setSavedWorkId(created.id)
+				onWorkCreated?.(created)
 				// Não chama onSuccess — mantém o form aberto para adicionar movimentações
 			}
 		} catch {}
@@ -269,15 +288,17 @@ export default function WorkForm({ work, onSuccess, onCancel }: WorkFormProps) {
 							</AlertDialog>
 						)}
 
-						<Button
-							type="button"
-							variant="outline"
-							disabled={!canAddJob || loading}
-							onClick={() => setJobModalOpen(true)}
-						>
-							<PlusCircle className="size-4 mr-2" />
-							Movimentação
-						</Button>
+						{!isEdit && (
+							<Button
+								type="button"
+								variant="outline"
+								disabled={!canAddJob || loading}
+								onClick={() => setJobModalOpen(true)}
+							>
+								<PlusCircle className="size-4 mr-2" />
+								Movimentação
+							</Button>
+						)}
 					</div>
 
 					{/* Direita: Cancelar / Salvar ou Fechar */}
@@ -332,10 +353,77 @@ export default function WorkForm({ work, onSuccess, onCancel }: WorkFormProps) {
 										key={j.id}
 										className={i % 2 === 0 ? "bg-background" : "bg-muted/40"}
 									>
-										<td className="px-3 py-2">{j.statement_id}</td>
-										<td className="px-3 py-2">{j.destiny}</td>
-										<td className="px-3 py-2">{j.car_id}</td>
-										<td className="px-3 py-2">{j.driver_id}</td>
+										<td className="px-3 py-2">
+											{statements
+												.filter((s) => j.statement_id === s.id)
+												.map((s) => s.code)}
+										</td>
+										<td className="px-3 py-2">
+											{works
+												.filter((w) => j.destiny === w.id)
+												.map((w) => w.name)}
+										</td>
+										<td className="px-3 py-2">
+											{cars
+												.filter((c) => j.car_id === c.id)
+												.map((c) => c.model)}
+										</td>
+										<td className="px-3 py-2">
+											{users
+												.filter((u) => j.driver_id === u.id)
+												.map((u) => u.name)}
+										</td>
+										<td className="px-3 py-2 capitalize">{j.status}</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			)}
+			{/* Tabela de movimentações lidas do DB */}
+			{isEdit && jobsByWork.length > 0 && (
+				<div className="mt-4 space-y-2">
+					<p className="text-sm font-medium text-muted-foreground">
+						Movimentações
+					</p>
+					<div className="rounded-md border overflow-hidden">
+						<table className="w-full text-sm">
+							<thead className="bg-muted text-muted-foreground">
+								<tr>
+									<th className="px-3 py-2 text-left font-medium">MTR</th>
+									<th className="px-3 py-2 text-left font-medium">Destino</th>
+									<th className="px-3 py-2 text-left font-medium">Veículo</th>
+									<th className="px-3 py-2 text-left font-medium">Motorista</th>
+									<th className="px-3 py-2 text-left font-medium">Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								{jobsByWork?.map((j, i) => (
+									<tr
+										key={j.id}
+										className={i % 2 === 0 ? "bg-background" : "bg-muted/40"}
+									>
+										<td className="px-3 py-2">
+											{statements
+												.filter((s) => j.statement_id === s.id)
+												.map((s) => s.code)}
+										</td>
+										<td className="px-3 py-2">
+											{works
+												.filter((w) => j.destiny === w.id)
+												.map((w) => w.name)}
+										</td>
+										<td className="px-3 py-2">
+											{cars
+												.filter((c) => j.car_id === c.id)
+												.map((c) => c.model)}
+										</td>
+										<td className="px-3 py-2">
+											{users
+												.filter((u) => j.driver_id === u.id)
+												.map((u) => u.name)}
+										</td>
 										<td className="px-3 py-2 capitalize">{j.status}</td>
 									</tr>
 								))}
