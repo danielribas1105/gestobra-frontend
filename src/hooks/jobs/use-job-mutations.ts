@@ -19,7 +19,7 @@ export function useJobMutations() {
 
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["jobs"] })
-			toast.success("Trabalho criado com sucesso 🎉")
+			toast.success("Movimentação criada com sucesso 🎉")
 		},
 
 		onError: (error: any) => {
@@ -28,7 +28,7 @@ export function useJobMutations() {
 				return
 			}
 
-			toast.error("Erro ao criar trabalho")
+			toast.error("Erro ao criar movimentação")
 		},
 	})
 
@@ -42,12 +42,12 @@ export function useJobMutations() {
 
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["jobs"] })
-			toast.success("Trabalho atualizado com sucesso ✨")
+			toast.success("Movimentação atualizada com sucesso ✨")
 		},
 
 		onError: (error: any) => {
 			if (error.status === 404) {
-				toast.error("Trabalho não encontrado")
+				toast.error("Movimentação não encontrada")
 				return
 			}
 
@@ -64,16 +64,16 @@ export function useJobMutations() {
 
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["jobs"] })
-			toast.success("Trabalho excluído 🗑️")
+			toast.success("Movimentação excluída 🗑️")
 		},
 
 		onError: (error: any) => {
 			if (error.status === 404) {
-				toast.error("Trabalho não encontrado")
+				toast.error("Movimentação não encontrada")
 				return
 			}
 
-			toast.error(error.message || "Erro ao excluir trabalho")
+			toast.error(error.message || "Erro ao excluir movimentação")
 		},
 	})
 

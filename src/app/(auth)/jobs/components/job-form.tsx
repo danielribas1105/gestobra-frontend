@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import {
 	Select,
@@ -33,6 +33,14 @@ import { useStatements } from "@/hooks/statements/use-statements"
 import { Job } from "@/schemas/job"
 import { Work } from "@/schemas/work"
 import { useCarriers } from "@/hooks/carriers/use-carriers"
+import { Plus } from "lucide-react"
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog"
+import WorkForm from "../../works/components/work-form"
 
 interface JobFormProps {
 	job?: Job
@@ -66,6 +74,9 @@ export default function JobForm({
 	const { data: users = [] } = useUsers()
 	const { data: statements = [] } = useStatements()
 	const { data: carriers = [] } = useCarriers()
+
+	const [openOriginWorkModal, setOpenOriginWorkModal] = useState(false)
+	const [openDestinyWorkModal, setOpenDestinyWorkModal] = useState(false)
 
 	const drivers = users.filter((u) => u.profile === "driver")
 
@@ -121,6 +132,11 @@ export default function JobForm({
 		} catch {}
 	}
 
+	const pendingNewWorkRef = useRef<{
+		field: "origin" | "destiny"
+		work: Work
+	} | null>(null)
+
 	const loading =
 		createJob.isPending || updateJob.isPending || deleteJob.isPending
 
@@ -155,13 +171,17 @@ export default function JobForm({
 					) : (
 						<Select
 							value={form.origin}
-							onValueChange={(v) =>
+							onValueChange={(v) => {
+								if (v === "__add_new__") {
+									setOpenOriginWorkModal(true)
+									return
+								}
 								setForm({
 									...form,
 									origin: v,
 									destiny: v === form.destiny ? "" : form.destiny,
 								})
-							}
+							}}
 						>
 							<SelectTrigger className="w-full">
 								<SelectValue placeholder="Origem" />
@@ -172,6 +192,15 @@ export default function JobForm({
 										{w.name}
 									</SelectItem>
 								))}
+								<SelectItem
+									value="__add_new__"
+									className="text-primary font-medium"
+								>
+									<span className="flex items-center gap-1">
+										<Plus className="w-3.5 h-3.5" />
+										Adicionar obra
+									</span>
+								</SelectItem>
 							</SelectContent>
 						</Select>
 					)}
@@ -182,7 +211,13 @@ export default function JobForm({
 					<Label>Destino</Label>
 					<Select
 						value={form.destiny}
-						onValueChange={(v) => setForm({ ...form, destiny: v })}
+						onValueChange={(v) => {
+							if (v === "__add_new__") {
+								setOpenDestinyWorkModal(true)
+								return
+							}
+							setForm({ ...form, destiny: v })
+						}}
 					>
 						<SelectTrigger className="w-full">
 							<SelectValue placeholder="Destino" />
@@ -193,6 +228,14 @@ export default function JobForm({
 									{w.name}
 								</SelectItem>
 							))}
+							<SelectItem
+								value="__add_new__"
+								className="text-primary font-medium"
+							>
+								<span className="flex items-center gap-1.5">
+									<Plus className="w-3.5 h-3.5" /> Adicionar obra
+								</span>
+							</SelectItem>
 						</SelectContent>
 					</Select>
 				</div>
@@ -334,6 +377,59 @@ export default function JobForm({
 					</Button>
 				</div>
 			</div>
+
+			<Dialog open={openOriginWorkModal} onOpenChange={setOpenOriginWorkModal}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Nova obra</DialogTitle>
+					</DialogHeader>
+					// Modal de Origem
+					<WorkForm
+						onWorkCreated={(newWork) => {
+							pendingNewWorkRef.current = { field: "origin", work: newWork }
+						}}
+						onSuccess={() => {
+							if (pendingNewWorkRef.current?.field === "origin") {
+								const newWork = pendingNewWorkRef.current.work
+								setForm((prev) => ({
+									...prev,
+									origin: newWork.id,
+									destiny: prev.destiny === newWork.id ? "" : prev.destiny,
+								}))
+								pendingNewWorkRef.current = null
+							}
+							setOpenOriginWorkModal(false)
+						}}
+						onCancel={() => setOpenOriginWorkModal(false)}
+					/>
+				</DialogContent>
+			</Dialog>
+
+			<Dialog
+				open={openDestinyWorkModal}
+				onOpenChange={setOpenDestinyWorkModal}
+			>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Nova obra</DialogTitle>
+					</DialogHeader>
+					// Modal de Destino
+					<WorkForm
+						onWorkCreated={(newWork) => {
+							pendingNewWorkRef.current = { field: "destiny", work: newWork }
+						}}
+						onSuccess={() => {
+							if (pendingNewWorkRef.current?.field === "destiny") {
+								const newWork = pendingNewWorkRef.current.work
+								setForm((prev) => ({ ...prev, destiny: newWork.id }))
+								pendingNewWorkRef.current = null
+							}
+							setOpenDestinyWorkModal(false)
+						}}
+						onCancel={() => setOpenDestinyWorkModal(false)}
+					/>
+				</DialogContent>
+			</Dialog>
 		</form>
 	)
 }

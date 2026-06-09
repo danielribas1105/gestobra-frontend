@@ -32,6 +32,7 @@ export const routes = {
 		create: "/jobs",
 		update: (id: string) => `/jobs/${id}`,
 		delete: (id: string) => `/jobs/${id}`,
+		getJobsByOriginWork: (origin_id: string) => `/jobs/by-work/${origin_id}`,
 	},
 	statements: {
 		list: "/statements",
