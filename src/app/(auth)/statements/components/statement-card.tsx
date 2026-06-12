@@ -4,6 +4,7 @@ import StatementModal from "./statement-modal"
 import LabelCard from "@/components/ui/label-card"
 import { useMaterial } from "@/hooks/materials/use-materials"
 import { useJobsByStatement } from "@/hooks/jobs/use-job-by-statement"
+import { useCarriers } from "@/hooks/carriers/use-carriers"
 
 const STATUS_COLORS: Record<Statement["status"], string> = {
 	pending: "#F59E0B",
@@ -27,6 +28,7 @@ export interface StatementCardProps {
 
 export default function StatementCard({ statement }: StatementCardProps) {
 	const [open, setOpen] = useState(false)
+	const { data: carriers, isLoading: loadingCarrier } = useCarriers()
 	const {
 		data: job,
 		isLoading: loadingJob,
@@ -34,9 +36,11 @@ export default function StatementCard({ statement }: StatementCardProps) {
 	} = useJobsByStatement(statement.id)
 	const {
 		data: material,
-		isLoading,
+		isLoading: loadingMaterial,
 		isError,
 	} = useMaterial(statement.material_id)
+
+	const carrier = carriers ? carriers[0].name : ""
 
 	return (
 		<>
@@ -62,6 +66,7 @@ export default function StatementCard({ statement }: StatementCardProps) {
 							description="Material transportado"
 							label="Material"
 							value={material?.name}
+							isLoading={loadingMaterial}
 						/>
 						<LabelCard
 							description="M³"
@@ -73,11 +78,19 @@ export default function StatementCard({ statement }: StatementCardProps) {
 						description="Obra de origem"
 						label="Origem"
 						value={job?.origin_name}
+						isLoading={loadingJob}
 					/>
 					<LabelCard
 						description="Obra de destino"
 						label="Destino"
 						value={job?.destiny_name}
+						isLoading={loadingJob}
+					/>
+					<LabelCard
+						description="Transportadora utilizada para a movimentação"
+						label="Transportadora"
+						value={carrier}
+						isLoading={loadingCarrier}
 					/>
 					<LabelCard
 						description="Data de criação"

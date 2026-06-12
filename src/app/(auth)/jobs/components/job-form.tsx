@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 
 import {
 	Select,
@@ -23,23 +23,26 @@ import {
 } from "@/components/ui/alert-dialog"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useJobMutations } from "@/hooks/jobs/use-job-mutations"
-import { useWorks } from "@/hooks/works/use-works"
-import { useCars } from "@/hooks/cars/use-cars"
-import { useUsers } from "@/hooks/users/use-users"
-import { useStatements } from "@/hooks/statements/use-statements"
-import { Job } from "@/schemas/job"
-import { Work } from "@/schemas/work"
-import { useCarriers } from "@/hooks/carriers/use-carriers"
-import { Plus } from "lucide-react"
 import {
 	Dialog,
 	DialogContent,
+	DialogDescription,
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { useCarriers } from "@/hooks/carriers/use-carriers"
+import { useCars } from "@/hooks/cars/use-cars"
+import { useJobMutations } from "@/hooks/jobs/use-job-mutations"
+import { useStatements } from "@/hooks/statements/use-statements"
+import { useUsers } from "@/hooks/users/use-users"
+import { useWorks } from "@/hooks/works/use-works"
+import { Job } from "@/schemas/job"
+import { Statement } from "@/schemas/statement"
+import { Work } from "@/schemas/work"
+import { Plus } from "lucide-react"
+import StatementForm from "../../statements/components/statement-form"
 import WorkForm from "../../works/components/work-form"
 
 interface JobFormProps {
@@ -75,16 +78,17 @@ export default function JobForm({
 	const { data: statements = [] } = useStatements()
 	const { data: carriers = [] } = useCarriers()
 
+	const [openStatementModal, setOpenStatementModal] = useState(false)
 	const [openOriginWorkModal, setOpenOriginWorkModal] = useState(false)
 	const [openDestinyWorkModal, setOpenDestinyWorkModal] = useState(false)
 
-	const drivers = users.filter((u) => u.profile === "driver")
+	const [newStatement, setNewStatement] = useState<Statement | null>(null)
 
-	/* useEffect(() => {
-		if (carriers.length > 0 && !form.carrier_id) {
-			setForm((prev) => ({ ...prev, carrier_id: carriers[0].id }))
-		}
-	}, [carriers]) */
+	const allStatements = newStatement
+		? [...statements.filter((s) => s.id !== newStatement.id), newStatement]
+		: statements
+
+	const drivers = users.filter((u) => u.profile === "driver")
 
 	const [form, setForm] = useState({
 		statement_id: job?.statement_id ?? null,
@@ -148,17 +152,35 @@ export default function JobForm({
 					<Label>MTR</Label>
 					<Select
 						value={form.statement_id ?? ""}
-						onValueChange={(v) => setForm({ ...form, statement_id: v || null })}
+						onValueChange={(v) => {
+							if (v === "__add_new__") {
+								setOpenStatementModal(true)
+								return
+							}
+							setForm({
+								...form,
+								statement_id: v || null,
+							})
+						}}
 					>
 						<SelectTrigger className="w-full">
 							<SelectValue placeholder="Código MTR" />
 						</SelectTrigger>
 						<SelectContent>
-							{statements.map((s) => (
+							{allStatements.map((s) => (
 								<SelectItem key={s.id} value={s.id}>
 									{s.code}
 								</SelectItem>
 							))}
+							<SelectItem
+								value="__add_new__"
+								className="text-primary font-medium"
+							>
+								<span className="flex items-center gap-1">
+									<Plus className="w-3.5 h-3.5" />
+									Adicionar Manifesto
+								</span>
+							</SelectItem>
 						</SelectContent>
 					</Select>
 				</div>
@@ -378,12 +400,34 @@ export default function JobForm({
 				</div>
 			</div>
 
+			<Dialog open={openStatementModal} onOpenChange={setOpenStatementModal}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Novo Manifesto</DialogTitle>
+					</DialogHeader>
+					<DialogDescription>Adicionar novo manifesto</DialogDescription>
+					<StatementForm
+						onStatementCreated={(newStatement) => {
+							setNewStatement(newStatement)
+							setForm((prev) => ({ ...prev, statement_id: newStatement.id }))
+						}}
+						onSuccess={() => {
+							setOpenStatementModal(false)
+						}}
+						onCancel={() => {
+							setNewStatement(null)
+							setOpenStatementModal(false)
+						}}
+					/>
+				</DialogContent>
+			</Dialog>
+
 			<Dialog open={openOriginWorkModal} onOpenChange={setOpenOriginWorkModal}>
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>Nova obra</DialogTitle>
 					</DialogHeader>
-					// Modal de Origem
+					<DialogDescription>Adicionar nova obra de origem</DialogDescription>
 					<WorkForm
 						onWorkCreated={(newWork) => {
 							pendingNewWorkRef.current = { field: "origin", work: newWork }
@@ -413,7 +457,7 @@ export default function JobForm({
 					<DialogHeader>
 						<DialogTitle>Nova obra</DialogTitle>
 					</DialogHeader>
-					// Modal de Destino
+					<DialogDescription>Adicionar nova obra de destino</DialogDescription>
 					<WorkForm
 						onWorkCreated={(newWork) => {
 							pendingNewWorkRef.current = { field: "destiny", work: newWork }
