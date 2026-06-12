@@ -33,6 +33,7 @@ import { useUsers } from "@/hooks/users/use-users"
 import { useStatements } from "@/hooks/statements/use-statements"
 import { useWorks } from "@/hooks/works/use-works"
 import { useJobsByOriginWork } from "@/hooks/jobs/use-jobs-by-work"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface WorkFormProps {
 	work?: Work
@@ -73,7 +74,10 @@ export default function WorkForm({
 	const { data: cars = [] } = useCars()
 	const { data: users = [] } = useUsers()
 	const { data: statements = [] } = useStatements()
-	const { data: jobsByWork = [] } = useJobsByOriginWork(work?.id)
+	const { data: jobsByWork = [], isLoading: loadJobsByWork } =
+		useJobsByOriginWork(work?.id)
+
+	console.log("loadJobsByWork", loadJobsByWork)
 
 	const [form, setForm] = useState<WorkFormState>({
 		code: work?.code ?? "",
@@ -381,57 +385,80 @@ export default function WorkForm({
 					</div>
 				</div>
 			)}
+
 			{/* Tabela de movimentações lidas do DB */}
-			{isEdit && jobsByWork.length > 0 && (
-				<div className="mt-4 space-y-2">
-					<p className="text-sm font-medium text-muted-foreground">
-						Movimentações
-					</p>
-					<div className="rounded-md border overflow-hidden">
-						<table className="w-full text-sm">
-							<thead className="bg-muted text-muted-foreground">
-								<tr>
-									<th className="px-3 py-2 text-left font-medium">MTR</th>
-									<th className="px-3 py-2 text-left font-medium">Destino</th>
-									<th className="px-3 py-2 text-left font-medium">Veículo</th>
-									<th className="px-3 py-2 text-left font-medium">Motorista</th>
-									<th className="px-3 py-2 text-left font-medium">Status</th>
-								</tr>
-							</thead>
-							<tbody>
-								{jobsByWork?.map((j, i) => (
-									<tr
-										key={j.id}
-										className={i % 2 === 0 ? "bg-background" : "bg-muted/40"}
-									>
-										<td className="px-3 py-2">
-											{statements
-												.filter((s) => j.statement_id === s.id)
-												.map((s) => s.code)}
-										</td>
-										<td className="px-3 py-2">
-											{works
-												.filter((w) => j.destiny === w.id)
-												.map((w) => w.name)}
-										</td>
-										<td className="px-3 py-2">
-											{cars
-												.filter((c) => j.car_id === c.id)
-												.map((c) => c.model)}
-										</td>
-										<td className="px-3 py-2">
-											{users
-												.filter((u) => j.driver_id === u.id)
-												.map((u) => u.name)}
-										</td>
-										<td className="px-3 py-2 capitalize">{j.status}</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
-					</div>
+			<div className="mt-4 space-y-2">
+				<p className="text-sm font-medium text-muted-foreground">
+					Movimentações
+				</p>
+				<div className="rounded-md border overflow-hidden">
+					<table className="w-full text-sm">
+						<thead className="bg-muted text-muted-foreground">
+							<tr>
+								<th className="px-3 py-2 text-left font-medium">MTR</th>
+								<th className="px-3 py-2 text-left font-medium">Destino</th>
+								<th className="px-3 py-2 text-left font-medium">Veículo</th>
+								<th className="px-3 py-2 text-left font-medium">Motorista</th>
+								<th className="px-3 py-2 text-left font-medium">Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							{loadJobsByWork
+								? Array.from({ length: 2 }).map((_, i) => (
+										<tr
+											key={i}
+											className={i % 2 === 0 ? "bg-background" : "bg-muted/40"}
+										>
+											<td className="px-3 py-2">
+												<Skeleton className="h-4 w-16" />
+											</td>
+											<td className="px-3 py-2">
+												<Skeleton className="h-4 w-28" />
+											</td>
+											<td className="px-3 py-2">
+												<Skeleton className="h-4 w-20" />
+											</td>
+											<td className="px-3 py-2">
+												<Skeleton className="h-4 w-24" />
+											</td>
+											<td className="px-3 py-2">
+												<Skeleton className="h-4 w-14" />
+											</td>
+										</tr>
+									))
+								: isEdit &&
+									jobsByWork.map((j, i) => (
+										<tr
+											key={j.id}
+											className={i % 2 === 0 ? "bg-background" : "bg-muted/40"}
+										>
+											<td className="px-3 py-2">
+												{statements
+													.filter((s) => j.statement_id === s.id)
+													.map((s) => s.code)}
+											</td>
+											<td className="px-3 py-2">
+												{works
+													.filter((w) => j.destiny === w.id)
+													.map((w) => w.name)}
+											</td>
+											<td className="px-3 py-2">
+												{cars
+													.filter((c) => j.car_id === c.id)
+													.map((c) => c.model)}
+											</td>
+											<td className="px-3 py-2">
+												{users
+													.filter((u) => j.driver_id === u.id)
+													.map((u) => u.name)}
+											</td>
+											<td className="px-3 py-2 capitalize">{j.status}</td>
+										</tr>
+									))}
+						</tbody>
+					</table>
 				</div>
-			)}
+			</div>
 
 			<JobModal
 				open={jobModalOpen}

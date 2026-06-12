@@ -22,12 +22,14 @@ interface MaterialFormProps {
 	material?: Material
 	onSuccess?: () => void
 	onCancel?: () => void
+	onMaterialCreated?: (material: Material) => void
 }
 
 export default function MaterialForm({
 	material,
 	onSuccess,
 	onCancel,
+	onMaterialCreated,
 }: MaterialFormProps) {
 	const isEdit = !!material
 
@@ -52,6 +54,7 @@ export default function MaterialForm({
 	// ✏️ CREATE / UPDATE
 	async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
 		e.preventDefault()
+		e.stopPropagation()
 
 		const payload = {
 			name: form.name,
@@ -66,9 +69,9 @@ export default function MaterialForm({
 					data: payload,
 				})
 			} else {
-				await createMaterial.mutateAsync(payload)
+				const created = await createMaterial.mutateAsync(payload)
+				onMaterialCreated?.(created)
 			}
-
 			onSuccess?.()
 		} catch {}
 	}
@@ -90,7 +93,6 @@ export default function MaterialForm({
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-5">
-			{/* Inputs */}
 			<div className="space-y-1">
 				<Label htmlFor="nome_material">Tipo de material *</Label>
 				<Input
@@ -124,7 +126,6 @@ export default function MaterialForm({
 				/>
 			</div>
 
-			{/* Actions */}
 			<div className="flex justify-between items-center">
 				{/* 🔥 DELETE COM MODAL */}
 				{isEdit && (

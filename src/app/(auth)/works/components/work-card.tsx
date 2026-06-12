@@ -15,7 +15,7 @@ export default function WorkCard({ work }: WorkCardProps) {
 	return (
 		<>
 			<article
-				className="h-64 border-2 rounded-lg p-4 flex flex-col gap-2 justify-between cursor-pointer"
+				className="h-64 border-2 rounded-lg p-4 flex flex-col gap-2 justify-between cursor-pointer hover:border-primary transition-colors"
 				onClick={() => setOpen(true)}
 				onKeyDown={(e) => e.key === "Enter" && setOpen(true)}
 				role="button"
@@ -23,16 +23,12 @@ export default function WorkCard({ work }: WorkCardProps) {
 				aria-label={`Ver detalhes da obra ${work.name}`}
 			>
 				<div className="flex flex-col gap-2 text-secondary-foreground">
-					<header className="flex items-center justify-between">
-						<div className="flex gap-2 items-center">
-							<MapPinHouse className="text-muted-foreground" size={30} />
-							<h2 className="text-2xl font-semibold">{work.name}</h2>
-						</div>
-						<Badge
-							variant={work.status === "active" ? "default" : "destructive"}
-						>
-							{work.status.toUpperCase()}
-						</Badge>
+					<header className="flex items-start gap-2">
+						<MapPinHouse
+							className="text-muted-foreground shrink-0 mt-1"
+							size={30}
+						/>
+						<h2 className="text-2xl font-semibold">{work.name}</h2>
 					</header>
 					<div className="flex flex-col gap-2">
 						<dl>
@@ -55,9 +51,14 @@ export default function WorkCard({ work }: WorkCardProps) {
 						</dl>
 					</div>
 				</div>
-				<footer className="flex items-center gap-1 text-secondary-foreground">
-					<p className="font-semibold text-muted-foreground">Criada em:</p>
-					<p>{formatDate(work.created_at ?? "")}</p>
+				<footer className="flex items-center justify-between">
+					<div className="flex items-center gap-1 text-secondary-foreground">
+						<p className="font-semibold text-muted-foreground">Criada em:</p>
+						<p>{formatDate(work.created_at ?? "")}</p>
+					</div>
+					<Badge variant={work.status === "active" ? "default" : "destructive"}>
+						{work.status.toUpperCase()}
+					</Badge>
 				</footer>
 			</article>
 			<WorkModal open={open} onOpenChange={setOpen} work={work} />

@@ -12,6 +12,13 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -23,13 +30,17 @@ import {
 } from "@/components/ui/select"
 import { useMaterials } from "@/hooks/materials/use-materials"
 import { useStatementMutations } from "@/hooks/statements/use-statement-mutations"
+import { Material } from "@/schemas/material"
 import { Statement, StatementStatusEnum } from "@/schemas/statement"
+import { Plus } from "lucide-react"
 import { useState } from "react"
+import MaterialForm from "../../materials/components/material-form"
 
 interface StatementFormProps {
 	statement?: Statement
 	onSuccess?: () => void
 	onCancel?: () => void
+	onStatementCreated?: (statement: Statement) => void
 }
 
 const STATUS_LABELS: Record<
@@ -47,13 +58,20 @@ export default function StatementForm({
 	statement,
 	onSuccess,
 	onCancel,
+	onStatementCreated,
 }: StatementFormProps) {
 	const isEdit = !!statement
 
 	const { createStatement, updateStatement, deleteStatement } =
 		useStatementMutations()
-
 	const { data: materials = [], isLoading: isLoadingMaterials } = useMaterials()
+
+	const [openMaterialModal, setOpenMaterialModal] = useState(false)
+	const [newMaterial, setNewMaterial] = useState<Material | null>(null)
+
+	const allMaterials = newMaterial
+		? [...materials.filter((m) => m.id !== newMaterial.id), newMaterial]
+		: materials
 
 	const [form, setForm] = useState({
 		code: statement?.code ?? "",
@@ -67,8 +85,9 @@ export default function StatementForm({
 		setForm((prev) => ({ ...prev, [field]: value }))
 	}
 
-	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+	async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
 		e.preventDefault()
+		e.stopPropagation()
 
 		const payload = {
 			code: form.code,
@@ -82,7 +101,8 @@ export default function StatementForm({
 			if (isEdit) {
 				await updateStatement.mutateAsync({ id: statement!.id, data: payload })
 			} else {
-				await createStatement.mutateAsync(payload)
+				const created = await createStatement.mutateAsync(payload)
+				onStatementCreated?.(created)
 			}
 			onSuccess?.()
 		} catch {}
@@ -119,8 +139,17 @@ export default function StatementForm({
 					<Label htmlFor="status">Material *</Label>
 					<Select
 						value={form.material_id}
-						onValueChange={(value) => handleChange("material_id", value)}
-						disabled={loading || isLoadingMaterials}
+						disabled={loading}
+						onValueChange={(v) => {
+							if (v === "__add_new__") {
+								setOpenMaterialModal(true)
+								return
+							}
+							setForm({
+								...form,
+								material_id: v,
+							})
+						}}
 					>
 						<SelectTrigger id="status" className="w-full">
 							<SelectValue
@@ -132,11 +161,20 @@ export default function StatementForm({
 							/>
 						</SelectTrigger>
 						<SelectContent>
-							{materials.map((material) => (
+							{allMaterials.map((material) => (
 								<SelectItem key={material.id} value={material.id}>
 									{material.name}
 								</SelectItem>
 							))}
+							<SelectItem
+								value="__add_new__"
+								className="text-primary font-medium"
+							>
+								<span className="flex items-center gap-1">
+									<Plus className="w-3.5 h-3.5" />
+									Adicionar Material
+								</span>
+							</SelectItem>
 						</SelectContent>
 					</Select>
 				</div>
@@ -230,6 +268,28 @@ export default function StatementForm({
 					</Button>
 				</div>
 			</div>
+
+			<Dialog open={openMaterialModal} onOpenChange={setOpenMaterialModal}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Novo Material</DialogTitle>
+					</DialogHeader>
+					<DialogDescription>Adicionar novo material</DialogDescription>
+					<MaterialForm
+						onMaterialCreated={(newMaterial) => {
+							setNewMaterial(newMaterial)
+							setForm((prev) => ({ ...prev, material_id: newMaterial.id }))
+						}}
+						onSuccess={() => {
+							setOpenMaterialModal(false)
+						}}
+						onCancel={() => {
+							setNewMaterial(null)
+							setOpenMaterialModal(false)
+						}}
+					/>
+				</DialogContent>
+			</Dialog>
 		</form>
 	)
 }
