@@ -18,6 +18,8 @@ export default function StatementModal({
 		<ModalWrapper
 			open={open}
 			onOpenChange={onOpenChange}
+			width="50vw"
+			maxHeight="70vh"
 			title={statement ? "Excluir/Editar manifesto" : "Adicionar manifesto"}
 			description={
 				statement

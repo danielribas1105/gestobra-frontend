@@ -33,6 +33,8 @@ export const routes = {
 		update: (id: string) => `/jobs/${id}`,
 		delete: (id: string) => `/jobs/${id}`,
 		getJobsByOriginWork: (origin_id: string) => `/jobs/by-work/${origin_id}`,
+		getJobByStatement: (statement_id: string) =>
+			`/jobs/by-statement/${statement_id}`,
 	},
 	statements: {
 		list: "/statements",
@@ -45,6 +47,7 @@ export const routes = {
 		create: "/materials",
 		update: (id: string) => `/materials/${id}`,
 		delete: (id: string) => `/materials/${id}`,
+		getById: (id: string) => `/materials/${id}`,
 	},
 	payments: {
 		list: "/payments",

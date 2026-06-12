@@ -1,6 +1,9 @@
 import { Statement } from "@/schemas/statement"
 import { useState } from "react"
 import StatementModal from "./statement-modal"
+import LabelCard from "@/components/ui/label-card"
+import { useMaterial } from "@/hooks/materials/use-materials"
+import { useJobsByStatement } from "@/hooks/jobs/use-job-by-statement"
 
 const STATUS_COLORS: Record<Statement["status"], string> = {
 	pending: "#F59E0B",
@@ -24,37 +27,68 @@ export interface StatementCardProps {
 
 export default function StatementCard({ statement }: StatementCardProps) {
 	const [open, setOpen] = useState(false)
+	const {
+		data: job,
+		isLoading: loadingJob,
+		isError: errorJob,
+	} = useJobsByStatement(statement.id)
+	const {
+		data: material,
+		isLoading,
+		isError,
+	} = useMaterial(statement.material_id)
 
 	return (
 		<>
 			<article
-				className="w-56 h-64 border-2 rounded-lg p-3 flex flex-col gap-2 cursor-pointer hover:border-primary transition-colors"
+				className="h-64 border-2 rounded-lg p-3 flex flex-col gap-2 cursor-pointer hover:border-primary transition-colors"
 				onClick={() => setOpen(true)}
 				onKeyDown={(e) => e.key === "Enter" && setOpen(true)}
 				role="button"
 				tabIndex={0}
 				aria-label={`Ver detalhes do manifesto ${statement.code}`}
 			>
-				<header>
-					<h2 className="font-semibold text-sm truncate">
-						Manifesto nº {statement.code}
-					</h2>
+				<header className="flex gap-3 items-start">
+					<div className="flex flex-2/3 gap-2 items-center">
+						<h2 className="text-xl text-muted-foreground font-semibold">
+							MTR nº
+						</h2>
+						<h2 className="text-xl">{statement.code}</h2>
+					</div>
 				</header>
-
-				<dl className="flex flex-col gap-1 text-sm text-muted-foreground flex-1">
-					<div>
-						<dt className="text-xs uppercase font-medium">M³</dt>
-						<dd>{statement.m3}</dd>
+				<div className="flex flex-col gap-2 text-secondary-foreground">
+					<div className="grid grid-cols-2 gap-2">
+						<LabelCard
+							description="Material transportado"
+							label="Material"
+							value={material?.name}
+						/>
+						<LabelCard
+							description="M³"
+							label="Quantidade (M³)"
+							value={statement.m3}
+						/>
 					</div>
-					<div>
-						<dt className="text-xs uppercase font-medium">Criado</dt>
-						<dd>
-							{statement.created_at
+					<LabelCard
+						description="Obra de origem"
+						label="Origem"
+						value={job?.origin_name}
+					/>
+					<LabelCard
+						description="Obra de destino"
+						label="Destino"
+						value={job?.destiny_name}
+					/>
+					<LabelCard
+						description="Data de criação"
+						label="Criado em:"
+						value={
+							statement.created_at
 								? new Date(statement.created_at).toLocaleDateString("pt-BR")
-								: "—"}
-						</dd>
-					</div>
-				</dl>
+								: "—"
+						}
+					/>
+				</div>
 
 				<footer className="flex items-center gap-2">
 					<span

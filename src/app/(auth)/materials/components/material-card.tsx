@@ -13,7 +13,7 @@ export default function MaterialCard({ material }: MaterialCardProps) {
 	return (
 		<>
 			<article
-				className="w-56 h-28 border-2 rounded-lg p-2 flex flex-col justify-between gap-2 cursor-pointer transition-all duration-200 hover:shadow-md hover:border-primary hover:-translate-y-0.5"
+				className="h-28 border-2 rounded-lg p-2 flex flex-col justify-between gap-2 cursor-pointer transition-all duration-200 hover:shadow-md hover:border-primary hover:-translate-y-0.5"
 				onClick={() => setOpen(true)}
 				onKeyDown={(e) => e.key === "Enter" && setOpen(true)}
 				role="button"
