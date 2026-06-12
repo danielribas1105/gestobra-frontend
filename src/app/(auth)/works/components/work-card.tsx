@@ -40,7 +40,9 @@ export default function WorkCard({ work }: WorkCardProps) {
 								Manifesto de transporte de resíduos e rejeitos
 							</dt>
 							<dd className="flex gap-2 items-center">
-								<p className="font-semibold text-muted-foreground">MTR nº:</p>
+								<p className="font-semibold text-muted-foreground">
+									Razão Social:
+								</p>
 								<p className="font-semibold">{work.code}</p>
 							</dd>
 						</dl>

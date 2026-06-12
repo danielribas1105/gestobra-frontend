@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
 	Select,
 	SelectContent,
@@ -102,70 +103,83 @@ export default function StatementForm({
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-4">
-			{/* Código */}
-			<Input
-				placeholder="Código"
-				value={form.code}
-				onChange={(e) => handleChange("code", e.target.value)}
-				disabled={loading}
-			/>
-
-			{/* Material */}
-			<Select
-				value={form.material_id}
-				onValueChange={(value) => handleChange("material_id", value)}
-				disabled={loading || isLoadingMaterials}
-			>
-				<SelectTrigger>
-					<SelectValue
-						placeholder={
-							isLoadingMaterials
-								? "Carregando materiais..."
-								: "Selecione o material"
-						}
+			<div className="grid grid-cols-3 gap-2">
+				<div className="space-y-1">
+					<Label htmlFor="code-mtr">Código MTR</Label>
+					<Input
+						id="code-mtr"
+						placeholder="Digite o código do MTR"
+						value={form.code}
+						onChange={(e) => handleChange("code", e.target.value)}
+						disabled={loading}
+						required
 					/>
-				</SelectTrigger>
-				<SelectContent>
-					{materials.map((material) => (
-						<SelectItem key={material.id} value={material.id}>
-							{material.name}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
+				</div>
+				<div className="col-span-2 space-y-1">
+					<Label htmlFor="status">Material *</Label>
+					<Select
+						value={form.material_id}
+						onValueChange={(value) => handleChange("material_id", value)}
+						disabled={loading || isLoadingMaterials}
+					>
+						<SelectTrigger id="status" className="w-full">
+							<SelectValue
+								placeholder={
+									isLoadingMaterials
+										? "Carregando materiais..."
+										: "Selecione o material"
+								}
+							/>
+						</SelectTrigger>
+						<SelectContent>
+							{materials.map((material) => (
+								<SelectItem key={material.id} value={material.id}>
+									{material.name}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</div>
+			</div>
 
-			{/* M3 */}
-			<Input
-				type="number"
-				placeholder="Quantidade (m³)"
-				value={form.m3}
-				onChange={(e) => handleChange("m3", e.target.value)}
-				disabled={loading}
-				min={0}
-				step="0.01"
-			/>
+			<div className="grid grid-cols-3 gap-2">
+				<div className="space-y-1">
+					<Label htmlFor="quantidade-m3">Quantidade</Label>
+					<Input
+						id="quantidade-m3"
+						type="number"
+						placeholder="Quantidade (m³)"
+						value={form.m3}
+						onChange={(e) => handleChange("m3", e.target.value)}
+						disabled={loading}
+						min={0}
+						step="0.01"
+						required
+					/>
+				</div>
+				<div className="space-y-1">
+					<Label htmlFor="status">Status</Label>
+					<Select
+						value={form.status}
+						onValueChange={(value) =>
+							handleChange("status", value as Statement["status"])
+						}
+						disabled={loading}
+					>
+						<SelectTrigger>
+							<SelectValue placeholder="Selecione o status" />
+						</SelectTrigger>
+						<SelectContent>
+							{StatementStatusEnum.options.map((status) => (
+								<SelectItem key={status} value={status}>
+									{STATUS_LABELS[status]}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</div>
+			</div>
 
-			{/* Status */}
-			<Select
-				value={form.status}
-				onValueChange={(value) =>
-					handleChange("status", value as Statement["status"])
-				}
-				disabled={loading}
-			>
-				<SelectTrigger>
-					<SelectValue placeholder="Selecione o status" />
-				</SelectTrigger>
-				<SelectContent>
-					{StatementStatusEnum.options.map((status) => (
-						<SelectItem key={status} value={status}>
-							{STATUS_LABELS[status]}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
-
-			{/* Actions */}
 			<div className="flex justify-between items-center">
 				{isEdit && (
 					<AlertDialog>
@@ -198,7 +212,6 @@ export default function StatementForm({
 					</AlertDialog>
 				)}
 
-				{/* SUBMIT OR CANCEL */}
 				<div className="flex items-center gap-2 ml-auto">
 					<Button
 						type="button"

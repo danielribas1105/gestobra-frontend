@@ -1,7 +1,7 @@
 interface LabelCardProps {
 	description: string
 	label: string
-	value: string | number
+	value: string | number | undefined
 }
 
 export default function LabelCard({

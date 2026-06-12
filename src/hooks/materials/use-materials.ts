@@ -11,3 +11,11 @@ export function useMaterials() {
 		queryFn: () => clientApi(routes.materials.list),
 	})
 }
+
+export function useMaterial(id: string) {
+	return useQuery<Material>({
+		queryKey: ["materials", id],
+		queryFn: () => clientApi(routes.materials.getById(id)),
+		enabled: !!id,
+	})
+}
