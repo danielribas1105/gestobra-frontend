@@ -10,9 +10,9 @@ export default function JobsPage() {
 	return (
 		<section className="flex flex-col gap-7">
 			<TitlePage
-				title="Transportes"
-				placeholder="Procure pela placa - Ex: oxk8978"
-				textTooltip="Adicionar Transporte"
+				title="Movimentações"
+				placeholder="Buscar movimentação"
+				textTooltip="Adicionar Movimentação"
 				onAdd={() => setOpen(true)}
 			/>
 			<div className="flex justify-center">

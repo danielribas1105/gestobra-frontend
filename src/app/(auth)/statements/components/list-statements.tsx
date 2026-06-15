@@ -1,7 +1,7 @@
+import CardsSkeleton from "@/components/layout/cards-skeleton"
 import { useStatements } from "@/hooks/statements/use-statements"
 import { Statement } from "@/schemas/statement"
 import StatementCard from "./statement-card"
-import StatementCardSkeleton from "./statement-card-skeleton"
 
 export default function ListStatements() {
 	const { data: statements = [], isLoading } = useStatements()
@@ -10,7 +10,7 @@ export default function ListStatements() {
 		return (
 			<div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
 				{Array.from({ length: 4 }).map((_, i) => (
-					<StatementCardSkeleton key={i} />
+					<CardsSkeleton key={i} />
 				))}
 			</div>
 		)

@@ -45,7 +45,7 @@ export default function StatementCard({ statement }: StatementCardProps) {
 	return (
 		<>
 			<article
-				className="h-64 border-2 rounded-lg p-3 flex flex-col gap-2 cursor-pointer hover:border-primary transition-colors"
+				className="h-64 border-2 rounded-lg p-3 flex flex-col justify-between gap-2 cursor-pointer hover:border-primary transition-colors"
 				onClick={() => setOpen(true)}
 				onKeyDown={(e) => e.key === "Enter" && setOpen(true)}
 				role="button"
@@ -94,7 +94,7 @@ export default function StatementCard({ statement }: StatementCardProps) {
 					/>
 					<LabelCard
 						description="Data de criação"
-						label="Criado em:"
+						label="Criado em"
 						value={
 							statement.created_at
 								? new Date(statement.created_at).toLocaleDateString("pt-BR")

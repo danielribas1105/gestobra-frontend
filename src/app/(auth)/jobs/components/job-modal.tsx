@@ -26,11 +26,11 @@ export default function JobModal({
 			onOpenChange={onOpenChange}
 			width="70vw"
 			maxHeight="90vh"
-			title={job ? "Excluir/Editar transporte" : "Adicionar transporte"}
+			title={job ? "Excluir/Editar movimentação" : "Adicionar movimentação"}
 			description={
 				job
-					? "Exclua ou edite as informações do transporte"
-					: "Preencha as informações do novo transporte e clique em salvar"
+					? "Exclua ou edite as informações da movimentação"
+					: "Preencha as informações da nova moviemtação e clique em salvar"
 			}
 		>
 			<JobForm
