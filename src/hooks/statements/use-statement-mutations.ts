@@ -2,7 +2,7 @@
 
 import { routes } from "@/config/routes"
 import { clientApi } from "@/lib/api/client"
-import { Statement } from "@/schemas/statements"
+import { Statement } from "@/schemas/statement"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 

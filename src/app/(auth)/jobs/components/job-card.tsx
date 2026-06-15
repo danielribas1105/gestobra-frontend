@@ -26,9 +26,9 @@ export default function JobCard({ job }: JobCardProps) {
 					</header>
 					<dl>
 						<dt>Origem</dt>
-						<dd>{job.origin_id}</dd>
+						<dd>{job.origin}</dd>
 						<dt>Destino</dt>
-						<dd>{job.destiny_id}</dd>
+						<dd>{job.destiny}</dd>
 					</dl>
 					<footer className="flex items-center gap-1 text-secondary-foreground">
 						<Circle
