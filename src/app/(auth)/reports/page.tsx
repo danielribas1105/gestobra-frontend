@@ -1,4 +1,4 @@
-import TitlePage from "@/components/ui/title-page"
+import TitlePage from "@/components/layout/title-page"
 
 import ColumnsChart from "./components/columns-chart"
 
