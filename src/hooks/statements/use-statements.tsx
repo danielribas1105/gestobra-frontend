@@ -11,3 +11,11 @@ export function useStatements() {
 		queryFn: () => clientApi(routes.statements.list),
 	})
 }
+
+export function useStatement(id: string) {
+	return useQuery<Statement>({
+		queryKey: ["statements", id],
+		queryFn: () => clientApi(routes.statements.getById(id)),
+		enabled: !!id,
+	})
+}

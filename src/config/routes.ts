@@ -14,6 +14,7 @@ export const routes = {
 		create: "/cars",
 		update: (id: string) => `/cars/${id}`,
 		delete: (id: string) => `/cars/${id}`,
+		getById: (id: string) => `/cars/${id}`,
 	},
 	carriers: {
 		list: "/carriers",
@@ -41,6 +42,7 @@ export const routes = {
 		create: "/statements",
 		update: (id: string) => `/statements/${id}`,
 		delete: (id: string) => `/statements/${id}`,
+		getById: (id: string) => `/statements/${id}`,
 	},
 	materials: {
 		list: "/materials",

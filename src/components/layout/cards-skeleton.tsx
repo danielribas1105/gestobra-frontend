@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton"
 
-export default function StatementCardSkeleton() {
+export default function CardsSkeleton() {
 	return (
 		<div className="rounded-xl border p-5 flex flex-col gap-3">
 			<Skeleton className="h-5 w-2/3" />
