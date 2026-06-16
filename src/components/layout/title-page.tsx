@@ -35,7 +35,7 @@ export default function TitlePage({
 				</h1>
 				<Tooltip>
 					<TooltipTrigger asChild>
-						{isAdmin && (
+						{isAdmin && onAdd && (
 							<Button
 								variant="default"
 								className="flex gap-2 cursor-pointer"

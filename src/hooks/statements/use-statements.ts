@@ -19,3 +19,11 @@ export function useStatement(id: string) {
 		enabled: !!id,
 	})
 }
+
+export function useStatementByJob(jobId: string | undefined) {
+	return useQuery<Statement>({
+		queryKey: ["statements", "by-job", jobId],
+		queryFn: () => clientApi(routes.statements.getByJobId(jobId!)),
+		enabled: !!jobId,
+	})
+}
