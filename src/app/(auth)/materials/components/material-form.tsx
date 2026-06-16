@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useMaterialMutations } from "@/hooks/materials/use-material-mutations"
 import { Material } from "@/schemas/material"
+import { parseValueM3 } from "@/utils/format-numbers"
 import { useState } from "react"
 
 interface MaterialFormProps {
@@ -43,13 +44,6 @@ export default function MaterialForm({
 			? String(material.value_m3).replace(".", ",")
 			: "",
 	})
-
-	function parseValueM3(raw: string): number {
-		// "1.234,56" → 1234.56  |  "10,50" → 10.50  |  "10.50" → 10.50
-		const normalized = raw.trim().replace(/\./g, "").replace(",", ".")
-		const parsed = parseFloat(normalized)
-		return isNaN(parsed) ? 0 : parsed
-	}
 
 	// ✏️ CREATE / UPDATE
 	async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {

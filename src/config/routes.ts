@@ -43,6 +43,7 @@ export const routes = {
 		update: (id: string) => `/statements/${id}`,
 		delete: (id: string) => `/statements/${id}`,
 		getById: (id: string) => `/statements/${id}`,
+		getByJobId: (job_id: string) => `/statements/by-job/${job_id}`,
 	},
 	materials: {
 		list: "/materials",
@@ -56,6 +57,8 @@ export const routes = {
 		create: "/payments",
 		update: (id: string) => `/payments/${id}`,
 		delete: (id: string) => `/payments/${id}`,
+		summaryByCar: "/payments/summary/by-car",
+		getByLicense: (license: string) => `/payments/by-car/license/${license}`,
 		values: "/payments/values",
 	},
 }

@@ -1,22 +1,38 @@
-import { usePayments } from "@/hooks/payments/use-payments"
-import { Payment } from "@/schemas/payment"
-import PaymentCard from "./payment-card"
+import { DataTable } from "@/components/ui/data-table"
+import { usePaymentsSummaryByCar } from "@/hooks/payments/use-payments"
+import { PaymentByCar } from "@/schemas/payment"
+import { useState } from "react"
+import { PaymentColumnsByCar } from "./payments-columns-by-car"
+import PaymentsModal from "./payments-modal"
 
 export default function ListPayments() {
-	const { data: payments = [], isLoading } = usePayments()
+	const [selectedPayment, setSelectedPayment] = useState<
+		PaymentByCar | undefined
+	>(undefined)
+	const { data: summaryByCar, isLoading } = usePaymentsSummaryByCar()
 
 	if (isLoading) return <p>Carregando...</p>
 
-	if (payments.length === 0) {
+	if (summaryByCar?.length === 0) {
 		return <div>Nenhum pagamento encontrado!</div>
 	}
 
 	return (
-		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-			{payments &&
-				payments.map((payment: Payment) => (
-					<PaymentCard key={payment.id} payment={payment} />
-				))}
-		</div>
+		<>
+			<div className="w-full">
+				<DataTable
+					columns={PaymentColumnsByCar}
+					data={summaryByCar ?? []}
+					onRowClick={(paymentByCar) => setSelectedPayment(paymentByCar)}
+				/>
+			</div>
+			<PaymentsModal
+				open={!!selectedPayment}
+				onOpenChange={(p) => {
+					if (!p) setSelectedPayment(undefined)
+				}}
+				paymentByCar={selectedPayment}
+			/>
+		</>
 	)
 }
