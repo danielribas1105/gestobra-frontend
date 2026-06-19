@@ -9,6 +9,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useJobs } from "@/hooks/jobs/use-jobs"
 import JobModal from "../jobs/components/job-modal"
 import { Job } from "@/schemas/job"
+import ListJobsHome from "./components/list-jobs-home"
+import SummaryWrapper from "./components/summary-wrapper"
 
 export default function HomePage() {
 	const { user, loading } = useSession()
@@ -46,47 +48,30 @@ export default function HomePage() {
 
 	return (
 		<section className="flex flex-col gap-3">
-			<div className="flex flex-1 gap-2 items-center justify-around">
-				<div className="flex-1 flex-col gap-4 border-2 rounded-lg p-3 h-40">
-					<div className="text-secondary-foreground text-lg font-semibold mb-2">
-						Título
-					</div>
-					<div className="text-muted-foreground">Info 1</div>
-					<div className="text-muted-foreground">Info 2</div>
-				</div>
-				<div className="flex-1 flex-col gap-4 border-2 rounded-lg p-3 h-40">
-					<div className="text-secondary-foreground text-lg font-semibold mb-2">
-						Título
-					</div>
-					<div className="text-muted-foreground">Info 1</div>
-					<div className="text-muted-foreground">Info 2</div>
-				</div>
-				<div className="flex-1 flex-col gap-4 border-2 rounded-lg p-3 h-40">
-					<div className="text-secondary-foreground text-lg font-semibold mb-2">
-						Total de Viagens
-					</div>
-					<div className="text-muted-foreground">Realizadas</div>
-					<div className="text-muted-foreground">Pendentes</div>
-					<div className="text-muted-foreground">Canceladas</div>
-				</div>
-				<div className="flex-1 flex-col gap-4 border-2 rounded-lg p-3 h-40">
-					<div className="text-secondary-foreground text-lg font-semibold mb-2">
-						Pagamentos
-					</div>
-					<div className="text-muted-foreground">Pago</div>
-					<div className="text-muted-foreground">Pendente</div>
-				</div>
-			</div>
+			<SummaryWrapper />
 			<div className="flex flex-col gap-1">
-				<div className="flex justify-end">
+				<div className="md:hidden flex justify-center">
+					<p className="text-2xl font-semibold">Movimentações</p>
+				</div>
+				<div className="hidden md:flex justify-end">
 					<JobStatusLegend />
 				</div>
-				<DataTable
-					columns={JobColumns}
-					data={jobs}
-					onRowClick={(job) => setSelectedJob(job)}
-				/>
+
+				{/* Desktop: tabela normal */}
+				<div className="hidden md:block">
+					<DataTable
+						columns={JobColumns}
+						data={jobs}
+						onRowClick={(job) => setSelectedJob(job)}
+					/>
+				</div>
+
+				{/* Mobile: cards */}
+				<div className="md:hidden">
+					<ListJobsHome jobs={jobs} onJobClick={(job) => setSelectedJob(job)} />
+				</div>
 			</div>
+
 			<JobModal
 				open={!!selectedJob}
 				onOpenChange={(v) => {
