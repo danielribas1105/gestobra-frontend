@@ -27,3 +27,10 @@ export function useStatementByJob(jobId: string | undefined) {
 		enabled: !!jobId,
 	})
 }
+
+export function useStatementsWithoutJob() {
+	return useQuery<Statement[]>({
+		queryKey: ["statements", "without-job"],
+		queryFn: () => clientApi(routes.statements.getListWithoutJob),
+	})
+}

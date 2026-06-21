@@ -16,7 +16,7 @@ export default function CarCard({ car }: CarCardProps) {
 	return (
 		<>
 			<article
-				className="h-64 border-2 rounded-lg p-4 flex flex-col gap-2 justify-between cursor-pointer"
+				className="h-64 border-2 rounded-lg p-4 flex flex-col gap-2 justify-between cursor-pointer hover:border-primary transition-colors"
 				onClick={() => setOpen(true)}
 				onKeyDown={(e) => e.key === "Enter" && setOpen(true)}
 				role="button"
@@ -40,9 +40,6 @@ export default function CarCard({ car }: CarCardProps) {
 							{car.license}
 						</p>
 					</div>
-					<Badge variant={car.active ? "default" : "destructive"}>
-						{car.active ? "ATIVO" : "INATIVO"}
-					</Badge>
 				</header>
 				<div className="flex flex-col gap-2 text-secondary-foreground">
 					<LabelCard
@@ -56,9 +53,15 @@ export default function CarCard({ car }: CarCardProps) {
 						value={car.fuel}
 					/>
 				</div>
-				<footer className="flex items-center gap-1 text-secondary-foreground">
-					<p className="font-semibold text-muted-foreground">Desde:</p>
-					<p>{formatDate(car.created_at ?? "")}</p>
+				<footer className="flex items-center justify-between gap-2">
+					<LabelCard
+						description="Data de cadastro do veículo"
+						label="Desde"
+						value={formatDate(car.created_at ?? "")}
+					/>
+					<Badge variant={car.active ? "default" : "destructive"}>
+						{car.active ? "ATIVO" : "INATIVO"}
+					</Badge>
 				</footer>
 			</article>
 			<CarModal open={open} onOpenChange={setOpen} car={car} />

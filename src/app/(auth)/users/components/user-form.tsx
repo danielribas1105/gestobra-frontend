@@ -24,6 +24,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Label } from "@/components/ui/label"
 
 interface UserFormProps {
 	user?: User
@@ -101,69 +102,93 @@ export default function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
 						Enviar foto
 					</Button>
 					<p className="text-xs text-muted-foreground">
-						Upload de imagem em breve.
+						Upload de imagem em breve
 					</p>
 				</div>
 			</div>
 
-			{/* Campos principais */}
-			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-				<Input
-					placeholder="Nome completo"
-					value={form.name}
-					onChange={(e) => handleChange("name", e.target.value)}
-					disabled={loading}
-					required
-				/>
-				<Input
-					type="email"
-					placeholder="E-mail"
-					value={form.email}
-					onChange={(e) => handleChange("email", e.target.value)}
-					disabled={loading}
-					required
-				/>
-				<Input
-					placeholder="CPF (XXX.XXX.XXX-XX)"
-					value={form.cpf}
-					onChange={(e) => handleChange("cpf", e.target.value)}
-					disabled={loading}
-				/>
-				<Input
-					placeholder="Telefone ((XX) XXXXX-XXXX)"
-					value={form.phone}
-					onChange={(e) => handleChange("phone", e.target.value)}
-					disabled={loading}
-				/>
+			<div className="grid grid-cols-2 md:grid-cols-2 gap-4">
+				<div className="space-y-1">
+					<Label htmlFor="name">Nome</Label>
+					<Input
+						id="name"
+						placeholder="Nome completo"
+						value={form.name}
+						onChange={(e) => handleChange("name", e.target.value)}
+						disabled={loading}
+						required
+					/>
+				</div>
+				<div className="space-y-1">
+					<Label htmlFor="email">E-mail</Label>
+					<Input
+						id="email"
+						type="email"
+						placeholder="E-mail"
+						value={form.email}
+						onChange={(e) => handleChange("email", e.target.value)}
+						disabled={loading}
+						required
+					/>
+				</div>
 			</div>
 
-			<Select
-				value={form.profile}
-				onValueChange={(v) => handleChange("profile", v)}
-				disabled={loading}
-			>
-				<SelectTrigger>
-					<SelectValue placeholder="Perfil" />
-				</SelectTrigger>
-				<SelectContent>
-					<SelectItem value="operator">Operador</SelectItem>
-					<SelectItem value="admin">Administrador</SelectItem>
-					<SelectItem value="driver">Motorista</SelectItem>
-				</SelectContent>
-			</Select>
-
-			{/* Senha */}
-			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-				<Input
-					type="password"
-					placeholder={isEdit ? "Nova senha (opcional)" : "Senha"}
-					value={form.password}
-					onChange={(e) => handleChange("password", e.target.value)}
-					disabled={loading}
-					required={!isEdit}
-				/>
-				<div className="flex flex-col gap-1">
+			<div className="grid grid-cols-3 gap-2">
+				<div className="space-y-1">
+					<Label htmlFor="cpf">CPF</Label>
 					<Input
+						id="cpf"
+						placeholder="CPF (XXX.XXX.XXX-XX)"
+						value={form.cpf}
+						onChange={(e) => handleChange("cpf", e.target.value)}
+						disabled={loading}
+					/>
+				</div>
+				<div className="space-y-1">
+					<Label htmlFor="phone">Telefone</Label>
+					<Input
+						id="phone"
+						placeholder="Telefone ((XX) XXXXX-XXXX)"
+						value={form.phone}
+						onChange={(e) => handleChange("phone", e.target.value)}
+						disabled={loading}
+					/>
+				</div>
+				<div className="space-y-1">
+					<Label htmlFor="profile">Perfil</Label>
+					<Select
+						value={form.profile}
+						onValueChange={(v) => handleChange("profile", v)}
+						disabled={loading}
+					>
+						<SelectTrigger id="profile" className="w-full">
+							<SelectValue placeholder="Perfil" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="operator">Operador</SelectItem>
+							<SelectItem value="admin">Administrador</SelectItem>
+							<SelectItem value="driver">Motorista</SelectItem>
+						</SelectContent>
+					</Select>
+				</div>
+			</div>
+
+			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+				<div className="space-y-1">
+					<Label htmlFor="password">Senha</Label>
+					<Input
+						type="password"
+						placeholder={isEdit ? "Nova senha (opcional)" : "Senha"}
+						value={form.password}
+						onChange={(e) => handleChange("password", e.target.value)}
+						disabled={loading}
+						required={!isEdit}
+					/>
+				</div>
+				<div className="space-y-1">
+					<Label htmlFor="password-check">Confirmar Senha</Label>
+					<Input
+						id="password-check"
 						type="password"
 						placeholder="Confirmar senha"
 						value={form.confirm_password}
@@ -177,7 +202,6 @@ export default function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
 				</div>
 			</div>
 
-			{/* Actions */}
 			<div className="flex justify-between items-center">
 				{/* 🔥 DELETE COM MODAL */}
 				{isEdit && (

@@ -2,7 +2,7 @@
 
 import { routes } from "@/config/routes"
 import { clientApi } from "@/lib/api/client"
-import { Payment } from "@/schemas/payment"
+import { Payment, PaymentBatchUpdate } from "@/schemas/payment"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
@@ -27,7 +27,6 @@ export function usePaymentMutations() {
 				toast.error(error.message)
 				return
 			}
-
 			toast.error("Erro ao criar pagamento")
 		},
 	})
@@ -50,7 +49,6 @@ export function usePaymentMutations() {
 				toast.error("Pagamento não encontrado")
 				return
 			}
-
 			toast.error(error.message)
 		},
 	})
@@ -72,8 +70,25 @@ export function usePaymentMutations() {
 				toast.error("Pagamento não encontrado")
 				return
 			}
-
 			toast.error(error.message || "Erro ao excluir pagamento")
+		},
+	})
+
+	// BATCH STATUS UPDATE
+	const updatePaymentsBatchStatus = useMutation({
+		mutationFn: (payload: PaymentBatchUpdate) =>
+			clientApi(routes.payments.batchUpdateStatus, {
+				method: "PATCH",
+				body: JSON.stringify(payload),
+			}),
+
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["payments"] })
+			toast.success("Pagamentos atualizados com sucesso ✨")
+		},
+
+		onError: (error: any) => {
+			toast.error(error.message || "Erro ao atualizar pagamentos")
 		},
 	})
 
@@ -81,5 +96,6 @@ export function usePaymentMutations() {
 		createPayment,
 		updatePayment,
 		deletePayment,
+		updatePaymentsBatchStatus,
 	}
 }

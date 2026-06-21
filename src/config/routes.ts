@@ -44,6 +44,7 @@ export const routes = {
 		delete: (id: string) => `/statements/${id}`,
 		getById: (id: string) => `/statements/${id}`,
 		getByJobId: (job_id: string) => `/statements/by-job/${job_id}`,
+		getListWithoutJob: "/statements/without-job",
 	},
 	materials: {
 		list: "/materials",
@@ -59,6 +60,7 @@ export const routes = {
 		delete: (id: string) => `/payments/${id}`,
 		summaryByCar: "/payments/summary/by-car",
 		getByLicense: (license: string) => `/payments/by-car/license/${license}`,
+		batchUpdateStatus: "/payments/batch-status",
 		values: "/payments/values",
 	},
 }

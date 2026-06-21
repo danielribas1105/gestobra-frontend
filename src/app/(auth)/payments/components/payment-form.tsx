@@ -22,6 +22,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select"
 import { usePaymentMutations } from "@/hooks/payments/use-payment-mutations"
+import { useStatementByJob } from "@/hooks/statements/use-statements"
 import { Payment } from "@/schemas/payment"
 import { parseValueM3 } from "@/utils/format-numbers"
 import { useState } from "react"
@@ -45,6 +46,9 @@ export default function PaymentForm({
 }: PaymentFormProps) {
 	const isEdit = !!payment
 	const { createPayment, updatePayment, deletePayment } = usePaymentMutations()
+	const { data: statement, isLoading: loadingStatement } = useStatementByJob(
+		payment?.job_id,
+	)
 
 	const [form, setForm] = useState({
 		job_id: payment?.job_id || "",
@@ -106,9 +110,8 @@ export default function PaymentForm({
 				<Input
 					id="nome_material"
 					placeholder="Nome"
-					value={form.job_id}
-					onChange={(e) => setForm({ ...form, job_id: e.target.value })}
-					disabled={loading}
+					value={statement?.code}
+					disabled
 				/>
 			</div>
 
@@ -120,6 +123,7 @@ export default function PaymentForm({
 						placeholder="Quantidade M3"
 						value={form.m3}
 						onChange={(e) => setForm({ ...form, m3: e.target.value })}
+						disabled
 					/>
 				</div>
 
@@ -130,7 +134,7 @@ export default function PaymentForm({
 						placeholder="Valor m3"
 						value={form.value_m3}
 						onChange={(e) => setForm({ ...form, value_m3: e.target.value })}
-						disabled={loading}
+						disabled
 					/>
 				</div>
 

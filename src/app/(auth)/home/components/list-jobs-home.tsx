@@ -10,13 +10,13 @@ interface ListJobsHomeProps {
 export default function ListJobsHome({ jobs, onJobClick }: ListJobsHomeProps) {
 	if (jobs.length === 0) {
 		return (
-			<div className="flex flex-col items-center justify-center py-16 text-center gap-2">
+			<div className="flex flex-col items-center justify-center py-8 text-center gap-2">
 				<span className="text-2xl">📋</span>
 				<p className="text-sm font-medium text-foreground">
-					Nenhuma viagem encontrada
+					Nenhuma movimentação encontrada
 				</p>
 				<p className="text-xs text-muted-foreground">
-					As viagens cadastradas aparecerão aqui.
+					As movimentações cadastradas aparecerão aqui
 				</p>
 			</div>
 		)

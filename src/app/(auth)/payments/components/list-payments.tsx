@@ -3,7 +3,7 @@ import { usePaymentsSummaryByCar } from "@/hooks/payments/use-payments"
 import { PaymentByCar } from "@/schemas/payment"
 import { useState } from "react"
 import { PaymentColumnsByCar } from "./payments-columns-by-car"
-import PaymentsModal from "./payments-modal"
+import PaymentsWrapper from "./payments-wrapper"
 
 export default function ListPayments() {
 	const [selectedPayment, setSelectedPayment] = useState<
@@ -26,7 +26,7 @@ export default function ListPayments() {
 					onRowClick={(paymentByCar) => setSelectedPayment(paymentByCar)}
 				/>
 			</div>
-			<PaymentsModal
+			<PaymentsWrapper
 				open={!!selectedPayment}
 				onOpenChange={(p) => {
 					if (!p) setSelectedPayment(undefined)

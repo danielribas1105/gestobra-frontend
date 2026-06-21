@@ -5,6 +5,7 @@ import LabelCard from "@/components/ui/label-card"
 import { useMaterial } from "@/hooks/materials/use-materials"
 import { useJobsByStatement } from "@/hooks/jobs/use-job-by-statement"
 import { useCarriers } from "@/hooks/carriers/use-carriers"
+import { Badge } from "@/components/ui/badge"
 
 const STATUS_COLORS: Record<Statement["status"], string> = {
 	pending: "#F59E0B",
@@ -60,7 +61,7 @@ export default function StatementCard({ statement }: StatementCardProps) {
 						<h2 className="text-xl">{statement.code}</h2>
 					</div>
 				</header>
-				<div className="flex flex-col gap-2 text-secondary-foreground">
+				<div className="flex flex-col gap-2">
 					<div className="grid grid-cols-2 gap-2">
 						<LabelCard
 							description="Material transportado"
@@ -92,6 +93,9 @@ export default function StatementCard({ statement }: StatementCardProps) {
 						value={carrier}
 						isLoading={loadingCarrier}
 					/>
+				</div>
+
+				<footer className="flex items-center justify-between gap-2">
 					<LabelCard
 						description="Data de criação"
 						label="Criado em"
@@ -101,17 +105,13 @@ export default function StatementCard({ statement }: StatementCardProps) {
 								: "—"
 						}
 					/>
-				</div>
-
-				<footer className="flex items-center gap-2">
-					<span
-						className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
-						style={{ backgroundColor: STATUS_COLORS[statement.status] }}
-						aria-hidden="true"
-					/>
-					<span className="text-xs uppercase font-medium">
-						{STATUS_LABELS[statement.status]}
-					</span>
+					<Badge
+						variant={
+							statement.status === "approved" ? "default" : "destructive"
+						}
+					>
+						{STATUS_LABELS[statement.status].toUpperCase()}
+					</Badge>
 				</footer>
 			</article>
 

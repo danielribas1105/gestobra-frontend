@@ -15,16 +15,19 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table"
+import { cn } from "@/lib/utils"
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[]
 	data: TData[]
 	onRowClick?: (row: TData) => void
+	getRowClassName?: (row: TData) => string
 }
 
 export function DataTable<TData, TValue>({
 	columns,
 	data,
+	getRowClassName,
 	onRowClick,
 }: DataTableProps<TData, TValue>) {
 	const table = useReactTable({
@@ -65,7 +68,10 @@ export function DataTable<TData, TValue>({
 							<TableRow
 								key={row.id}
 								data-state={row.getIsSelected() && "selected"}
-								className={onRowClick ? "cursor-pointer" : undefined}
+								className={cn(
+									onRowClick ? "cursor-pointer" : undefined,
+									getRowClassName?.(row.original),
+								)}
 								onClick={() => onRowClick?.(row.original)}
 							>
 								{row.getVisibleCells().map((cell) => (
@@ -78,7 +84,7 @@ export function DataTable<TData, TValue>({
 					) : (
 						<TableRow>
 							<TableCell colSpan={columns.length} className="h-24 text-center">
-								No results.
+								Nenhuma movimentação encontrada
 							</TableCell>
 						</TableRow>
 					)}
