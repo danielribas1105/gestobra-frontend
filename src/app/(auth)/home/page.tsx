@@ -24,7 +24,7 @@ export default function HomePage() {
 		}
 	}, [loading, user])
 
-	if (loading) {
+	if (isLoading) {
 		return (
 			<section className="flex flex-col gap-1">
 				<div className="flex gap-2">

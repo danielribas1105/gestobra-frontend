@@ -6,6 +6,7 @@ import { useCarMutations } from "@/hooks/cars/use-car-mutations"
 import { useCar } from "@/hooks/cars/use-cars"
 import { useStatement } from "@/hooks/statements/use-statements"
 import { useMaterial } from "@/hooks/materials/use-materials"
+import { Badge } from "@/components/ui/badge"
 
 const JOBS_COLORS_STATUS: Record<Job["status"], string> = {
 	pending: "#F59E0B",
@@ -42,7 +43,7 @@ export default function JobCard({ job }: JobCardProps) {
 	return (
 		<>
 			<article
-				className="h-64 border-2 rounded-lg p-3 flex flex-col justify-between gap-2 cursor-pointer hover:border-primary transition-colors"
+				className="h-64 border-2 rounded-lg p-3 flex flex-col gap-2 justify-between cursor-pointer hover:border-primary transition-colors"
 				onClick={() => setOpen(true)}
 				onKeyDown={(e) => e.key === "Enter" && setOpen(true)}
 				role="button"
@@ -66,7 +67,7 @@ export default function JobCard({ job }: JobCardProps) {
 						}
 					/>
 				</header>
-				<div className="flex flex-col gap-2 text-secondary-foreground">
+				<div className="flex flex-col gap-2">
 					<div className="grid grid-cols-3 gap-2">
 						<LabelCard
 							description="Material transportado"
@@ -120,22 +121,19 @@ export default function JobCard({ job }: JobCardProps) {
 						label="Destino"
 						value={job?.destiny_name}
 					/>
+				</div>
+
+				<footer className="flex items-center justify-between gap-2">
 					<LabelCard
 						description="Usuário que criou a movimentação"
 						label="Criado por"
 						value={job?.creator_name}
 					/>
-				</div>
-
-				<footer className="flex items-center gap-2">
-					<span
-						className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
-						style={{ backgroundColor: JOBS_COLORS_STATUS[job.status] }}
-						aria-hidden="true"
-					/>
-					<span className="text-xs uppercase font-medium">
-						{JOBS_STATUS[job.status]}
-					</span>
+					<Badge
+						variant={job.status === "completed" ? "default" : "destructive"}
+					>
+						{JOBS_STATUS[job.status].toUpperCase()}
+					</Badge>
 				</footer>
 			</article>
 			<JobModal open={open} onOpenChange={setOpen} job={job} />

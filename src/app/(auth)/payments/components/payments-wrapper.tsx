@@ -3,19 +3,19 @@
 import ModalWrapper from "@/components/layout/modal-wrapper"
 import { usePaymentsByLicense } from "@/hooks/payments/use-payments"
 import { PaymentByCar } from "@/schemas/payment"
-import PaymentsByCarModal from "./payments-by-car-modal"
+import PaymentsByCarWrapper from "./payments-by-car-wrapper"
 
-interface PaymentsModalProps {
+interface PaymentsWrapperProps {
 	open: boolean
 	onOpenChange: (v: boolean) => void
 	paymentByCar?: PaymentByCar
 }
 
-export default function PaymentsModal({
+export default function PaymentsWrapper({
 	open,
 	onOpenChange,
 	paymentByCar,
-}: PaymentsModalProps) {
+}: PaymentsWrapperProps) {
 	const {
 		data: paymentsByCarList,
 		isLoading,
@@ -31,7 +31,7 @@ export default function PaymentsModal({
 			title={`Pagamentos ${paymentByCar ? ` - ${paymentByCar.model} / ${paymentByCar.license}` : ""}`}
 			description="Selecione para editar ou excluir pagamentos deste veículo"
 		>
-			<PaymentsByCarModal
+			<PaymentsByCarWrapper
 				key={paymentByCar?.license}
 				paymentsList={paymentsByCarList ?? []}
 				isLoading={isLoading}

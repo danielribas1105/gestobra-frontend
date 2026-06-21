@@ -1,13 +1,15 @@
-import { DataTable } from "@/components/ui/data-table"
-import { Payment } from "@/schemas/payment"
-import { useState, useCallback, useMemo } from "react"
-import { getPaymentColumns } from "./payment-columns"
 import ModalWrapper from "@/components/layout/modal-wrapper"
-import PaymentForm from "./payment-form"
 import { Button } from "@/components/ui/button"
+import { DataTable } from "@/components/ui/data-table"
+import { usePaymentMutations } from "@/hooks/payments/use-payment-mutations"
+import { Payment } from "@/schemas/payment"
 import { Loader2 } from "lucide-react"
+import { useCallback, useMemo, useState } from "react"
+import { getPaymentColumns } from "./payment-columns"
+import PaymentForm from "./payment-form"
+import { Skeleton } from "@/components/ui/skeleton"
 
-interface PaymentsByCarModalProps {
+interface PaymentsByCarWrapperProps {
 	paymentsList: Payment[]
 	isLoading: boolean
 	onSaved?: () => void
@@ -18,12 +20,12 @@ interface PendingChange {
 	updated_at: Payment["updated_at"]
 }
 
-export default function PaymentsByCarModal({
+export default function PaymentsByCarWrapper({
 	paymentsList,
 	isLoading,
 	onSaved,
-}: PaymentsByCarModalProps) {
-	const [payments, setPayments] = useState<Payment[]>(paymentsList)
+}: PaymentsByCarWrapperProps) {
+	const { updatePaymentsBatchStatus } = usePaymentMutations()
 	const [pendingChanges, setPendingChanges] = useState<
 		Record<string, PendingChange>
 	>({})
@@ -72,33 +74,24 @@ export default function PaymentsByCarModal({
 		[paymentsList],
 	)
 
-	async function handleSave() {
-		setIsSaving(true)
-		try {
-			await Promise.all(
-				Object.entries(pendingChanges).map(([id, changes]) =>
-					fetch(`/api/payments/${id}`, {
-						method: "PATCH",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify(changes), // { status, updated_at }
-					}),
-				),
-			)
+	function handleRowClickPayment(paymentByCar: Payment) {
+		if (paymentByCar.status === "paid") return
+		setSelectedPayment(paymentByCar)
+	}
 
-			// Confirma as alterações no estado principal
-			/* setPayments((prev) =>
-				prev.map((p) =>
-					pendingChanges[p.id] !== undefined
-						? { ...p, ...pendingChanges[p.id] }
-						: p,
-				),
-			) */
+	async function handleSave() {
+		const updates = Object.entries(pendingChanges).map(([id, changes]) => ({
+			id,
+			status: changes.status,
+			updated_at: new Date(),
+		}))
+
+		try {
+			await updatePaymentsBatchStatus.mutateAsync({ updates })
 			setPendingChanges({})
 			onSaved?.()
-		} catch (error) {
-			console.error("Erro ao salvar:", error)
-		} finally {
-			setIsSaving(false)
+		} catch {
+			// toast no onError
 		}
 	}
 
@@ -115,14 +108,19 @@ export default function PaymentsByCarModal({
 		<>
 			<div className="w-full space-y-4">
 				{isLoading ? (
-					<p className="text-sm text-muted-foreground">
-						Carregando pagamentos...
-					</p>
+					<div className="text-sm text-muted-foreground">
+						<Skeleton className="h-6 w-full rounded-md" />
+						<Skeleton className="h-6 w-full rounded-md" />
+						<Skeleton className="h-6 w-full rounded-md" />
+					</div>
 				) : (
 					<DataTable
 						columns={columns}
 						data={displayPayments}
-						onRowClick={(paymentByCar) => setSelectedPayment(paymentByCar)}
+						onRowClick={(paymentByCar) => handleRowClickPayment(paymentByCar)}
+						getRowClassName={(payment) =>
+							payment.status === "paid" ? "cursor-default opacity-60" : ""
+						}
 					/>
 				)}
 

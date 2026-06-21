@@ -25,3 +25,17 @@ export const PaymentsCarSchema = z.object({
 })
 
 export type PaymentByCar = z.infer<typeof PaymentsCarSchema>
+
+export const PaymentUpdateSchema = z.object({
+	id: z.uuid(),
+	status: PaymentStatusEnum,
+	updated_at: z.coerce.date().nullable().optional(),
+})
+
+export type PaymentUpdate = z.infer<typeof PaymentUpdateSchema>
+
+export const PaymentBatchUpdateSchema = z.object({
+	updates: z.array(PaymentUpdateSchema),
+})
+
+export type PaymentBatchUpdate = z.infer<typeof PaymentBatchUpdateSchema>

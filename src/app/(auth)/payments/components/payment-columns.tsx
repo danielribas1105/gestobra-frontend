@@ -28,6 +28,7 @@ export function getPaymentColumns(
 						<Checkbox
 							checked={isPaid}
 							className={cn(
+								"border-muted-foreground",
 								hasPendingChange &&
 									"border-yellow-500 data-[state=checked]:bg-yellow-500",
 							)}
@@ -35,6 +36,7 @@ export function getPaymentColumns(
 								onStatusChange(payment.id, !!checked)
 							}
 							onClick={(e) => e.stopPropagation()}
+							disabled={payment.status === "paid"}
 						/>
 					</div>
 				)

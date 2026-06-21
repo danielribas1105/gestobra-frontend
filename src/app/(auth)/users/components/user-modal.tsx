@@ -19,6 +19,8 @@ export default function UserModal({
 		<ModalWrapper
 			open={open}
 			onOpenChange={onOpenChange}
+			width="50vw"
+			maxHeight="90vh"
 			title={user ? "Editar usuário" : "Adicionar usuário"}
 			description={
 				user

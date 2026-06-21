@@ -4,6 +4,7 @@ import { MapPinHouse } from "lucide-react"
 import { useState } from "react"
 import WorkModal from "./work-modal"
 import { formatDate } from "@/utils/format-date"
+import LabelCard from "@/components/ui/label-card"
 
 export interface WorkCardProps {
 	work: Work
@@ -31,31 +32,24 @@ export default function WorkCard({ work }: WorkCardProps) {
 						<h2 className="text-2xl font-semibold">{work.name}</h2>
 					</header>
 					<div className="flex flex-col gap-2">
-						<dl>
-							<dt className="sr-only">
-								Manifesto de transporte de resíduos e rejeitos
-							</dt>
-							<dd className="flex gap-2 items-center">
-								<p className="font-semibold text-muted-foreground">
-									Razão Social:
-								</p>
-								<p className="font-semibold">{work.code}</p>
-							</dd>
-						</dl>
-						<dl>
-							<dt className="sr-only">Endereço da obra</dt>
-							<dd className="flex gap-2 items-center">
-								<p className="font-semibold text-muted-foreground">Endereço:</p>
-								<p className="font-semibold">{work.address}</p>
-							</dd>
-						</dl>
+						<LabelCard
+							description="Manifesto de transporte de resíduos e rejeitos"
+							label="Razão Social"
+							value={work.code}
+						/>
+						<LabelCard
+							description="Endereço da obra"
+							label="Endereço"
+							value={work.address ?? ""}
+						/>
 					</div>
 				</div>
 				<footer className="flex items-center justify-between">
-					<div className="flex items-center gap-1 text-secondary-foreground">
-						<p className="font-semibold text-muted-foreground">Criada em:</p>
-						<p>{formatDate(work.created_at ?? "")}</p>
-					</div>
+					<LabelCard
+						description="Data de cadastro da obra"
+						label="Cadastro"
+						value={formatDate(work.created_at ?? "")}
+					/>
 					<Badge variant={work.status === "active" ? "default" : "destructive"}>
 						{work.status.toUpperCase()}
 					</Badge>
