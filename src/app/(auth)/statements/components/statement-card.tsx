@@ -46,7 +46,7 @@ export default function StatementCard({ statement }: StatementCardProps) {
 	return (
 		<>
 			<article
-				className="h-64 border-2 rounded-lg p-3 flex flex-col justify-between gap-2 cursor-pointer hover:border-primary transition-colors"
+				className="md:h-64 border-2 rounded-lg p-3 flex flex-col justify-between gap-2 cursor-pointer hover:border-primary transition-colors"
 				onClick={() => setOpen(true)}
 				onKeyDown={(e) => e.key === "Enter" && setOpen(true)}
 				role="button"
@@ -78,13 +78,13 @@ export default function StatementCard({ statement }: StatementCardProps) {
 					<LabelCard
 						description="Obra de origem"
 						label="Origem"
-						value={job?.origin_name}
+						value={errorJob ? "Não cadastrado" : job?.origin_name}
 						isLoading={loadingJob}
 					/>
 					<LabelCard
 						description="Obra de destino"
 						label="Destino"
-						value={job?.destiny_name}
+						value={errorJob ? "Não cadastrado" : job?.destiny_name}
 						isLoading={loadingJob}
 					/>
 					<LabelCard

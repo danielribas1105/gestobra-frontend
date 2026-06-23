@@ -15,11 +15,14 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 	SidebarSeparator,
+	useSidebar,
 } from "@/components/ui/sidebar"
 import { itemsMenu } from "@/constants/ItensMenu"
 import Footer from "../layout/footer"
 
 export function AppSidebar() {
+	const { setOpenMobile } = useSidebar()
+
 	return (
 		<Sidebar collapsible="icon">
 			<SidebarHeader className="group-data-[collapsible=icon]:hidden">
@@ -47,7 +50,7 @@ export function AppSidebar() {
 							{itemsMenu.map((item) => (
 								<SidebarMenuItem key={item.title}>
 									<SidebarMenuButton asChild>
-										<Link href={item.url}>
+										<Link href={item.url} onClick={() => setOpenMobile(false)}>
 											<item.icon color="#51a41e" />
 											<span>{item.title}</span>
 										</Link>

@@ -17,7 +17,7 @@ export default function LogoutButton() {
 			<TooltipTrigger asChild>
 				<Button variant="destructive" disabled={false} onClick={handleLogout}>
 					<LogOut />
-					Sair
+					<span className="hidden md:block">Sair</span>
 				</Button>
 			</TooltipTrigger>
 			<TooltipContent>Sair da conta</TooltipContent>
