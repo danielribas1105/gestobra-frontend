@@ -27,7 +27,7 @@ export default function TitlePage({
 	console.warn("TitlePage renderizado", { title, isAdmin })
 	return (
 		<div
-			className={`${className ?? ""} flex justify-between items-center gap-3`}
+			className={`${className ?? ""} flex flex-col md:flex-row justify-between items-center gap-3`}
 		>
 			<div className="flex flex-1/3 gap-3 items-center">
 				<h1 className="text-3xl text-secondary-foreground font-logo font-bold">

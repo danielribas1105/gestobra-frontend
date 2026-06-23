@@ -43,7 +43,7 @@ export default function JobCard({ job }: JobCardProps) {
 	return (
 		<>
 			<article
-				className="h-64 border-2 rounded-lg p-3 flex flex-col gap-2 justify-between cursor-pointer hover:border-primary transition-colors"
+				className="md:h-64 border-2 rounded-lg p-3 flex flex-col gap-2 justify-between cursor-pointer hover:border-primary transition-colors"
 				onClick={() => setOpen(true)}
 				onKeyDown={(e) => e.key === "Enter" && setOpen(true)}
 				role="button"
@@ -68,7 +68,7 @@ export default function JobCard({ job }: JobCardProps) {
 					/>
 				</header>
 				<div className="flex flex-col gap-2">
-					<div className="grid grid-cols-3 gap-2">
+					<div className="grid grid-cols-2 md:grid-cols-3 gap-2">
 						<LabelCard
 							description="Material transportado"
 							label="Material"
@@ -79,7 +79,7 @@ export default function JobCard({ job }: JobCardProps) {
 							description="M³"
 							label="Quantidade (M³)"
 							value={statement?.m3}
-							position="justify-center"
+							position="justify-end md:justify-center"
 						/>
 						<LabelCard
 							description="Valor a ser pago pelo transporte"
@@ -88,10 +88,10 @@ export default function JobCard({ job }: JobCardProps) {
 								style: "currency",
 								currency: "BRL",
 							})}
-							position="justify-end"
+							position="md:justify-end"
 						/>
 					</div>
-					<div className="grid grid-cols-3 gap-2">
+					<div className="grid grid-cols-2 md:grid-cols-3 gap-2">
 						<LabelCard
 							description="Veículo utilizado no transporte"
 							label="Veículo"
@@ -102,13 +102,13 @@ export default function JobCard({ job }: JobCardProps) {
 							description="Placa do veículo utilizado"
 							label="Placa"
 							value={job.car_license ?? ""}
-							position="justify-center"
+							position="justify-end md:justify-center"
 						/>
 						<LabelCard
 							description="Motorista que realizaou o transporte"
 							label="Motorista"
 							value={job.driver_name ?? ""}
-							position="justify-end"
+							position="md:justify-end"
 						/>
 					</div>
 					<LabelCard

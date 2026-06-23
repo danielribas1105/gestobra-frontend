@@ -14,7 +14,7 @@ export default function OpenMapsButton() {
 				<TooltipTrigger asChild>
 					<Button variant="secondary" onClick={() => setOpen(true)}>
 						<Map />
-						Mapa
+						<span className="hidden md:block">Mapa</span>
 					</Button>
 				</TooltipTrigger>
 				<TooltipContent>Localizar veículos</TooltipContent>

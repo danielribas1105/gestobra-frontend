@@ -1,14 +1,13 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { Construction, Plus } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
 import { useState } from "react"
 import WorkModal from "@/app/(auth)/works/components/work-modal"
 
 export default function AddWorkButton() {
 	const [open, setOpen] = useState(false)
-	const handleAddWork = () => {}
 
 	return (
 		<>
@@ -19,8 +18,9 @@ export default function AddWorkButton() {
 						disabled={false}
 						onClick={() => setOpen(true)}
 					>
-						<Plus />
-						Obra
+						<Plus className="hidden md:block" />
+						<Construction className="block md:hidden" />
+						<span className="hidden md:block">Obra</span>
 					</Button>
 				</TooltipTrigger>
 				<TooltipContent>Adicionar obra</TooltipContent>
