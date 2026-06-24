@@ -2,7 +2,7 @@
 
 import { routes } from "@/config/routes"
 import { clientApi } from "@/lib/api/client"
-import { Payment, PaymentByCar } from "@/schemas/payment"
+import { Payment, PaymentByCar, PaymentsSum } from "@/schemas/payment"
 import { useQuery } from "@tanstack/react-query"
 
 export function usePayments() {
@@ -24,5 +24,12 @@ export function usePaymentsByLicense(license: string) {
 		queryKey: ["payments", "license", license],
 		queryFn: () => clientApi(routes.payments.getByLicense(license)),
 		enabled: !!license,
+	})
+}
+
+export function usePaymentsSum() {
+	return useQuery<PaymentsSum>({
+		queryKey: ["payments", "sum-values"],
+		queryFn: () => clientApi(routes.payments.getPaymentsSum),
 	})
 }

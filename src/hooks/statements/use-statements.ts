@@ -2,7 +2,7 @@
 
 import { routes } from "@/config/routes"
 import { clientApi } from "@/lib/api/client"
-import { Statement } from "@/schemas/statement"
+import { Statement, StatementsCount } from "@/schemas/statement"
 import { useQuery } from "@tanstack/react-query"
 
 export function useStatements() {
@@ -32,5 +32,12 @@ export function useStatementsWithoutJob() {
 	return useQuery<Statement[]>({
 		queryKey: ["statements", "without-job"],
 		queryFn: () => clientApi(routes.statements.getListWithoutJob),
+	})
+}
+
+export function useStatementsCount() {
+	return useQuery<StatementsCount>({
+		queryKey: ["statements", "count-statements"],
+		queryFn: () => clientApi(routes.statements.getStatementsCount),
 	})
 }

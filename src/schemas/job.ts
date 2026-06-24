@@ -29,3 +29,12 @@ export const JobSchema = z.object({
 })
 
 export type Job = z.infer<typeof JobSchema>
+
+export const JobsAmounts = z.object({
+	completed: z.number(),
+	in_progress: z.number(),
+	pending: z.number(),
+	canceled: z.number(),
+})
+
+export type JobsCount = z.infer<typeof JobsAmounts>

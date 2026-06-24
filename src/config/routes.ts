@@ -36,6 +36,7 @@ export const routes = {
 		getJobsByOriginWork: (origin_id: string) => `/jobs/by-work/${origin_id}`,
 		getJobByStatement: (statement_id: string) =>
 			`/jobs/by-statement/${statement_id}`,
+		getJobsCount: "/jobs/count-jobs",
 	},
 	statements: {
 		list: "/statements",
@@ -45,6 +46,7 @@ export const routes = {
 		getById: (id: string) => `/statements/${id}`,
 		getByJobId: (job_id: string) => `/statements/by-job/${job_id}`,
 		getListWithoutJob: "/statements/without-job",
+		getStatementsCount: "/statements/count-statements",
 	},
 	materials: {
 		list: "/materials",
@@ -61,6 +63,6 @@ export const routes = {
 		summaryByCar: "/payments/summary/by-car",
 		getByLicense: (license: string) => `/payments/by-car/license/${license}`,
 		batchUpdateStatus: "/payments/batch-status",
-		values: "/payments/values",
+		getPaymentsSum: "/payments/sum-values",
 	},
 }
