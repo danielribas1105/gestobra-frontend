@@ -4,7 +4,6 @@ export const StatementStatusEnum = z.enum([
 	"pending",
 	"approved",
 	"rejected",
-	"in_progress",
 	"concluded",
 ])
 
@@ -20,3 +19,12 @@ export const StatementShema = z.object({
 })
 
 export type Statement = z.infer<typeof StatementShema>
+
+export const StatementsTotal = z.object({
+	approved: z.number(),
+	pending: z.number(),
+	rejected: z.number(),
+	concluded: z.number(),
+})
+
+export type StatementsCount = z.infer<typeof StatementsTotal>

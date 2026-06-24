@@ -4,3 +4,10 @@ export function parseValueM3(raw: string): number {
 	const parsed = parseFloat(normalized)
 	return isNaN(parsed) ? 0 : parsed
 }
+
+export function formatCurrencyBR(value: number) {
+	return new Intl.NumberFormat("pt-BR", {
+		style: "currency",
+		currency: "BRL",
+	}).format(value)
+}

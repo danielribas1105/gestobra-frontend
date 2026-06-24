@@ -24,7 +24,6 @@ export default function TitlePage({
 }: TitlePageProps) {
 	const { isAdmin } = usePermissions()
 
-	console.warn("TitlePage renderizado", { title, isAdmin })
 	return (
 		<div
 			className={`${className ?? ""} flex flex-col md:flex-row justify-between items-center gap-3`}

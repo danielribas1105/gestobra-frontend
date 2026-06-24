@@ -39,3 +39,11 @@ export const PaymentBatchUpdateSchema = z.object({
 })
 
 export type PaymentBatchUpdate = z.infer<typeof PaymentBatchUpdateSchema>
+
+export const PaymentsAmounts = z.object({
+	paid: z.number(),
+	pending: z.number(),
+	canceled: z.number(),
+})
+
+export type PaymentsSum = z.infer<typeof PaymentsAmounts>

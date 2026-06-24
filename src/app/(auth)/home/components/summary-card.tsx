@@ -1,21 +1,17 @@
+import { ReactNode } from "react"
+
 interface SummaryCardProps {
-	header: string
-	content: string
-	footer: string
+	title: string
+	children: React.ReactNode
 }
 
-export default function SummaryCard({
-	header,
-	content,
-	footer,
-}: SummaryCardProps) {
+export default function SummaryCard({ title, children }: SummaryCardProps) {
 	return (
 		<div className="flex-col md:flex-1 justify-between gap-4 border-2 rounded-lg p-3 h-40 w-full">
 			<div className="text-secondary-foreground text-lg font-semibold mb-2">
-				{header}
+				{title}
 			</div>
-			<div className="text-muted-foreground">{content}</div>
-			<div className="text-muted-foreground">{footer}</div>
+			{children}
 		</div>
 	)
 }
