@@ -8,17 +8,17 @@ import { useCarriers } from "@/hooks/carriers/use-carriers"
 import { Badge } from "@/components/ui/badge"
 
 const STATUS_COLORS: Record<Statement["status"], string> = {
+	concluded: "#22C55E",
+	in_progress: "#3B82F6",
 	pending: "#F59E0B",
-	approved: "#22C55E",
-	rejected: "#EF4444",
-	concluded: "#3B82F6",
+	canceled: "#EF4444",
 }
 
 const STATUS_LABELS: Record<Statement["status"], string> = {
-	pending: "Pendente",
-	approved: "Aprovado",
-	rejected: "Rejeitado",
 	concluded: "Concluído",
+	in_progress: "Em andamento",
+	pending: "Pendente",
+	canceled: "Cancelado",
 }
 
 export interface StatementCardProps {
@@ -105,7 +105,7 @@ export default function StatementCard({ statement }: StatementCardProps) {
 					/>
 					<Badge
 						variant={
-							statement.status === "approved" ? "default" : "destructive"
+							statement.status === "concluded" ? "default" : "destructive"
 						}
 					>
 						{STATUS_LABELS[statement.status].toUpperCase()}

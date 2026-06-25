@@ -1,10 +1,10 @@
 import z from "zod"
 
 export const StatementStatusEnum = z.enum([
-	"pending",
-	"approved",
-	"rejected",
 	"concluded",
+	"in_progress",
+	"pending",
+	"canceled",
 ])
 
 export const StatementShema = z.object({
@@ -21,10 +21,10 @@ export const StatementShema = z.object({
 export type Statement = z.infer<typeof StatementShema>
 
 export const StatementsTotal = z.object({
-	approved: z.number(),
-	pending: z.number(),
-	rejected: z.number(),
 	concluded: z.number(),
+	in_progress: z.number(),
+	pending: z.number(),
+	canceled: z.number(),
 })
 
 export type StatementsCount = z.infer<typeof StatementsTotal>

@@ -65,7 +65,7 @@ const EMPTY_FORM = {
 	carrier_id: "",
 	car_id: "",
 	driver_id: "",
-	status: "pending" as "pending" | "in_progress" | "completed" | "canceled",
+	status: "pending" as "pending" | "concluded" | "in_progress" | "canceled",
 }
 
 // Required fields
@@ -423,9 +423,9 @@ export default function JobForm({
 								setForm({
 									...form,
 									status: v as
-										| "pending"
+										| "concluded"
 										| "in_progress"
-										| "completed"
+										| "pending"
 										| "canceled",
 								})
 							}
