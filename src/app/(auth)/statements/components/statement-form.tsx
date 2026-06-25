@@ -47,10 +47,10 @@ const STATUS_LABELS: Record<
 	(typeof StatementStatusEnum.options)[number],
 	string
 > = {
-	pending: "Pendente",
-	approved: "Aprovado",
-	rejected: "Rejeitado",
 	concluded: "Concluído",
+	in_progress: "Em andamento",
+	pending: "Pendente",
+	canceled: "Cancelado",
 }
 
 export default function StatementForm({

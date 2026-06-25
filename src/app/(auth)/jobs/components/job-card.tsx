@@ -1,24 +1,23 @@
+import { Badge } from "@/components/ui/badge"
 import LabelCard from "@/components/ui/label-card"
+import { useCar } from "@/hooks/cars/use-cars"
+import { useMaterial } from "@/hooks/materials/use-materials"
+import { useStatement } from "@/hooks/statements/use-statements"
 import { Job } from "@/schemas/job"
 import { useState } from "react"
 import JobModal from "./job-modal"
-import { useCarMutations } from "@/hooks/cars/use-car-mutations"
-import { useCar } from "@/hooks/cars/use-cars"
-import { useStatement } from "@/hooks/statements/use-statements"
-import { useMaterial } from "@/hooks/materials/use-materials"
-import { Badge } from "@/components/ui/badge"
 
 const JOBS_COLORS_STATUS: Record<Job["status"], string> = {
-	pending: "#F59E0B",
+	concluded: "#22C55E",
 	in_progress: "#3B82F6",
-	completed: "#22C55E",
+	pending: "#F59E0B",
 	canceled: "#EF4444",
 }
 
 const JOBS_STATUS: Record<Job["status"], string> = {
-	pending: "Pendente",
+	concluded: "Concluído",
 	in_progress: "Em andamento",
-	completed: "Concluído",
+	pending: "Pendente",
 	canceled: "Cancelado",
 }
 
@@ -130,7 +129,7 @@ export default function JobCard({ job }: JobCardProps) {
 						value={job?.creator_name}
 					/>
 					<Badge
-						variant={job.status === "completed" ? "default" : "destructive"}
+						variant={job.status === "concluded" ? "default" : "destructive"}
 					>
 						{JOBS_STATUS[job.status].toUpperCase()}
 					</Badge>

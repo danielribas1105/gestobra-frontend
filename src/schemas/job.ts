@@ -1,9 +1,9 @@
 import z from "zod"
 
 export const JobStatusEnum = z.enum([
-	"pending",
+	"concluded",
 	"in_progress",
-	"completed",
+	"pending",
 	"canceled",
 ])
 
@@ -31,7 +31,7 @@ export const JobSchema = z.object({
 export type Job = z.infer<typeof JobSchema>
 
 export const JobsAmounts = z.object({
-	completed: z.number(),
+	concluded: z.number(),
 	in_progress: z.number(),
 	pending: z.number(),
 	canceled: z.number(),
