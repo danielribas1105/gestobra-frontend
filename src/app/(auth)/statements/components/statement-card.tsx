@@ -11,15 +11,13 @@ const STATUS_COLORS: Record<Statement["status"], string> = {
 	pending: "#F59E0B",
 	approved: "#22C55E",
 	rejected: "#EF4444",
-	in_progress: "#3B82F6",
-	concluded: "#8B5CF6",
+	concluded: "#3B82F6",
 }
 
 const STATUS_LABELS: Record<Statement["status"], string> = {
 	pending: "Pendente",
 	approved: "Aprovado",
 	rejected: "Rejeitado",
-	in_progress: "Em andamento",
 	concluded: "Concluído",
 }
 
