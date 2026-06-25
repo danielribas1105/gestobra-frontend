@@ -50,7 +50,6 @@ const STATUS_LABELS: Record<
 	pending: "Pendente",
 	approved: "Aprovado",
 	rejected: "Rejeitado",
-	in_progress: "Em andamento",
 	concluded: "Concluído",
 }
 
