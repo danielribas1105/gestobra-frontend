@@ -231,7 +231,7 @@ export default function JobForm({
 			</AlertDialog>
 
 			<form onSubmit={handleSubmit} className="space-y-5">
-				<div className="grid grid-cols-5 gap-2">
+				<div className="grid grid-cols-1 lg:grid-cols-5 gap-2">
 					{/* STATEMENT */}
 					<div className="space-y-1">
 						<Label>MTR</Label>
@@ -348,7 +348,7 @@ export default function JobForm({
 					</div>
 				</div>
 
-				<div className="grid grid-cols-5 gap-2">
+				<div className="grid grid-cols-1 lg:grid-cols-5 gap-2">
 					{/* CARRIER */}
 					<div className="col-span-2 space-y-1">
 						<Label htmlFor="carrier">Transportadora</Label>
