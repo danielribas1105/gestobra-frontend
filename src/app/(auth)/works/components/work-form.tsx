@@ -26,7 +26,7 @@ import { useWorkMutations } from "@/hooks/works/use-work-mutations"
 import { Work, WorkStatus, WorkStatusEnum } from "@/schemas/work"
 import { Job } from "@/schemas/job"
 import { PlusCircle } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import JobModal from "../../jobs/components/job-modal"
 import { useCars } from "@/hooks/cars/use-cars"
 import { useUsers } from "@/hooks/users/use-users"
@@ -36,6 +36,7 @@ import { useJobsByOriginWork } from "@/hooks/jobs/use-jobs-by-work"
 import { Skeleton } from "@/components/ui/skeleton"
 import { JOBS_STATUS_LABELS } from "@/constants/Jobs"
 import { WORKS_STATUS_LABELS } from "@/constants/Works"
+import ListJobsHome from "./list-jobs-work"
 
 interface WorkFormProps {
 	work?: Work
@@ -88,6 +89,7 @@ export default function WorkForm({
 	)
 	const [jobModalOpen, setJobModalOpen] = useState(false)
 	const [createdJobs, setCreatedJobs] = useState<Job[]>([])
+	const [selectedJob, setSelectedJob] = useState<Job | undefined>(undefined)
 
 	// O botão de movimentação fica habilitado se: é edição (já tem ID) ou se acabou de salvar
 	const canAddJob = savedWorkId !== null
@@ -132,7 +134,7 @@ export default function WorkForm({
 	return (
 		<>
 			<form onSubmit={handleSubmit} className="space-y-2">
-				<div className="grid grid-cols-4 gap-2">
+				<div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
 					<div className="space-y-1">
 						<Label htmlFor="code">Código ou Razão Social</Label>
 						<Input
@@ -178,7 +180,7 @@ export default function WorkForm({
 					/>
 				</div>
 
-				<div className="grid grid-cols-4 gap-4">
+				<div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
 					<div className="space-y-1">
 						<Label htmlFor="zip_code">CEP</Label>
 						<Input
@@ -220,7 +222,7 @@ export default function WorkForm({
 							}
 							disabled={loading || isSaved}
 						>
-							<SelectTrigger id="status">
+							<SelectTrigger id="status" className="w-full">
 								<SelectValue placeholder="Selecione o status" />
 							</SelectTrigger>
 							<SelectContent>
@@ -247,7 +249,7 @@ export default function WorkForm({
 				</div>
 
 				{/* Footer */}
-				<div className="flex justify-between items-center pt-1">
+				<div className="flex flex-col-reverse md:flex-row gap-4 md:gap-0 justify-between items-center pt-1">
 					{/* Esquerda: Delete (edição) | + Movimentação */}
 					<div className="flex items-center gap-2">
 						{isEdit && (
@@ -382,76 +384,88 @@ export default function WorkForm({
 					<p className="text-sm font-medium text-muted-foreground">
 						Movimentações
 					</p>
-					<div className="rounded-md border overflow-hidden">
-						<table className="w-full text-sm">
-							<thead className="bg-muted text-muted-foreground">
-								<tr>
-									<th className="px-3 py-2 text-left font-medium">MTR</th>
-									<th className="px-3 py-2 text-left font-medium">Destino</th>
-									<th className="px-3 py-2 text-left font-medium">Veículo</th>
-									<th className="px-3 py-2 text-left font-medium">Motorista</th>
-									<th className="px-3 py-2 text-left font-medium">Status</th>
-								</tr>
-							</thead>
-							<tbody>
-								{loadJobsByWork
-									? Array.from({ length: 2 }).map((_, i) => (
-											<tr
-												key={i}
-												className={
-													i % 2 === 0 ? "bg-background" : "bg-muted/40"
-												}
-											>
-												<td className="px-3 py-2">
-													<Skeleton className="h-4 w-16" />
-												</td>
-												<td className="px-3 py-2">
-													<Skeleton className="h-4 w-28" />
-												</td>
-												<td className="px-3 py-2">
-													<Skeleton className="h-4 w-20" />
-												</td>
-												<td className="px-3 py-2">
-													<Skeleton className="h-4 w-24" />
-												</td>
-												<td className="px-3 py-2">
-													<Skeleton className="h-4 w-14" />
-												</td>
-											</tr>
-										))
-									: isEdit &&
-										jobsByWork.map((j, i) => (
-											<tr
-												key={j.id}
-												className={
-													i % 2 === 0 ? "bg-background" : "bg-muted/40"
-												}
-											>
-												<td className="px-3 py-2">
-													{statements
-														.filter((s) => j.statement_id === s.id)
-														.map((s) => s.code)}
-												</td>
-												<td className="px-3 py-2">
-													{works
-														.filter((w) => j.destiny === w.id)
-														.map((w) => w.name)}
-												</td>
-												<td className="px-3 py-2">
-													{cars
-														.filter((c) => j.car_id === c.id)
-														.map((c) => c.model)}
-												</td>
-												<td className="px-3 py-2">
-													{users
-														.filter((u) => j.driver_id === u.id)
-														.map((u) => u.name)}
-												</td>
-												<td className="px-3 py-2 capitalize">{j.status}</td>
-											</tr>
-										))}
-							</tbody>
-						</table>
+					{/* Desktop: tabela normal */}
+					<div className="hidden md:block">
+						<div className="rounded-md border overflow-hidden">
+							<table className="w-full text-sm">
+								<thead className="bg-muted text-muted-foreground">
+									<tr>
+										<th className="px-3 py-2 text-left font-medium">MTR</th>
+										<th className="px-3 py-2 text-left font-medium">Destino</th>
+										<th className="px-3 py-2 text-left font-medium">Veículo</th>
+										<th className="px-3 py-2 text-left font-medium">
+											Motorista
+										</th>
+										<th className="px-3 py-2 text-left font-medium">Status</th>
+									</tr>
+								</thead>
+								<tbody>
+									{loadJobsByWork
+										? Array.from({ length: 2 }).map((_, i) => (
+												<tr
+													key={i}
+													className={
+														i % 2 === 0 ? "bg-background" : "bg-muted/40"
+													}
+												>
+													<td className="px-3 py-2">
+														<Skeleton className="h-4 w-16" />
+													</td>
+													<td className="px-3 py-2">
+														<Skeleton className="h-4 w-28" />
+													</td>
+													<td className="px-3 py-2">
+														<Skeleton className="h-4 w-20" />
+													</td>
+													<td className="px-3 py-2">
+														<Skeleton className="h-4 w-24" />
+													</td>
+													<td className="px-3 py-2">
+														<Skeleton className="h-4 w-14" />
+													</td>
+												</tr>
+											))
+										: isEdit &&
+											jobsByWork.map((j, i) => (
+												<tr
+													key={j.id}
+													className={
+														i % 2 === 0 ? "bg-background" : "bg-muted/40"
+													}
+												>
+													<td className="px-3 py-2">
+														{statements
+															.filter((s) => j.statement_id === s.id)
+															.map((s) => s.code)}
+													</td>
+													<td className="px-3 py-2">
+														{works
+															.filter((w) => j.destiny === w.id)
+															.map((w) => w.name)}
+													</td>
+													<td className="px-3 py-2">
+														{cars
+															.filter((c) => j.car_id === c.id)
+															.map((c) => c.model)}
+													</td>
+													<td className="px-3 py-2">
+														{users
+															.filter((u) => j.driver_id === u.id)
+															.map((u) => u.name)}
+													</td>
+													<td className="px-3 py-2 capitalize">{j.status}</td>
+												</tr>
+											))}
+								</tbody>
+							</table>
+						</div>
+					</div>
+					{/* Mobile: cards */}
+					<div className="md:hidden">
+						<ListJobsHome
+							jobs={jobsByWork}
+							onJobClick={(job) => setSelectedJob(job)}
+						/>
 					</div>
 				</div>
 			)}

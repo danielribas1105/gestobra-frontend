@@ -323,7 +323,7 @@ export default function VehicleMapModal({
 			>
 				{/* Header */}
 				<DialogHeader className="px-5 py-3 border-b shrink-0">
-					<div className="flex items-center gap-4">
+					<div className="flex flex-col lg:flex-row items-center gap-4">
 						<DialogTitle className="text-base font-semibold">
 							Localização dos Veículos
 						</DialogTitle>
@@ -345,7 +345,7 @@ export default function VehicleMapModal({
 				</DialogHeader>
 
 				{/* Body */}
-				<div className="flex flex-1 overflow-hidden min-h-0">
+				<div className="flex flex-col lg:flex-row lg:flex-1 overflow-hidden md:min-h-0">
 					{/* Sidebar */}
 					<div className="w-56 shrink-0 border-r p-2 overflow-hidden flex flex-col gap-2">
 						<p className="text-xs font-medium text-muted-foreground px-1 shrink-0">
