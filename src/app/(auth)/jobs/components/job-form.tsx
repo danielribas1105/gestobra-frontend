@@ -511,7 +511,9 @@ export default function JobForm({
 					open={openOriginWorkModal}
 					onOpenChange={setOpenOriginWorkModal}
 				>
-					<DialogContent>
+					<DialogContent
+						style={{ width: "80vw", maxWidth: "92vw", maxHeight: "90vh" }}
+					>
 						<DialogHeader>
 							<DialogTitle>Nova obra</DialogTitle>
 						</DialogHeader>
@@ -541,7 +543,9 @@ export default function JobForm({
 					open={openDestinyWorkModal}
 					onOpenChange={setOpenDestinyWorkModal}
 				>
-					<DialogContent>
+					<DialogContent
+						style={{ width: "80vw", maxWidth: "92vw", maxHeight: "90vh" }}
+					>
 						<DialogHeader>
 							<DialogTitle>Nova obra</DialogTitle>
 						</DialogHeader>
