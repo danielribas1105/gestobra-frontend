@@ -129,7 +129,7 @@ export const JobColumns: ColumnDef<Job>[] = [
 			const status = row.getValue("status") as string
 			const statusColors: Record<string, string> = {
 				in_progress: "bg-blue-500",
-				completed: "bg-green-500",
+				concluded: "bg-green-500",
 				canceled: "bg-red-500",
 			}
 

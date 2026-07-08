@@ -100,7 +100,7 @@ export default function JobForm({
 	const [openDestinyWorkModal, setOpenDestinyWorkModal] = useState(false)
 
 	// ✅ Dialog empty fields
-	const [openIncompleteDialog, setOpenIncompleteDialog] = useState(false)
+	const [openInConcludeDialog, setOpenInConcludeDialog] = useState(false)
 	const [emptyFieldLabels, setEmptyFieldLabels] = useState<string[]>([])
 
 	const [newStatement, setNewStatement] = useState<Statement | null>(null)
@@ -146,6 +146,7 @@ export default function JobForm({
 
 		try {
 			if (isEdit) {
+				console.log("job", payload)
 				await updateJob.mutateAsync({ id: job!.id, data: payload })
 				onSuccess?.()
 			} else {
@@ -167,7 +168,7 @@ export default function JobForm({
 
 			if (empty.length > 0) {
 				setEmptyFieldLabels(empty)
-				setOpenIncompleteDialog(true)
+				setOpenInConcludeDialog(true)
 				return // 🛑 aguarda confirmação do usuário
 			}
 		}
@@ -197,8 +198,8 @@ export default function JobForm({
 		<>
 			{/* ✅ Dialog de confirmação — campos incompletos no modo edit */}
 			<AlertDialog
-				open={openIncompleteDialog}
-				onOpenChange={setOpenIncompleteDialog}
+				open={openInConcludeDialog}
+				onOpenChange={setOpenInConcludeDialog}
 			>
 				<AlertDialogContent>
 					<AlertDialogHeader>

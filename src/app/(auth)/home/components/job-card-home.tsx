@@ -20,7 +20,7 @@ const statusConfig: Record<
 		bg: "bg-blue-50",
 		text: "text-blue-700",
 	},
-	completed: {
+	concluded: {
 		label: "Concluído",
 		color: "bg-green-500",
 		bg: "bg-green-50",
