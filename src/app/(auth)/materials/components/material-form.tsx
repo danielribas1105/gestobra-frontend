@@ -16,7 +16,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useMaterialMutations } from "@/hooks/materials/use-material-mutations"
 import { Material } from "@/schemas/material"
-import { parseValueM3 } from "@/utils/format-numbers"
 import { useState } from "react"
 
 interface MaterialFormProps {
@@ -38,22 +37,25 @@ export default function MaterialForm({
 		useMaterialMutations()
 
 	const [form, setForm] = useState({
+		code: material?.code || "",
 		name: material?.name || "",
-		description: material?.description || "",
-		value_m3: material?.value_m3
-			? String(material.value_m3).replace(".", ",")
-			: "",
+		state: material?.state || "Sólido",
+		material_class: material?.material_class || "",
+		packaging: material?.packaging || "Caçamba Aberta",
+		technology: material?.technology || "Aterro",
 	})
 
-	// ✏️ CREATE / UPDATE
 	async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
 		e.preventDefault()
 		e.stopPropagation()
 
 		const payload = {
+			code: form.code,
 			name: form.name,
-			description: form.description,
-			value_m3: parseValueM3(form.value_m3),
+			state: form.state,
+			material_class: form.material_class,
+			packaging: form.packaging,
+			technology: form.technology,
 		}
 
 		try {
@@ -70,7 +72,6 @@ export default function MaterialForm({
 		} catch {}
 	}
 
-	// 🗑️ DELETE
 	async function handleDelete() {
 		if (!material) return
 
@@ -87,41 +88,84 @@ export default function MaterialForm({
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-5">
-			<div className="space-y-1">
-				<Label htmlFor="nome_material">Tipo de material *</Label>
-				<Input
-					id="nome_material"
-					placeholder="Nome"
-					value={form.name}
-					onChange={(e) => setForm({ ...form, name: e.target.value })}
-					disabled={loading}
-				/>
+			<div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
+				<div className="space-y-1">
+					<Label htmlFor="material_code">Código</Label>
+					<Input
+						id="material_code"
+						placeholder="Código material"
+						className="text-transform: uppercase"
+						value={form.code}
+						onChange={(e) =>
+							setForm({ ...form, code: e.target.value.toUpperCase() })
+						}
+						disabled={loading}
+					/>
+				</div>
+				<div className="col-span-3 space-y-1">
+					<Label htmlFor="material_name">Nome *</Label>
+					<Input
+						id="material_name"
+						placeholder="Nome do material"
+						className="text-transform: uppercase"
+						value={form.name}
+						onChange={(e) =>
+							setForm({ ...form, name: e.target.value.toUpperCase() })
+						}
+						disabled={loading}
+					/>
+				</div>
 			</div>
 
-			<div className="space-y-1">
-				<Label htmlFor="descricao_material">Descrição</Label>
-				<Input
-					id="descricao_material"
-					placeholder="Descrição"
-					value={form.description}
-					onChange={(e) => setForm({ ...form, description: e.target.value })}
-					disabled={loading}
-				/>
+			<div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
+				<div className="col-span-2 space-y-1">
+					<Label htmlFor="state">Estado</Label>
+					<Input
+						id="state"
+						placeholder="Estado físico"
+						value={form.state}
+						onChange={(e) => setForm({ ...form, state: e.target.value })}
+						disabled={loading}
+					/>
+				</div>
+				<div className="col-span-2 space-y-1">
+					<Label htmlFor="material_class">Classe</Label>
+					<Input
+						id="material_class"
+						placeholder="Classe do resíduo"
+						className="text-transform: uppercase"
+						value={form.material_class}
+						onChange={(e) =>
+							setForm({ ...form, material_class: e.target.value.toUpperCase() })
+						}
+						disabled={loading}
+					/>
+				</div>
 			</div>
-
-			<div className="space-y-1">
-				<Label htmlFor="valor_material">Valor por m3 *</Label>
-				<Input
-					id="valor_material"
-					placeholder="Valor m3"
-					value={form.value_m3}
-					onChange={(e) => setForm({ ...form, value_m3: e.target.value })}
-					disabled={loading}
-				/>
+			<div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
+				<div className="col-span-2 space-y-1">
+					<Label htmlFor="packaging">Acondicionamento</Label>
+					<Input
+						id="packaging"
+						placeholder="Modo de transporte"
+						value={form.packaging}
+						onChange={(e) => setForm({ ...form, packaging: e.target.value })}
+						disabled={loading}
+					/>
+				</div>
+				<div className="col-span-2 space-y-1">
+					<Label htmlFor="technology">Tecnologia</Label>
+					<Input
+						id="technology"
+						placeholder="Utilização para o resíduo"
+						value={form.technology}
+						onChange={(e) => setForm({ ...form, technology: e.target.value })}
+						disabled={loading}
+					/>
+				</div>
 			</div>
 
 			<div className="flex justify-between items-center">
-				{/* 🔥 DELETE COM MODAL */}
 				{isEdit && (
 					<AlertDialog>
 						<AlertDialogTrigger asChild>
@@ -137,7 +181,8 @@ export default function MaterialForm({
 								</AlertDialogTitle>
 								<AlertDialogDescription>
 									Essa ação não pode ser desfeita. Isso irá excluir
-									permanentemente o material <strong>{material?.name}</strong>.
+									permanentemente o material/resíduo{" "}
+									<strong>{material?.name}</strong>.
 								</AlertDialogDescription>
 							</AlertDialogHeader>
 
@@ -155,7 +200,6 @@ export default function MaterialForm({
 					</AlertDialog>
 				)}
 
-				{/* SUBMIT OR CANCEL */}
 				<div className="flex items-center gap-2 ml-auto">
 					<Button
 						type="button"

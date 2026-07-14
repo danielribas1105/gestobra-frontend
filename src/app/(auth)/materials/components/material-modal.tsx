@@ -19,13 +19,17 @@ export default function MaterialModal({
 		<ModalWrapper
 			open={open}
 			onOpenChange={onOpenChange}
-			width="30vw"
+			width="40vw"
 			maxHeight="60vh"
-			title={material ? "Excluir/Editar material" : "Adicionar material"}
+			title={
+				material
+					? "Excluir/Editar material/resíduo"
+					: "Adicionar material/resíduo"
+			}
 			description={
 				material
-					? "Exclua ou edite as informações do material"
-					: "Preencha as informações do novo material e clique em salvar"
+					? "Exclua ou edite as informações do material/resíduo"
+					: "Preencha as informações do novo material/resíduo e clique em salvar"
 			}
 		>
 			<MaterialForm

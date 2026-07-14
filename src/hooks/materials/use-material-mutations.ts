@@ -19,7 +19,7 @@ export function useMaterialMutations() {
 
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["materials"] })
-			toast.success("Material criado com sucesso 🎉")
+			toast.success("Material/resíduo criado com sucesso 🎉")
 		},
 
 		onError: (error: any) => {
@@ -28,7 +28,7 @@ export function useMaterialMutations() {
 				return
 			}
 
-			toast.error("Erro ao criar material")
+			toast.error("Erro ao criar material/resíduo")
 		},
 	})
 
@@ -42,12 +42,12 @@ export function useMaterialMutations() {
 
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["materials"] })
-			toast.success("Material atualizado com sucesso ✨")
+			toast.success("Material/resíduo atualizado com sucesso ✨")
 		},
 
 		onError: (error: any) => {
 			if (error.status === 404) {
-				toast.error("Material não encontrado")
+				toast.error("Material/resíduo não encontrado")
 				return
 			}
 
@@ -64,16 +64,16 @@ export function useMaterialMutations() {
 
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["materials"] })
-			toast.success("Material excluído 🗑️")
+			toast.success("Material/resíduo excluído 🗑️")
 		},
 
 		onError: (error: any) => {
 			if (error.status === 404) {
-				toast.error("Material não encontrado")
+				toast.error("Material/resíduo não encontrado")
 				return
 			}
 
-			toast.error(error.message || "Erro ao excluir material")
+			toast.error(error.message || "Erro ao excluir material/resíduo")
 		},
 	})
 

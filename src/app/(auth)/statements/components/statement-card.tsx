@@ -1,11 +1,10 @@
+import { Badge } from "@/components/ui/badge"
+import LabelCard from "@/components/ui/label-card"
+import { useCarriers } from "@/hooks/carriers/use-carriers"
+import { useJobsByStatement } from "@/hooks/jobs/use-job-by-statement"
 import { Statement } from "@/schemas/statement"
 import { useState } from "react"
 import StatementModal from "./statement-modal"
-import LabelCard from "@/components/ui/label-card"
-import { useMaterial } from "@/hooks/materials/use-materials"
-import { useJobsByStatement } from "@/hooks/jobs/use-job-by-statement"
-import { useCarriers } from "@/hooks/carriers/use-carriers"
-import { Badge } from "@/components/ui/badge"
 
 const STATUS_COLORS: Record<Statement["status"], string> = {
 	concluded: "#22C55E",
@@ -33,11 +32,6 @@ export default function StatementCard({ statement }: StatementCardProps) {
 		isLoading: loadingJob,
 		isError: errorJob,
 	} = useJobsByStatement(statement.id)
-	const {
-		data: material,
-		isLoading: loadingMaterial,
-		isError,
-	} = useMaterial(statement.material_id)
 
 	const carrier = carriers ? carriers[0].name : ""
 
@@ -60,19 +54,6 @@ export default function StatementCard({ statement }: StatementCardProps) {
 					</div>
 				</header>
 				<div className="flex flex-col gap-2">
-					<div className="grid grid-cols-2 gap-2">
-						<LabelCard
-							description="Material transportado"
-							label="Material"
-							value={material?.name}
-							isLoading={loadingMaterial}
-						/>
-						<LabelCard
-							description="M³"
-							label="Quantidade (M³)"
-							value={statement.m3}
-						/>
-					</div>
 					<LabelCard
 						description="Obra de origem"
 						label="Origem"

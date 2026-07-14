@@ -12,7 +12,7 @@ export default function ListMaterials() {
 	}
 
 	return (
-		<div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+		<div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
 			{materials &&
 				materials.map((material: Material) => (
 					<MaterialCard key={material.id} material={material} />

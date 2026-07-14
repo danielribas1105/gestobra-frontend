@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import {
 	Select,
@@ -47,7 +47,12 @@ import { Work } from "@/schemas/work"
 import { AlertTriangle, Plus } from "lucide-react"
 import StatementForm from "../../statements/components/statement-form"
 import WorkForm from "../../works/components/work-form"
-import { JOBS_STATUS_LABELS } from "@/constants/Jobs"
+import { JOBS_PAYMENT_TYPE, JOBS_STATUS_LABELS } from "@/constants/Jobs"
+import { parseValueM3 } from "@/utils/format-numbers"
+import { useMaterials } from "@/hooks/materials/use-materials"
+import { Material } from "@/schemas/material"
+import MaterialForm from "../../materials/components/material-form"
+import { LABEL_M3 } from "@/constants/Materials"
 
 interface JobFormProps {
 	job?: Job
@@ -60,8 +65,9 @@ interface JobFormProps {
 
 const EMPTY_FORM = {
 	statement_id: null as string | null,
-	origin: "",
-	destiny: "",
+	origin_id: "",
+	destiny_id: "",
+	quantity: "",
 	carrier_id: "",
 	car_id: "",
 	driver_id: "",
@@ -71,8 +77,9 @@ const EMPTY_FORM = {
 // Required fields
 const REQUIRED_FIELDS: { key: keyof typeof EMPTY_FORM; label: string }[] = [
 	{ key: "statement_id", label: "MTR" },
-	{ key: "origin", label: "Origem" },
-	{ key: "destiny", label: "Destino" },
+	{ key: "origin_id", label: "Origem" },
+	{ key: "destiny_id", label: "Destino" },
+	{ key: "quantity", label: "Quantidade" },
 	{ key: "car_id", label: "Veículo" },
 	{ key: "driver_id", label: "Motorista" },
 ]
@@ -94,6 +101,14 @@ export default function JobForm({
 	const { data: statements = [] } = useStatements()
 	const { data: statementsWithoutJob = [] } = useStatementsWithoutJob()
 	const { data: carriers = [] } = useCarriers()
+	const { data: materials = [], isLoading: isLoadingMaterials } = useMaterials()
+
+	const [openMaterialModal, setOpenMaterialModal] = useState(false)
+	const [newMaterial, setNewMaterial] = useState<Material | null>(null)
+
+	const allMaterials = newMaterial
+		? [...materials.filter((m) => m.id !== newMaterial.id), newMaterial]
+		: materials
 
 	const [openStatementModal, setOpenStatementModal] = useState(false)
 	const [openOriginWorkModal, setOpenOriginWorkModal] = useState(false)
@@ -125,8 +140,14 @@ export default function JobForm({
 	const [form, setForm] = useState({
 		...EMPTY_FORM,
 		statement_id: job?.statement_id ?? null,
-		origin: job?.origin ?? lockedOriginWork?.id ?? "",
-		destiny: job?.destiny ?? "",
+		origin_id: job?.origin_id ?? lockedOriginWork?.id ?? "",
+		destiny_id: job?.destiny_id ?? "",
+		material_id: job?.material_id ?? "",
+		quantity: job?.quantity ? String(job?.quantity).replace(".", ",") : "",
+		unit: job?.unit ?? "",
+		value_type: job?.value_type ?? "per_quantity",
+		rate: job?.rate ? String(job?.rate).replace(".", ",") : "",
+		value: job?.value ? String(job?.value).replace(".", ",") : "",
 		carrier_id: job?.carrier_id ?? "",
 		car_id: job?.car_id ?? "",
 		driver_id: job?.driver_id ?? "",
@@ -134,11 +155,14 @@ export default function JobForm({
 	})
 
 	// 🔥 remove origem da lista de destino
-	const filteredDestinies = works.filter((w) => w.id !== form.origin)
+	const filteredDestinies = works.filter((w) => w.id !== form.origin_id)
 
 	async function saveJob() {
 		const payload = {
 			...form,
+			quantity: parseValueM3(form.quantity),
+			rate: parseValueM3(form.rate),
+			value: parseValueM3(form.value),
 			carrier_id: form.carrier_id || carriers[0]?.id,
 		}
 
@@ -146,7 +170,6 @@ export default function JobForm({
 
 		try {
 			if (isEdit) {
-				console.log("job", payload)
 				await updateJob.mutateAsync({ id: job!.id, data: payload })
 				onSuccess?.()
 			} else {
@@ -193,6 +216,29 @@ export default function JobForm({
 
 	const loading =
 		createJob.isPending || updateJob.isPending || deleteJob.isPending
+
+	useEffect(() => {
+		// per_trip: valor unitário é sempre 1, o usuário digita o valor total da viagem
+		if (form.value_type === "per_trip") {
+			if (form.rate !== "1") {
+				setForm((prev) => ({ ...prev, rate: "1" }))
+			}
+			return
+		}
+
+		// per_quantity / per_km: valor total = valor unitário x quantidade
+		const rate = parseValueM3(form.rate)
+		const quantity = parseValueM3(form.quantity)
+
+		if (!rate || !quantity || isNaN(rate) || isNaN(quantity)) return
+
+		const total = rate * quantity
+
+		setForm((prev) => ({
+			...prev,
+			value: total.toFixed(2).replace(".", ","),
+		}))
+	}, [form.rate, form.quantity, form.value_type])
 
 	return (
 		<>
@@ -278,7 +324,7 @@ export default function JobForm({
 							<Input value={lockedOriginWork.name} disabled />
 						) : (
 							<Select
-								value={form.origin}
+								value={form.origin_id}
 								onValueChange={(v) => {
 									if (v === "__add_new__") {
 										setOpenOriginWorkModal(true)
@@ -286,13 +332,13 @@ export default function JobForm({
 									}
 									setForm({
 										...form,
-										origin: v,
-										destiny: v === form.destiny ? "" : form.destiny,
+										origin_id: v,
+										destiny_id: v === form.destiny_id ? "" : form.destiny_id,
 									})
 								}}
 							>
 								<SelectTrigger className="w-full">
-									<SelectValue placeholder="Origem" />
+									<SelectValue placeholder="Selecione a origem" />
 								</SelectTrigger>
 								<SelectContent>
 									{works.map((w) => (
@@ -318,17 +364,17 @@ export default function JobForm({
 					<div className="col-span-2 space-y-1">
 						<Label>Destino</Label>
 						<Select
-							value={form.destiny}
+							value={form.destiny_id}
 							onValueChange={(v) => {
 								if (v === "__add_new__") {
 									setOpenDestinyWorkModal(true)
 									return
 								}
-								setForm({ ...form, destiny: v })
+								setForm({ ...form, destiny_id: v })
 							}}
 						>
 							<SelectTrigger className="w-full">
-								<SelectValue placeholder="Destino" />
+								<SelectValue placeholder="Selecione o destino" />
 							</SelectTrigger>
 							<SelectContent>
 								{filteredDestinies.map((w) => (
@@ -350,8 +396,170 @@ export default function JobForm({
 				</div>
 
 				<div className="grid grid-cols-1 lg:grid-cols-5 gap-2">
+					<div className="col-span-3 space-y-1">
+						<Label htmlFor="status">Material/Resíduo *</Label>
+						<Select
+							value={form.material_id}
+							disabled={loading}
+							onValueChange={(v) => {
+								if (v === "__add_new__") {
+									setOpenMaterialModal(true)
+									return
+								}
+								setForm({
+									...form,
+									material_id: v,
+								})
+							}}
+						>
+							<SelectTrigger id="status" className="w-full">
+								<SelectValue
+									placeholder={
+										isLoadingMaterials
+											? "Carregando materiais/resíduos..."
+											: "Selecione o material/resíduo"
+									}
+								/>
+							</SelectTrigger>
+							<SelectContent>
+								{allMaterials.map((material) => (
+									<SelectItem key={material.id} value={material.id}>
+										{material.name}
+									</SelectItem>
+								))}
+								<SelectItem
+									value="__add_new__"
+									className="text-primary font-medium"
+								>
+									<span className="flex items-center gap-1">
+										<Plus className="w-3.5 h-3.5" />
+										Adicionar Material
+									</span>
+								</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
+					<div className="space-y-1">
+						<Label htmlFor="quantity">Quantidade</Label>
+						<Input
+							id="quantity"
+							type="number"
+							placeholder="Informe a quantidade"
+							value={form.quantity}
+							onChange={(e) => setForm({ ...form, quantity: e.target.value })}
+							disabled={loading}
+						/>
+					</div>
+					<div className="space-y-1">
+						<Label htmlFor="unit">Unidade</Label>
+						<Select
+							value={form.unit}
+							onValueChange={(v) =>
+								setForm({
+									...form,
+									unit: v as "m3" | "kg" | "t",
+								})
+							}
+						>
+							<SelectTrigger className="w-full">
+								<SelectValue placeholder="Selecione a unidade" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="m3">{LABEL_M3}</SelectItem>
+								<SelectItem value="kg">kg</SelectItem>
+								<SelectItem value="t">t</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
+				</div>
+				<div className="grid grid-cols-1 lg:grid-cols-5 gap-2">
+					<div className="space-y-1">
+						<Label htmlFor="value_type">Forma de pagamento</Label>
+						<Select
+							value={form.value_type}
+							onValueChange={(v) =>
+								setForm({
+									...form,
+									value_type: v as "per_quantity" | "per_trip" | "per_km",
+								})
+							}
+						>
+							<SelectTrigger className="w-full">
+								<SelectValue placeholder="Forma de pagamento" />
+							</SelectTrigger>
+							<SelectContent>
+								{Object.entries(JOBS_PAYMENT_TYPE).map(([key, label]) => (
+									<SelectItem key={key} value={key}>
+										{label}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
+					<div className="space-y-1">
+						<Label htmlFor="rate">Valor unitário</Label>
+						<Input
+							id="rate"
+							placeholder="Valor da taxa"
+							value={form.rate}
+							onChange={(e) => setForm({ ...form, rate: e.target.value })}
+							disabled={loading || form.value_type === "per_trip"}
+						/>
+					</div>
+					<div className="space-y-1">
+						<Label htmlFor="value">Valor total</Label>
+						<Input
+							id="value"
+							placeholder="Total"
+							value={form.value}
+							onChange={(e) => setForm({ ...form, value: e.target.value })}
+							disabled={loading || form.value_type !== "per_trip"}
+						/>
+					</div>
+					{/* CAR */}
+					<div className="space-y-1">
+						<Label>Veículo</Label>
+						<Select
+							value={form.car_id}
+							onValueChange={(v) => setForm({ ...form, car_id: v })}
+						>
+							<SelectTrigger className="w-full">
+								<SelectValue placeholder="Selecione o veículo" />
+							</SelectTrigger>
+							<SelectContent>
+								{cars.map((c) => (
+									<SelectItem key={c.id} value={c.id}>
+										{c.model}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
+
+					{/* DRIVER */}
+					<div className="space-y-1">
+						<Label>Motorista</Label>
+						<Select
+							value={form.driver_id}
+							onValueChange={(v) => setForm({ ...form, driver_id: v })}
+						>
+							<SelectTrigger className="w-full">
+								<SelectValue placeholder="Selecione o motorista" />
+							</SelectTrigger>
+							<SelectContent>
+								{drivers.map((d) => (
+									<SelectItem key={d.id} value={d.id}>
+										{d.name}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
+				</div>
+
+				<div className="grid grid-cols-1 lg:grid-cols-5 gap-2">
 					{/* CARRIER */}
-					<div className="col-span-2 space-y-1">
+					<div className="col-span-4 space-y-1">
 						<Label htmlFor="carrier">Transportadora</Label>
 						<Input
 							id="carrier"
@@ -375,48 +583,9 @@ export default function JobForm({
 							</SelectContent>
 						</Select> */}
 					</div>
-					{/* CAR */}
-					<div className="space-y-1">
-						<Label>Veículo</Label>
-						<Select
-							value={form.car_id}
-							onValueChange={(v) => setForm({ ...form, car_id: v })}
-						>
-							<SelectTrigger className="w-full">
-								<SelectValue placeholder="Veículo" />
-							</SelectTrigger>
-							<SelectContent>
-								{cars.map((c) => (
-									<SelectItem key={c.id} value={c.id}>
-										{c.model}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</div>
-
-					{/* DRIVER */}
-					<div className="space-y-1">
-						<Label>Motorista</Label>
-						<Select
-							value={form.driver_id}
-							onValueChange={(v) => setForm({ ...form, driver_id: v })}
-						>
-							<SelectTrigger className="w-full">
-								<SelectValue placeholder="Motorista" />
-							</SelectTrigger>
-							<SelectContent>
-								{drivers.map((d) => (
-									<SelectItem key={d.id} value={d.id}>
-										{d.name}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</div>
 
 					{/* STATUS */}
-					<div className="space-y-1.5">
+					<div className="space-y-1">
 						<Label>Status</Label>
 						<Select
 							value={form.status}
@@ -529,7 +698,8 @@ export default function JobForm({
 									setForm((prev) => ({
 										...prev,
 										origin: newWork.id,
-										destiny: prev.destiny === newWork.id ? "" : prev.destiny,
+										destiny:
+											prev.destiny_id === newWork.id ? "" : prev.destiny_id,
 									}))
 									pendingNewWorkRef.current = null
 								}
@@ -566,6 +736,27 @@ export default function JobForm({
 								setOpenDestinyWorkModal(false)
 							}}
 							onCancel={() => setOpenDestinyWorkModal(false)}
+						/>
+					</DialogContent>
+				</Dialog>
+				<Dialog open={openMaterialModal} onOpenChange={setOpenMaterialModal}>
+					<DialogContent>
+						<DialogHeader>
+							<DialogTitle>Novo Material</DialogTitle>
+						</DialogHeader>
+						<DialogDescription>Adicionar novo material</DialogDescription>
+						<MaterialForm
+							onMaterialCreated={(newMaterial) => {
+								setNewMaterial(newMaterial)
+								setForm((prev) => ({ ...prev, material_id: newMaterial.id }))
+							}}
+							onSuccess={() => {
+								setOpenMaterialModal(false)
+							}}
+							onCancel={() => {
+								setNewMaterial(null)
+								setOpenMaterialModal(false)
+							}}
 						/>
 					</DialogContent>
 				</Dialog>
