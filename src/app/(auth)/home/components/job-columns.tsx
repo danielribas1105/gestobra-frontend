@@ -1,11 +1,13 @@
 "use client"
 import { ColumnDef } from "@tanstack/react-table"
 import { Job } from "@/schemas/job"
+import { LABEL_M3 } from "@/constants/Materials"
 
 export const JobColumns: ColumnDef<Job>[] = [
 	{
 		accessorKey: "created_at",
 		header: () => <div className="text-center">Data</div>,
+		size: 90,
 		cell: ({ row }) => {
 			const raw = row.getValue("created_at") as string
 			const date = new Date(raw)
@@ -19,10 +21,15 @@ export const JobColumns: ColumnDef<Job>[] = [
 	{
 		accessorKey: "statement_code",
 		header: () => <div className="text-center">Manifesto</div>,
+		size: 100,
 		cell: ({ row }) => {
+			const value = row.getValue("statement_code") as string
 			return (
-				<div className="text-[12px] text-center text-muted-foreground">
-					{row.getValue("statement_code")}
+				<div
+					className="text-[12px] text-center text-muted-foreground truncate"
+					title={value}
+				>
+					{value}
 				</div>
 			)
 		},
@@ -30,36 +37,42 @@ export const JobColumns: ColumnDef<Job>[] = [
 	{
 		accessorKey: "material_name",
 		header: () => <div className="text-center">Material</div>,
+		size: 170,
 		cell: ({ row }) => {
+			const value = row.getValue("material_name") as string
 			return (
-				<div className="text-[12px] text-center text-muted-foreground">
-					{row.getValue("material_name")}
+				<div
+					className="text-[12px] text-center text-muted-foreground truncate"
+					title={value}
+				>
+					{value}
 				</div>
 			)
 		},
 	},
 	{
 		accessorKey: "m3",
-		header: () => <div className="text-center">M3</div>,
+		header: () => <div className="text-center">Quantidade</div>,
+		size: 110,
 		cell: ({ row }) => {
+			const quantity = row.original.quantity as number
+			const unit = row.original.unit === "m3" ? LABEL_M3 : row.original.unit
 			return (
-				<div className="text-[12px] text-center text-muted-foreground">
-					{row.getValue("m3")}
+				<div className="text-[12px] text-center text-muted-foreground truncate">
+					{`${quantity.toFixed(2)} (${unit})`}
 				</div>
 			)
 		},
 	},
 	{
-		id: "value_m3",
+		id: "payment_value",
 		header: () => <div className="text-center">À pagar</div>,
+		size: 110,
 		cell: ({ row }) => {
-			const m3 = row.original.m3 as number
-			const value_m3 = row.original.value_m3 as number
-			const total = m3 * value_m3
-
+			const value = row.original.value as number
 			return (
-				<div className="text-[12px] text-center text-muted-foreground">
-					{total.toLocaleString("pt-BR", {
+				<div className="text-[12px] text-center text-muted-foreground truncate">
+					{value.toLocaleString("pt-BR", {
 						style: "currency",
 						currency: "BRL",
 					})}
@@ -70,10 +83,15 @@ export const JobColumns: ColumnDef<Job>[] = [
 	{
 		accessorKey: "origin_name",
 		header: () => <div className="text-center">Origem</div>,
+		size: 200,
 		cell: ({ row }) => {
+			const value = row.getValue("origin_name") as string
 			return (
-				<div className="text-[12px] text-center text-muted-foreground">
-					{row.getValue("origin_name")}
+				<div
+					className="text-[12px] text-center text-muted-foreground truncate"
+					title={value}
+				>
+					{value}
 				</div>
 			)
 		},
@@ -81,10 +99,15 @@ export const JobColumns: ColumnDef<Job>[] = [
 	{
 		accessorKey: "destiny_name",
 		header: () => <div className="text-center">Destino</div>,
+		size: 200,
 		cell: ({ row }) => {
+			const value = row.getValue("destiny_name") as string
 			return (
-				<div className="text-[12px] text-center text-muted-foreground">
-					{row.getValue("destiny_name")}
+				<div
+					className="text-[12px] text-center text-muted-foreground truncate"
+					title={value}
+				>
+					{value}
 				</div>
 			)
 		},
@@ -92,10 +115,15 @@ export const JobColumns: ColumnDef<Job>[] = [
 	{
 		accessorKey: "car_license",
 		header: () => <div className="text-center">Veículo</div>,
+		size: 80,
 		cell: ({ row }) => {
+			const value = row.getValue("car_license") as string
 			return (
-				<div className="text-[12px] text-center text-muted-foreground">
-					{row.getValue("car_license")}
+				<div
+					className="text-[12px] text-center text-muted-foreground truncate"
+					title={value}
+				>
+					{value}
 				</div>
 			)
 		},
@@ -103,10 +131,15 @@ export const JobColumns: ColumnDef<Job>[] = [
 	{
 		accessorKey: "driver_name",
 		header: () => <div className="text-center">Motorista</div>,
+		size: 90,
 		cell: ({ row }) => {
+			const value = row.getValue("driver_name") as string
 			return (
-				<div className="text-[12px] text-center text-muted-foreground">
-					{row.getValue("driver_name")}
+				<div
+					className="text-[12px] text-center text-muted-foreground truncate"
+					title={value}
+				>
+					{value}
 				</div>
 			)
 		},
@@ -114,10 +147,15 @@ export const JobColumns: ColumnDef<Job>[] = [
 	{
 		accessorKey: "creator_name",
 		header: () => <div className="text-center">Criado por</div>,
+		size: 90,
 		cell: ({ row }) => {
+			const value = row.getValue("creator_name") as string
 			return (
-				<div className="text-[12px] text-center text-muted-foreground">
-					{row.getValue("creator_name")}
+				<div
+					className="text-[12px] text-center text-muted-foreground truncate"
+					title={value}
+				>
+					{value}
 				</div>
 			)
 		},
@@ -125,6 +163,7 @@ export const JobColumns: ColumnDef<Job>[] = [
 	{
 		accessorKey: "status",
 		header: () => <div className="text-center">Status</div>,
+		size: 60,
 		cell: ({ row }) => {
 			const status = row.getValue("status") as string
 			const statusColors: Record<string, string> = {

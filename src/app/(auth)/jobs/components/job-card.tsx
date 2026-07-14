@@ -31,13 +31,11 @@ export default function JobCard({ job }: JobCardProps) {
 	const { data: statement, isLoading: loadingSatement } = useStatement(
 		job.statement_id ?? "",
 	)
-	const { data: material, isLoading: loadingMaterial } = useMaterial(
-		statement?.material_id ?? "",
-	)
+	//const { data: material, isLoading: loadingMaterial } = useMaterial(id ?? "")
 
-	const m3 = statement?.m3 as number
+	/* const m3 = statement?.m3 as number
 	const value_m3 = material?.value_m3 as number
-	const total = m3 * value_m3
+	const total = m3 * value_m3 */
 
 	return (
 		<>
@@ -67,7 +65,7 @@ export default function JobCard({ job }: JobCardProps) {
 					/>
 				</header>
 				<div className="flex flex-col gap-2">
-					<div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+					{/* <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
 						<LabelCard
 							description="Material transportado"
 							label="Material"
@@ -89,7 +87,7 @@ export default function JobCard({ job }: JobCardProps) {
 							})}
 							position="md:justify-end"
 						/>
-					</div>
+					</div> */}
 					<div className="grid grid-cols-2 md:grid-cols-3 gap-2">
 						<LabelCard
 							description="Veículo utilizado no transporte"

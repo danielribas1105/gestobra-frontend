@@ -36,29 +36,29 @@ export function DataTable<TData, TValue>({
 		getCoreRowModel: getCoreRowModel(),
 	})
 
-	function handleRowClick(data: any[]) {
-		//console.log(data)
-		alert(data)
-	}
-
 	return (
 		<div className="overflow-hidden rounded-md border">
-			<Table>
+			<Table className="w-full table-fixed">
+				{/* 👇 define a largura de cada coluna uma única vez, vale para thead e tbody */}
+				<colgroup>
+					{table.getVisibleLeafColumns().map((column) => (
+						<col key={column.id} style={{ width: column.getSize() }} />
+					))}
+				</colgroup>
+
 				<TableHeader>
 					{table.getHeaderGroups().map((headerGroup) => (
 						<TableRow key={headerGroup.id}>
-							{headerGroup.headers.map((header) => {
-								return (
-									<TableHead key={header.id}>
-										{header.isPlaceholder
-											? null
-											: flexRender(
-													header.column.columnDef.header,
-													header.getContext(),
-												)}
-									</TableHead>
-								)
-							})}
+							{headerGroup.headers.map((header) => (
+								<TableHead key={header.id} className="overflow-hidden">
+									{header.isPlaceholder
+										? null
+										: flexRender(
+												header.column.columnDef.header,
+												header.getContext(),
+											)}
+								</TableHead>
+							))}
 						</TableRow>
 					))}
 				</TableHeader>
@@ -75,7 +75,7 @@ export function DataTable<TData, TValue>({
 								onClick={() => onRowClick?.(row.original)}
 							>
 								{row.getVisibleCells().map((cell) => (
-									<TableCell key={cell.id}>
+									<TableCell key={cell.id} className="overflow-hidden">
 										{flexRender(cell.column.columnDef.cell, cell.getContext())}
 									</TableCell>
 								))}

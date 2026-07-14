@@ -151,8 +151,11 @@ export default function WorkForm({
 						<Input
 							id="name"
 							placeholder="Nome da obra"
+							className="text-transform: uppercase"
 							value={form.name}
-							onChange={(e) => handleChange("name", e.target.value)}
+							onChange={(e) =>
+								handleChange("name", e.target.value.toUpperCase())
+							}
 							disabled={loading || isSaved}
 							required
 						/>
@@ -357,7 +360,7 @@ export default function WorkForm({
 										</td>
 										<td className="px-3 py-2">
 											{works
-												.filter((w) => j.destiny === w.id)
+												.filter((w) => j.destiny_id === w.id)
 												.map((w) => w.name)}
 										</td>
 										<td className="px-3 py-2">
@@ -440,7 +443,7 @@ export default function WorkForm({
 													</td>
 													<td className="px-3 py-2">
 														{works
-															.filter((w) => j.destiny === w.id)
+															.filter((w) => j.destiny_id === w.id)
 															.map((w) => w.name)}
 													</td>
 													<td className="px-3 py-2">

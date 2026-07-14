@@ -2,13 +2,12 @@ import z from "zod"
 
 export const MaterialSchema = z.object({
 	id: z.uuid(),
+	code: z.string().nullable().optional(),
 	name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
-	description: z
-		.string()
-		.min(3, "A descrição deve ter pelo menos 3 caracteres")
-		.nullable()
-		.optional(),
-	value_m3: z.number().positive("O valor por m3 deve ser um número positivo"),
+	state: z.string().nullable().optional(),
+	material_class: z.string().nullable().optional(),
+	packaging: z.string().nullable().optional(),
+	technology: z.string().nullable().optional(),
 })
 
 export type Material = z.infer<typeof MaterialSchema>

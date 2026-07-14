@@ -41,15 +41,12 @@ interface JobCardHomeProps {
 
 export default function JobCardHome({ job, onClick }: JobCardHomeProps) {
 	const status = statusConfig[job.status] ?? statusConfig["pending"]
-	const total = (job.m3 as number) * (job.value_m3 as number)
+	const total = job.value as number
 	const created_at = job.created_at ?? ""
 	const date = new Date(created_at).toLocaleDateString("pt-BR")
 
 	const { data: statement, isLoading: loadingStatement } = useStatementByJob(
 		job.id,
-	)
-	const { data: material, isLoading: loadingMaterial } = useMaterial(
-		statement?.material_id ?? "",
 	)
 
 	return (
@@ -108,19 +105,16 @@ export default function JobCardHome({ job, onClick }: JobCardHomeProps) {
 					<span className="text-[10px] text-muted-foreground uppercase tracking-wide">
 						Material
 					</span>
-					{loadingMaterial ? (
-						<span className="text-xs text-foreground">
-							<Skeleton className="h-4 w-full rounded-md" />
-						</span>
-					) : (
-						<span className="text-xs text-foreground">{material?.name}</span>
-					)}
+					<span className="text-xs text-foreground">{job.material_name}</span>
 				</div>
 				<div className="flex flex-col gap-0.5">
 					<span className="text-[10px] text-muted-foreground uppercase tracking-wide">
-						M³
+						Quantidade
 					</span>
-					<span className="text-xs text-foreground">{job.m3}</span>
+					<span className="text-xs text-foreground">
+						{job.quantity.toFixed(2)}
+						{job.unit ? `(${job.unit})` : ""}
+					</span>
 				</div>
 				<div className="flex flex-col gap-0.5">
 					<span className="text-[10px] text-muted-foreground uppercase tracking-wide">
@@ -140,6 +134,7 @@ export default function JobCardHome({ job, onClick }: JobCardHomeProps) {
 			<div className="flex items-center justify-between pt-1 border-t border-border/60">
 				<span className="text-[11px] text-muted-foreground">{date}</span>
 				<span className="text-sm font-semibold text-foreground">
+					À pagar:{" "}
 					{total.toLocaleString("pt-BR", {
 						style: "currency",
 						currency: "BRL",

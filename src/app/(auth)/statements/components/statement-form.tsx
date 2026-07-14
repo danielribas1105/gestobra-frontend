@@ -12,13 +12,6 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -28,13 +21,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select"
-import { useMaterials } from "@/hooks/materials/use-materials"
 import { useStatementMutations } from "@/hooks/statements/use-statement-mutations"
-import { Material } from "@/schemas/material"
 import { Statement, StatementStatusEnum } from "@/schemas/statement"
-import { Plus } from "lucide-react"
 import { useState } from "react"
-import MaterialForm from "../../materials/components/material-form"
 
 interface StatementFormProps {
 	statement?: Statement
@@ -63,19 +52,9 @@ export default function StatementForm({
 
 	const { createStatement, updateStatement, deleteStatement } =
 		useStatementMutations()
-	const { data: materials = [], isLoading: isLoadingMaterials } = useMaterials()
-
-	const [openMaterialModal, setOpenMaterialModal] = useState(false)
-	const [newMaterial, setNewMaterial] = useState<Material | null>(null)
-
-	const allMaterials = newMaterial
-		? [...materials.filter((m) => m.id !== newMaterial.id), newMaterial]
-		: materials
 
 	const [form, setForm] = useState({
 		code: statement?.code ?? "",
-		material_id: statement?.material_id ?? "",
-		m3: statement?.m3?.toString() ?? "",
 		status: statement?.status ?? ("pending" as Statement["status"]),
 		active: statement?.active ?? true,
 	})
@@ -90,8 +69,6 @@ export default function StatementForm({
 
 		const payload = {
 			code: form.code,
-			material_id: form.material_id,
-			m3: parseFloat(form.m3),
 			status: form.status,
 			active: form.active,
 		}
@@ -134,66 +111,9 @@ export default function StatementForm({
 						required
 					/>
 				</div>
-				<div className="col-span-2 space-y-1">
-					<Label htmlFor="status">Material *</Label>
-					<Select
-						value={form.material_id}
-						disabled={loading}
-						onValueChange={(v) => {
-							if (v === "__add_new__") {
-								setOpenMaterialModal(true)
-								return
-							}
-							setForm({
-								...form,
-								material_id: v,
-							})
-						}}
-					>
-						<SelectTrigger id="status" className="w-full">
-							<SelectValue
-								placeholder={
-									isLoadingMaterials
-										? "Carregando materiais..."
-										: "Selecione o material"
-								}
-							/>
-						</SelectTrigger>
-						<SelectContent>
-							{allMaterials.map((material) => (
-								<SelectItem key={material.id} value={material.id}>
-									{material.name}
-								</SelectItem>
-							))}
-							<SelectItem
-								value="__add_new__"
-								className="text-primary font-medium"
-							>
-								<span className="flex items-center gap-1">
-									<Plus className="w-3.5 h-3.5" />
-									Adicionar Material
-								</span>
-							</SelectItem>
-						</SelectContent>
-					</Select>
-				</div>
 			</div>
 
 			<div className="grid grid-cols-3 gap-2">
-				<div className="space-y-1">
-					<Label htmlFor="quantidade-m3">Quantidade</Label>
-					<Input
-						id="quantidade-m3"
-						type="number"
-						placeholder="Quantidade (m³)"
-						value={form.m3}
-						onChange={(e) => handleChange("m3", e.target.value)}
-						disabled={loading}
-						min={0}
-						step="0.01"
-						required
-					/>
-				</div>
 				<div className="space-y-1">
 					<Label htmlFor="status">Status</Label>
 					<Select
@@ -267,28 +187,6 @@ export default function StatementForm({
 					</Button>
 				</div>
 			</div>
-
-			<Dialog open={openMaterialModal} onOpenChange={setOpenMaterialModal}>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>Novo Material</DialogTitle>
-					</DialogHeader>
-					<DialogDescription>Adicionar novo material</DialogDescription>
-					<MaterialForm
-						onMaterialCreated={(newMaterial) => {
-							setNewMaterial(newMaterial)
-							setForm((prev) => ({ ...prev, material_id: newMaterial.id }))
-						}}
-						onSuccess={() => {
-							setOpenMaterialModal(false)
-						}}
-						onCancel={() => {
-							setNewMaterial(null)
-							setOpenMaterialModal(false)
-						}}
-					/>
-				</DialogContent>
-			</Dialog>
 		</form>
 	)
 }
