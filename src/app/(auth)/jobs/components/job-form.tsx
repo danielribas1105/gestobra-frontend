@@ -53,6 +53,11 @@ import { useMaterials } from "@/hooks/materials/use-materials"
 import { Material } from "@/schemas/material"
 import MaterialForm from "../../materials/components/material-form"
 import { LABEL_M3 } from "@/constants/Materials"
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 interface JobFormProps {
 	job?: Job
@@ -567,6 +572,7 @@ export default function JobForm({
 							value={carriers[0]?.name ?? ""}
 							disabled={true}
 						/>
+						{/* Caso existam outras transportadoras*/}
 						{/* <Select
 							value={form.carrier_id}
 							onValueChange={(v) => setForm({ ...form, carrier_id: v })}
@@ -587,30 +593,55 @@ export default function JobForm({
 					{/* STATUS */}
 					<div className="space-y-1">
 						<Label>Status</Label>
-						<Select
-							value={form.status}
-							onValueChange={(v) =>
-								setForm({
-									...form,
-									status: v as
-										| "concluded"
-										| "in_progress"
-										| "pending"
-										| "canceled",
-								})
-							}
-						>
-							<SelectTrigger className="w-full">
-								<SelectValue placeholder="Status" />
-							</SelectTrigger>
-							<SelectContent>
-								{Object.entries(JOBS_STATUS_LABELS).map(([key, label]) => (
-									<SelectItem key={key} value={key}>
-										{label}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
+						{!form.statement_id ? (
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<span className="inline-block w-full cursor-not-allowed">
+										<Select value={form.status} disabled>
+											<SelectTrigger className="w-full pointer-events-none">
+												<SelectValue placeholder="Status" />
+											</SelectTrigger>
+											<SelectContent>
+												{Object.entries(JOBS_STATUS_LABELS).map(
+													([key, label]) => (
+														<SelectItem key={key} value={key}>
+															{label}
+														</SelectItem>
+													),
+												)}
+											</SelectContent>
+										</Select>
+									</span>
+								</TooltipTrigger>
+								<TooltipContent>MTR não informado</TooltipContent>
+							</Tooltip>
+						) : (
+							<Select
+								value={form.status}
+								onValueChange={(v) =>
+									setForm({
+										...form,
+										status: v as
+											| "concluded"
+											| "in_progress"
+											| "pending"
+											| "canceled",
+									})
+								}
+								disabled={loading}
+							>
+								<SelectTrigger className="w-full">
+									<SelectValue placeholder="Status" />
+								</SelectTrigger>
+								<SelectContent>
+									{Object.entries(JOBS_STATUS_LABELS).map(([key, label]) => (
+										<SelectItem key={key} value={key}>
+											{label}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						)}
 					</div>
 				</div>
 

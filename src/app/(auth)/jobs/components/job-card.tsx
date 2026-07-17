@@ -1,8 +1,6 @@
 import { Badge } from "@/components/ui/badge"
 import LabelCard from "@/components/ui/label-card"
 import { useCar } from "@/hooks/cars/use-cars"
-import { useMaterial } from "@/hooks/materials/use-materials"
-import { useStatement } from "@/hooks/statements/use-statements"
 import { Job } from "@/schemas/job"
 import { useState } from "react"
 import JobModal from "./job-modal"
@@ -28,14 +26,6 @@ export interface JobCardProps {
 export default function JobCard({ job }: JobCardProps) {
 	const [open, setOpen] = useState(false)
 	const { data: car, isLoading: loadingCar } = useCar(job.car_id)
-	const { data: statement, isLoading: loadingSatement } = useStatement(
-		job.statement_id ?? "",
-	)
-	//const { data: material, isLoading: loadingMaterial } = useMaterial(id ?? "")
-
-	/* const m3 = statement?.m3 as number
-	const value_m3 = material?.value_m3 as number
-	const total = m3 * value_m3 */
 
 	return (
 		<>
@@ -52,7 +42,7 @@ export default function JobCard({ job }: JobCardProps) {
 						<h2 className="text-xl text-muted-foreground font-semibold">
 							MTR nº
 						</h2>
-						<h2 className="text-xl">{statement?.code}</h2>
+						<h2 className="text-xl">{job.statement_code ?? "Não informado"}</h2>
 					</div>
 					<LabelCard
 						description="Data de criação"
@@ -65,29 +55,28 @@ export default function JobCard({ job }: JobCardProps) {
 					/>
 				</header>
 				<div className="flex flex-col gap-2">
-					{/* <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+					<div className="grid grid-cols-2 md:grid-cols-3 gap-2">
 						<LabelCard
 							description="Material transportado"
 							label="Material"
-							value={material?.name}
-							isLoading={loadingMaterial}
+							value={job?.material_name}
 						/>
 						<LabelCard
-							description="M³"
-							label="Quantidade (M³)"
-							value={statement?.m3}
+							description="Quantidade de resíduos"
+							label="Quantidade"
+							value={job.quantity}
 							position="justify-end md:justify-center"
 						/>
 						<LabelCard
 							description="Valor a ser pago pelo transporte"
-							label="Valor total"
-							value={total.toLocaleString("pt-BR", {
+							label="Valor"
+							value={job.value.toLocaleString("pt-BR", {
 								style: "currency",
 								currency: "BRL",
 							})}
 							position="md:justify-end"
 						/>
-					</div> */}
+					</div>
 					<div className="grid grid-cols-2 md:grid-cols-3 gap-2">
 						<LabelCard
 							description="Veículo utilizado no transporte"

@@ -29,6 +29,7 @@ export const JobSchema = z.object({
 	status: JobStatusEnum,
 	created_at: z.coerce.date().nullable().optional(),
 	updated_at: z.coerce.date().nullable().optional(),
+	statement_code: z.string(),
 	origin_name: z.string(),
 	destiny_name: z.string(),
 	material_name: z.string(),

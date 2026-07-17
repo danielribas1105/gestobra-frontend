@@ -1,7 +1,4 @@
 "use client"
-import { Skeleton } from "@/components/ui/skeleton"
-import { useMaterial } from "@/hooks/materials/use-materials"
-import { useStatementByJob } from "@/hooks/statements/use-statements"
 import { Job } from "@/schemas/job"
 
 const statusConfig: Record<
@@ -45,10 +42,6 @@ export default function JobCardHome({ job, onClick }: JobCardHomeProps) {
 	const created_at = job.created_at ?? ""
 	const date = new Date(created_at).toLocaleDateString("pt-BR")
 
-	const { data: statement, isLoading: loadingStatement } = useStatementByJob(
-		job.id,
-	)
-
 	return (
 		<div
 			className="rounded-xl border bg-card p-4 flex flex-col gap-3 cursor-pointer active:scale-[0.99] transition-transform"
@@ -60,15 +53,9 @@ export default function JobCardHome({ job, onClick }: JobCardHomeProps) {
 					<span className="text-[11px] text-muted-foreground uppercase tracking-wide">
 						MTR Nº
 					</span>
-					{loadingStatement ? (
-						<span className="text-sm font-semibold text-foreground">
-							<Skeleton className="h-4 w-full rounded-md" />
-						</span>
-					) : (
-						<span className="text-sm font-semibold text-foreground">
-							{statement?.code}
-						</span>
-					)}
+					<span className="text-sm font-semibold text-foreground">
+						{job?.statement_code}
+					</span>
 				</div>
 				<span
 					className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${status.bg} ${status.text}`}

@@ -23,7 +23,9 @@ export default function LabelCard({
 				{isLoading ? (
 					<Skeleton className="h-6 w-full rounded-md" />
 				) : (
-					<p className="font-semibold">{value}</p>
+					<p className="font-semibold truncate" title={value as string}>
+						{value}
+					</p>
 				)}
 			</dd>
 		</dl>
