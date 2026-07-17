@@ -105,13 +105,7 @@ export default function PaymentsWrapper({
 	}
 
 	const columns = useMemo(
-		() =>
-			getPaymentColumns(
-				handleStatusChange,
-				pendingChanges,
-				handleDeletePayment,
-				deletePayment.isPending,
-			),
+		() => getPaymentColumns(handleStatusChange, pendingChanges),
 		[
 			handleStatusChange,
 			pendingChanges,
@@ -141,8 +135,6 @@ export default function PaymentsWrapper({
 						payments={displayPayments ?? []}
 						onStatusChange={handleStatusChange}
 						pendingChanges={pendingChanges}
-						onDelete={handleDeletePayment}
-						isDeleting={deletePayment.isPending}
 					/>
 				</>
 			)}
@@ -155,7 +147,7 @@ export default function PaymentsWrapper({
 					</p>
 					<div className="flex gap-2">
 						<Button
-							variant="outline"
+							variant="destructive"
 							size="sm"
 							onClick={handleDiscard}
 							disabled={isSaving}

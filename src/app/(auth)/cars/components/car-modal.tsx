@@ -15,6 +15,8 @@ export default function CarModal({ open, onOpenChange, car }: CarModalProps) {
 		<ModalWrapper
 			open={open}
 			onOpenChange={onOpenChange}
+			width="50vw"
+			maxHeight="90vh"
 			title={car ? "Editar veículo" : "Adicionar veículo"}
 			description={
 				car
