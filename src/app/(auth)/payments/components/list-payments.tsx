@@ -1,38 +1,52 @@
-import { DataTable } from "@/components/ui/data-table"
-import { usePaymentsSummaryByCar } from "@/hooks/payments/use-payments"
-import { PaymentByCar } from "@/schemas/payment"
-import { useState } from "react"
-import { PaymentColumnsByCar } from "./payments-columns-by-car"
-import PaymentsWrapper from "./payments-wrapper"
+import { Payment } from "@/schemas/payment"
+import PaymentCard from "./payment-card"
 
-export default function ListPayments() {
-	const [selectedPayment, setSelectedPayment] = useState<
-		PaymentByCar | undefined
-	>(undefined)
-	const { data: summaryByCar, isLoading } = usePaymentsSummaryByCar()
+interface PendingChange {
+	status: Payment["status"]
+	updated_at: Payment["updated_at"]
+}
 
-	if (isLoading) return <p>Carregando...</p>
+interface ListPaymentsProps {
+	payments: Payment[]
+	onStatusChange: (paymentId: string, checked: boolean) => void
+	pendingChanges: Record<string, PendingChange>
+	onDelete: (paymentId: string) => void
+	isDeleting: boolean
+}
 
-	if (summaryByCar?.length === 0) {
-		return <div>Nenhum pagamento encontrado!</div>
+export default function ListPayments({
+	payments,
+	onStatusChange,
+	pendingChanges,
+	onDelete,
+	isDeleting,
+}: ListPaymentsProps) {
+	if (payments.length === 0) {
+		return (
+			<div className="flex flex-col items-center justify-center py-8 text-center gap-2">
+				<span className="text-2xl">📋</span>
+				<p className="text-sm font-medium text-foreground">
+					Nenhum pagamento encontrado
+				</p>
+				<p className="text-xs text-muted-foreground">
+					Os pagamentos cadastradas aparecerão aqui
+				</p>
+			</div>
+		)
 	}
 
 	return (
-		<>
-			<div className="w-full">
-				<DataTable
-					columns={PaymentColumnsByCar}
-					data={summaryByCar ?? []}
-					onRowClick={(paymentByCar) => setSelectedPayment(paymentByCar)}
+		<div className="md:hidden flex flex-col gap-3">
+			{payments.map((payment) => (
+				<PaymentCard
+					key={payment.job_id}
+					payment={payment}
+					onStatusChange={onStatusChange}
+					pendingChanges={pendingChanges}
+					onDelete={onDelete}
+					isDeleting={isDeleting}
 				/>
-			</div>
-			<PaymentsWrapper
-				open={!!selectedPayment}
-				onOpenChange={(p) => {
-					if (!p) setSelectedPayment(undefined)
-				}}
-				paymentByCar={selectedPayment}
-			/>
-		</>
+			))}
+		</div>
 	)
 }

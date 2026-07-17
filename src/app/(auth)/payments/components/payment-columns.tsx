@@ -1,9 +1,22 @@
 "use client"
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useStatementByJob } from "@/hooks/statements/use-statements"
 import { cn } from "@/lib/utils"
 import { Payment } from "@/schemas/payment"
 import { ColumnDef } from "@tanstack/react-table"
+import { Trash2 } from "lucide-react"
 
 interface PendingChange {
 	status: Payment["status"]
@@ -13,6 +26,8 @@ interface PendingChange {
 export function getPaymentColumns(
 	onStatusChange: (paymentId: string, checked: boolean) => void,
 	pendingChanges: Record<string, PendingChange>,
+	onDelete: (paymentId: string) => void,
+	isDeleting: boolean,
 ): ColumnDef<Payment>[] {
 	return [
 		{
@@ -60,7 +75,7 @@ export function getPaymentColumns(
 			header: () => <div className="text-center">MTR</div>,
 			cell: ({ row }) => {
 				const jobId = row.getValue("job_id") as string
-				const { data: statement, isLoading } = useStatementByJob(jobId)
+				const { data: statement } = useStatementByJob(jobId)
 				return (
 					<div className="text-[12px] text-center text-muted-foreground">
 						{statement?.code}
@@ -69,39 +84,13 @@ export function getPaymentColumns(
 			},
 		},
 		{
-			accessorKey: "m3",
-			header: () => <div className="text-center">M3</div>,
-			cell: ({ row }) => {
-				return (
-					<div className="text-[12px] text-center text-muted-foreground">
-						{row.getValue("m3")}
-					</div>
-				)
-			},
-		},
-		{
-			accessorKey: "value_m3",
+			accessorKey: "total",
 			header: () => <div className="text-center">Valor</div>,
 			cell: ({ row }) => {
-				const value = row.getValue("value_m3") as number
+				const value = row.getValue("total") as number
 				return (
 					<div className="text-[12px] text-center text-muted-foreground">
 						{value.toLocaleString("pt-BR", {
-							style: "currency",
-							currency: "BRL",
-						})}
-					</div>
-				)
-			},
-		},
-		{
-			accessorKey: "total",
-			header: () => <div className="text-center">Total</div>,
-			cell: ({ row }) => {
-				const total = row.getValue("total") as number
-				return (
-					<div className="text-[12px] text-center text-muted-foreground">
-						{total.toLocaleString("pt-BR", {
 							style: "currency",
 							currency: "BRL",
 						})}
@@ -154,6 +143,58 @@ export function getPaymentColumns(
 				return (
 					<div className="text-[12px] text-center text-muted-foreground">
 						{date.toLocaleDateString("pt-BR")}
+					</div>
+				)
+			},
+		},
+		{
+			id: "actions",
+			header: () => <div className="text-center">Ações</div>,
+			cell: ({ row }) => {
+				const payment = row.original
+				const isPaid = payment.status === "paid"
+
+				return (
+					<div
+						className="flex justify-center"
+						onClick={(e) => e.stopPropagation()}
+					>
+						<AlertDialog>
+							<AlertDialogTrigger asChild>
+								<Button
+									type="button"
+									variant="ghost"
+									size="icon"
+									className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+									disabled={isPaid || isDeleting}
+									aria-label="Excluir pagamento"
+								>
+									<Trash2 className="h-4 w-4" />
+								</Button>
+							</AlertDialogTrigger>
+
+							<AlertDialogContent>
+								<AlertDialogHeader>
+									<AlertDialogTitle>
+										Você quer realmente excluir?
+									</AlertDialogTitle>
+									<AlertDialogDescription>
+										Essa ação não pode ser desfeita. Isso irá excluir
+										permanentemente o pagamento <strong>{payment.id}</strong>.
+									</AlertDialogDescription>
+								</AlertDialogHeader>
+
+								<AlertDialogFooter>
+									<AlertDialogCancel>Cancelar</AlertDialogCancel>
+									<AlertDialogAction
+										onClick={() => onDelete(payment.id)}
+										className="bg-red-600 hover:bg-red-700"
+									>
+										Sim, excluir
+									</AlertDialogAction>
+								</AlertDialogFooter>
+							</AlertDialogContent>
+						</AlertDialog>
 					</div>
 				)
 			},

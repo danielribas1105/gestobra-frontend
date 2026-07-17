@@ -37,7 +37,7 @@ export function DataTable<TData, TValue>({
 	})
 
 	return (
-		<div className="overflow-hidden rounded-md border">
+		<div className="hidden md:block overflow-hidden rounded-md border">
 			<Table className="w-full table-fixed">
 				{/* 👇 define a largura de cada coluna uma única vez, vale para thead e tbody */}
 				<colgroup>

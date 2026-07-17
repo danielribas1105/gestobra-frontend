@@ -9,6 +9,12 @@ import LabelCard from "@/components/ui/label-card"
 import { Badge } from "@/components/ui/badge"
 import { formatDate } from "@/utils/format-date"
 
+const USER_PROFILE: Record<User["profile"], string> = {
+	admin: "Administrador",
+	operator: "Operador",
+	driver: "Motorista",
+}
+
 export interface UserCardProps {
 	user: User
 }
@@ -52,7 +58,7 @@ export default function UserCard({ user }: UserCardProps) {
 					<LabelCard
 						description="Perfil de usuário"
 						label="Perfil"
-						value={user.profile ?? ""}
+						value={USER_PROFILE[user.profile] ?? ""}
 					/>
 				</div>
 				<footer className="flex items-center gap-10">
