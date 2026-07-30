@@ -102,7 +102,9 @@ export function getPaymentColumns(
 							!hasPendingChange && status === "canceled" && "text-red-600",
 						)}
 					>
-						{PAYMENTS_STATUS_LABELS[status]}
+						{PAYMENTS_STATUS_LABELS[status] === "Pendente"
+							? "À pagar"
+							: PAYMENTS_STATUS_LABELS[status]}
 						{hasPendingChange && " *"}
 					</div>
 				)

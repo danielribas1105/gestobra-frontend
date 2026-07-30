@@ -1,36 +1,182 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚧 GestObra
 
-## Getting Started
+Sistema web para gerenciamento de resíduos da construção civil, desenvolvido para automatizar o controle operacional da movimentação de resíduos, cadastro de entidades envolvidas e processamento financeiro dos transportes realizados.
 
-First, run the development server:
+> Projeto desenvolvido utilizando arquitetura moderna baseada em React, Next.js e TypeScript.
+
+---
+
+## 📷 Demonstração
+
+<p align="center">
+    <img src="./docs/login.png" width="400">
+    <img src="./docs/home.png" width="400">
+</p>
+
+<p align="center">
+    <img src="./docs/work.png" width="400">
+    <img src="./docs/job.png" width="400">
+</p>
+
+<p align="center">
+    <img src="./docs/cars.png" width="400">
+    <img src="./docs/materials.png" width="400">
+</p>
+
+---
+
+## 🌓 Modo Dark/Light
+
+<p align="center">
+    <img src="./docs/home.png" width="400">
+    <img src="./docs/home-light.png" width="400">
+</p>
+
+---
+
+## ✨ Principais funcionalidades
+
+- Cadastro de obras
+- Cadastro de empresas
+- Cadastro de veículos
+- Cadastro de materiais (resíduos)
+- Cadastro de usuários/motoristas
+- Cadastro/controle de movimentações
+- Controle de pagamentos
+- Dashboard com indicadores
+- Autenticação de usuários
+- Controle de permissões
+- Interface responsiva
+
+---
+
+## 🛠 Tecnologias
+
+Frontend
+
+- Next.js
+- React
+- TypeScript
+- TailwindCSS
+- Shadcn UI
+- React Hook Form
+- React Query
+- Axios
+- Zod
+
+Backend
+
+- FastAPI
+- SQLAlchemy
+- PostgreSQL
+- JWT
+
+Infraestrutura
+
+- Vercel
+- Render.com
+- Neon
+
+---
+
+## 🏗 Arquitetura
+
+```
+src
+├── app/
+│   ├── (auth)          # Autenticação
+│   ├── dashboard/      # Dashboard
+│   ├── companies/      # Empresas
+│   ├── constructions/  # Obras
+│   ├── transports/     # Transportes
+│   ├── waste/          # Resíduos
+│   └── finance/        # Financeiro
+│
+├── components/         # Componentes reutilizáveis
+├── config/             # Comunicação com API
+├── constants/          # Constantes
+├── hooks/              # Hooks customizados
+├── lib/                # Bibliotecas e helpers
+├── providers/          # Contextos globais
+├── schemas/            # Validações (Zod)
+└── utils/              # Funções utilitárias
+```
+
+---
+
+## 🚀 Executando localmente
+
+Clone o projeto
+
+```bash
+git clone https://github.com/danielribas1105/gestobra-frontend
+```
+
+Entre na pasta
+
+```bash
+cd gestobra-frontend
+```
+
+Instale as dependências
+
+```bash
+npm install
+```
+
+Configure as variáveis
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+Execute
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📁 Estrutura de módulos
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Login
+- Dashboard
+- Obras
+- Movimentações
+- Empresas
+- Transportadoras
+- Veículos
+- Materiais
+- Pagamentos
+- Usuários (Usuários e Motoristas)
+- Relatórios
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🔒 Segurança
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Autenticação JWT
+- Rotas protegidas
+- Controle de permissões
+- Validação de formulários
+- Sanitização de dados
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📈 Melhorias futuras
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Notificações em tempo real
+- Dashboard analítico
+- Aplicativo mobile para validação das movimentações
+- Integração com emissão de documentos
+- Exportação avançada de relatórios
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 👨‍💻 Autor
+
+Daniel Ribas
+
+LinkedIn:
+https://linkedin.com/in/danielribas-developer
