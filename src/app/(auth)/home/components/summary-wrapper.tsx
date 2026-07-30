@@ -124,7 +124,7 @@ export default function SummaryWrapper() {
 						<span className={`size-3 rounded-full bg-yellow-400`} />
 						<LabelCard
 							description={""}
-							label={"Pendente"}
+							label={"À pagar"}
 							value={formatCurrencyBR(paymentsSum?.pending ?? 0)}
 						/>
 					</div>
@@ -132,7 +132,7 @@ export default function SummaryWrapper() {
 						<span className={`size-3 rounded-full bg-red-500`} />
 						<LabelCard
 							description={""}
-							label={"Cancelada"}
+							label={"Cancelado"}
 							value={formatCurrencyBR(paymentsSum?.canceled ?? 0)}
 						/>
 					</div>

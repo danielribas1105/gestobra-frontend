@@ -104,7 +104,7 @@ export default function PaymentCard({
 							!hasPendingChange && !isPaid && "text-muted-foreground",
 						)}
 					>
-						{isPaid ? "Pago" : "Pendente"}
+						{isPaid ? "Pago" : "À pagar"}
 						{hasPendingChange && " *"}
 					</span>
 				</div>

@@ -37,8 +37,8 @@ export default function PaymentCarCard({
 					})}
 				/>
 				<LabelCard
-					description="Valores pendentes de pagamento"
-					label="Pendente"
+					description="Valores à pagar"
+					label="À pagar"
 					value={paymentCar.pending.toLocaleString("pt-BR", {
 						style: "currency",
 						currency: "BRL",
